@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>راديو خالد</title>
+    
+    <!-- SEO & Social Media Meta Tags (Open Graph) -->
+    <meta name="description" content="راديو خالد - رحلة الى الزمن الجميل. استمع لأجمل المسلسلات والمقاطع الإذاعية.">
+    <meta property="og:title" content="راديو خالد">
+    <meta property="og:description" content="رحلة الى الزمن الجميل - استمع لأجمل المسلسلات والمقاطع الإذاعية">
+    <meta property="og:image" content="[https://i.ibb.co/sp6xBm7K/Picsart-26-03-30-18-16-08-102.png](https://i.ibb.co/sp6xBm7K/Picsart-26-03-30-18-16-08-102.png)">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
+
+    <!-- إعدادات PWA لتثبيت التطبيق بايقونة أصلية -->
+    <meta name="theme-color" content="#ec4899">
+    <link rel="apple-touch-icon" href="[https://i.ibb.co/sp6xBm7K/Picsart-26-03-30-18-16-08-102.png](https://i.ibb.co/sp6xBm7K/Picsart-26-03-30-18-16-08-102.png)">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="راديو خالد">
+    <link rel="manifest" href="manifest.json">
+    
+    <script>
+        // تفعيل Service Worker الحقيقي للتطبيق بطريقة احترافية وآمنة
+        if ('serviceWorker' in navigator && (window.location.protocol === 'https:' || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
+            window.addEventListener('load', () => {
+                // استخدام المسار الجذري لضمان عمل الـ SW على كل الصفحات
+                navigator.serviceWorker.register('/sw.js')
+                    .then(reg => console.log('تم تفعيل خدمة التطبيق (PWA) بنجاح', reg.scope))
+                    .catch(err => console.warn('لم يتم العثور على ملف sw.js أو حدث خطأ:', err));
+            });
+        } else {
+            console.log('ميزة Service Worker تحتاج إلى اتصال آمن (HTTPS) أو بيئة تطوير محلي (localhost).');
+        }
+    </script>
+
+    <!-- تضمين مكتبة Tailwind CSS -->
+    <script src="[https://cdn.tailwindcss.com](https://cdn.tailwindcss.com)"></script>
+    <!-- تضمين مكتبة أيقونات Lucide -->
+    <script src="[https://unpkg.com/lucide@latest](https://unpkg.com/lucide@latest)"></script>
+    <!-- مكتبة HLS.js لتشغيل ملفات m3u8 -->
+    <script src="[https://cdn.jsdelivr.net/npm/hls.js@latest](https://cdn.jsdelivr.net/npm/hls.js@latest)"></script>
+    
+    <!-- ربط ملف التنسيقات الخارجي -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="min-h-screen bg-[#111111] text-gray-100 font-sans selection:bg-pink-500/30 flex flex-col">
+
+    <!-- شاشة الترحيب لتشغيل تتر البداية -->
+    <div id="intro-overlay" class="fixed inset-0 bg-[#0a0a0a] bg-opacity-95 z-[100] hidden flex-col items-center justify-center backdrop-blur-md transition-opacity duration-500">
+        <div class="w-32 h-32 rounded-full bg-gradient-to-tr from-cyan-400 to-pink-500 flex items-center justify-center mb-8 animate-pulse cursor-pointer shadow-[0_0_50px_rgba(236,72,153,0.6)] hover:scale-105 transition-transform" onclick="startIntro()">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-white ml-2"><polygon points="6 3 20 12 6 21 6 3"></polygon></svg>
+        </div>
+        <h2 class="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-cyan-300 to-pink-400 mb-3 text-center">مرحباً بك في راديو خالد</h2>
+        <p class="text-gray-400 text-lg">اضغط للبدء والاستماع للزمن الجميل</p>
+    </div>
+
+    <!-- نافذة منبثقة (Modal) عامة -->
+    <div id="modal-overlay" class="fixed inset-0 bg-black/80 z-50 hidden flex items-center justify-center backdrop-blur-sm transition-opacity p-4">
+        <div id="modal-content" class="bg-[#1a1a1a] border border-[#333] p-6 rounded-2xl w-full max-w-md shadow-2xl transform scale-100 transition-transform max-h-[90vh] flex flex-col">
+            <!-- سيتم حقن محتوى النافذة هنا -->
+        </div>
+    </div>
+
+    <!-- حاوية الإشعارات -->
+    <div id="toast-container" class="fixed bottom-4 right-4 z-50 flex flex-col gap-2"></div>
+
+    <!-- أيقونة التثبيت العائمة -->
+    <div onclick="installApp()" class="fixed bottom-6 left-4 sm:left-6 z-40 flex flex-col items-center gap-1.5 cursor-pointer group install-btn-container" title="تثبيت التطبيق">
+        <div class="relative">
+            <img src="[https://i.ibb.co/sp6xBm7K/Picsart-26-03-30-18-16-08-102.png](https://i.ibb.co/sp6xBm7K/Picsart-26-03-30-18-16-08-102.png)" alt="تطبيق راديو خالد" class="w-14 h-14 sm:w-16 sm:h-16 rounded-[1.25rem] shadow-[0_8px_20px_rgba(0,0,0,0.5)] group-hover:scale-105 group-active:scale-95 transition-all duration-300 border border-[#333] object-cover">
+            <div class="absolute -top-1.5 -right-1.5 bg-gradient-to-r from-cyan-500 to-pink-500 text-white rounded-full p-1 shadow-lg animate-bounce border border-[#111]">
+                <i data-lucide="download" class="w-3.5 h-3.5 sm:w-4 sm:h-4"></i>
+            </div>
+        </div>
+        <span class="text-[11px] sm:text-xs font-bold text-gray-200 bg-[#111]/80 backdrop-blur-md px-2.5 py-0.5 rounded-full border border-[#333] shadow-md">تثبيت التطبيق</span>
+    </div>
+
+    <!-- مشغل الصوت المخفي -->
+    <audio id="audio-player" crossorigin="anonymous"></audio>
+
+    <div class="max-w-4xl mx-auto p-4 sm:p-6 lg:p-8 space-y-6 flex-grow w-full">
+        
+        <!-- الترويسة -->
+        <header class="flex flex-col sm:flex-row items-start sm:items-center justify-between pb-4 border-b border-gray-800 gap-4">
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-xl bg-gradient-to-tr from-cyan-400 to-pink-500 flex items-center justify-center shadow-[0_0_15px_rgba(236,72,153,0.3)] shrink-0">
+                    <i data-lucide="radio" class="w-6 h-6 text-white"></i>
+                </div>
+                <div>
+                    <div class="flex items-center gap-2">
+                        <h1 class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-cyan-300 via-white to-pink-400">
+                            راديو خالد
+                        </h1>
+                        <span id="admin-badge" class="hidden bg-pink-500/20 text-pink-400 text-xs px-2 py-0.5 rounded border border-pink-500/30 flex items-center gap-1 cursor-pointer hover:bg-pink-500/30 transition-colors" onclick="lockAdmin()" title="إغلاق غرفة التحكم">
+                            <i data-lucide="unlock" class="w-3 h-3"></i>
+                            غرفة التحكم
+                        </span>
+                    </div>
+                    <div class="flex items-center gap-3 mt-1 flex-wrap">
+                        <p class="text-sm text-gray-400">رحلة الى الزمن الجميل</p>
+                        <div class="flex items-center gap-1.5 text-xs text-cyan-400 bg-cyan-500/10 px-2.5 py-0.5 rounded border border-cyan-500/20" title="عدد الزوار الفريدين (مباشر)">
+                            <i data-lucide="users" class="w-3.5 h-3.5"></i>
+                            <span id="visitor-count-display" class="font-bold font-mono">...</span> زائر
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- أزرار الإذاعات المباشرة -->
+            <div class="flex items-center gap-2 w-full sm:w-auto overflow-x-auto radio-buttons-scroll pb-2 sm:pb-0">
+                <button onclick="playQuranRadio()" class="flex items-center gap-2 px-3 py-2 sm:px-4 sm:py-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white rounded-xl transition-all font-bold shadow-lg shadow-emerald-500/20 border border-emerald-400/30 shrink-0 whitespace-nowrap">
+                    <i data-lucide="radio" class="w-4 h-4 sm:w-5 sm:h-5"></i>
+                    <span class="text-xs sm:text-sm">القرآن الكريم</span>
+                </button>
+                <button onclick="playDramaMixRadio()" class="flex items-center gap-2 px-3 py-2 sm:px-4 sm:py-2.5 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white rounded-xl transition-all font-bold shadow-lg shadow-purple-500/20 border border-purple-400/30 shrink-0 whitespace-nowrap">
+                    <i data-lucide="clapperboard" class="w-4 h-4 sm:w-5 sm:h-5"></i>
+                    <span class="text-xs sm:text-sm">دراما ميكس</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- شريط الإحصائيات المتحرك -->
+        <div id="ticker-container" class="w-full bg-[#151515] border border-[#333] rounded-xl overflow-hidden py-2.5 px-4 relative flex items-center shadow-md" dir="ltr">
+            <div class="w-full overflow-hidden whitespace-nowrap">
+                <div id="ticker-text" class="animate-scroll-ltr text-cyan-400 font-medium text-sm sm:text-base" dir="rtl" title="يمكنك إيقاف الشريط بتمرير الماوس عليه والضغط على أسماء المقاطع لتشغيلها">
+                    <!-- سيتم حقن الإحصائيات هنا -->
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            
+            <!-- القسم الأيمن: المشغل والتحكم -->
+            <div class="lg:col-span-5 space-y-6">
+                <div class="bg-[#1a1a1a] border border-[#333] rounded-3xl p-6 shadow-2xl relative overflow-hidden">
+                    
+                    <div id="playing-glow" class="hidden">
+                        <div class="absolute top-0 right-0 w-32 h-32 bg-pink-500/20 blur-[50px] rounded-full pointer-events-none"></div>
+                        <div class="absolute bottom-0 left-0 w-32 h-32 bg-cyan-500/20 blur-[50px] rounded-full pointer-events-none"></div>
+                    </div>
+                    
+                    <div class="relative z-10 flex flex-col items-center text-center space-y-6">
+                        
+                        <canvas id="visualizer" class="w-full h-24 mb-4 transition-opacity duration-500 opacity-0" width="800" height="96" title="محلل الطيف الصوتي"></canvas>
+
+                        <div id="cover-container" class="w-40 h-40 rounded-full border-4 border-gray-800 flex items-center justify-center bg-black transition-all duration-500 overflow-hidden">
+                            <i id="default-icon" data-lucide="music" class="w-12 h-12 text-gray-600"></i>
+                            <img id="track-cover" alt="Cover" loading="lazy" class="hidden w-full h-full object-cover opacity-60" onerror="this.onerror=null; this.removeAttribute('src'); this.classList.add('hidden'); document.getElementById('default-icon').classList.remove('hidden');" />
+                        </div>
+
+                        <div class="w-full">
+                            <span id="playing-group-badge" class="hidden inline-block mb-2 px-2 py-0.5 rounded text-[10px] bg-pink-500/10 text-pink-400 border border-pink-500/20"></span>
+                            <h2 id="track-title" class="text-lg font-bold text-white px-2 max-h-24 overflow-y-auto custom-scrollbar text-shadow" title="لا يوجد مقطع">
+                                محطة الراديو جاهزة
+                            </h2>
+                            <div class="flex items-center justify-center gap-2 mt-2 text-sm text-gray-400">
+                                <i data-lucide="user" class="w-4 h-4 text-cyan-400"></i>
+                                <span id="track-author">صاحب المقطع</span>
+                            </div>
+                        </div>
+
+                        <div class="w-full px-4" dir="ltr">
+                            <div class="flex justify-between text-xs text-gray-500 mb-2 font-mono items-center">
+                                <div class="flex items-center gap-2">
+                                    <span id="current-time-txt">0:00</span>
+                                    <button id="btn-restart" class="text-gray-500 hover:text-cyan-400 transition-colors hidden" title="إعادة المقطع من البداية">
+                                        <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
+                                    </button>
+                                </div>
+                                <span id="duration-txt">0:00</span>
+                            </div>
+                            <div id="progress-container" class="w-full h-4 bg-gray-800 rounded-full overflow-hidden cursor-pointer relative group flex items-center">
+                                <div id="progress-bar" class="h-2.5 bg-gradient-to-r from-cyan-400 to-pink-500 transition-none ease-linear relative w-full rounded-full" style="width: 0%">
+                                    <div class="absolute right-0 top-1/2 -translate-y-1/2 w-3.5 h-3.5 bg-white rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-opacity translate-x-1/2 cursor-grab active:cursor-grabbing pointer-events-none"></div>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center gap-3 mt-4 bg-[#0a0a0a] p-2.5 rounded-xl border border-[#333]">
+                                <button id="btn-mute" class="text-gray-400 hover:text-cyan-400 transition-colors">
+                                    <i id="volume-icon" data-lucide="volume-1" class="w-5 h-5"></i>
+                                </button>
+                                <input type="range" id="volume-slider" min="0" max="3" step="0.05" value="1" class="flex-1 h-1.5 bg-gray-800 rounded-lg appearance-none cursor-pointer custom-range" title="مستوى الصوت (يمكنك الرفع حتى 300%)" />
+                                <span id="volume-text" class="text-xs font-mono font-bold w-12 text-center py-1 rounded-md text-cyan-400 bg-cyan-500/10">100%</span>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-center gap-6 w-full pt-2">
+                            <button id="btn-loop" class="p-3 rounded-full transition-colors text-gray-500 hover:text-white hover:bg-[#2a2a2a]" title="تكرار المقطع">
+                                <i id="loop-icon" data-lucide="repeat" class="w-5 h-5"></i>
+                            </button>
+
+                            <button id="btn-next" class="p-3 text-gray-300 hover:text-white disabled:opacity-30 disabled:hover:text-gray-300 transition-colors" disabled>
+                                <i data-lucide="skip-forward" class="w-7 h-7"></i>
+                            </button>
+
+                            <button id="btn-play-pause" class="w-16 h-16 rounded-full bg-white text-black flex items-center justify-center hover:scale-105 active:scale-95 transition-all shadow-[0_0_20px_rgba(255,255,255,0.2)] disabled:hover:scale-100 transition-colors" title="تشغيل / إيقاف">
+                                <svg id="svg-play" width="32" height="32" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ml-1"><polygon points="6 3 20 12 6 21 6 3"></polygon></svg>
+                            </button>
+
+                            <button id="btn-prev" class="p-3 text-gray-300 hover:text-white disabled:opacity-30 disabled:hover:text-gray-300 transition-colors" disabled>
+                                <i data-lucide="skip-back" class="w-7 h-7"></i>
+                            </button>
+                        </div>
+                        
+                        <div id="download-container" class="pt-5 mt-2 border-t border-gray-800 w-full hidden">
+                            <button id="btn-download" class="flex items-center justify-center gap-2 text-sm text-white bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 transition-all py-3 px-6 rounded-xl mx-auto shadow-lg shadow-blue-500/20 font-bold border border-blue-400/30 w-[85%] hover:scale-105 active:scale-95">
+                                <i data-lucide="download" class="w-5 h-5"></i>
+                                <span>تحميل المقطع الصوتي الآن</span>
+                            </button>
+                        </div>
+
+                        <div id="track-details-container" class="w-full pt-4 border-t border-gray-800 hidden text-right">
+                            <h3 class="text-sm font-bold text-cyan-400 mb-3 flex items-center gap-2">
+                                <i data-lucide="info" class="w-4 h-4"></i>
+                                معلومات المقطع
+                            </h3>
+                            <div id="track-details-text" class="text-sm text-gray-300 leading-relaxed bg-gray-900/50 p-4 rounded-xl border border-gray-800 text-right"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- القسم الأيسر: القائمة والإضافة -->
+            <div class="lg:col-span-7 space-y-6">
+                
+                <div id="admin-controls-wrapper" class="bg-[#1a1a1a] border border-[#333] rounded-2xl p-4 hidden">
+                    <label class="block text-sm font-medium text-cyan-400 mb-3 flex items-center gap-2">
+                        <i data-lucide="settings" class="w-4 h-4"></i>
+                        غرفة التحكم - الإعدادات والإضافة
+                    </label>
+                    <form id="link-form" class="flex gap-2 mb-4">
+                        <div class="relative flex-1">
+                            <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                <i data-lucide="link" class="h-5 w-5 text-gray-500"></i>
+                            </div>
+                            <input type="url" id="link-input" dir="ltr" placeholder="تيك توك، يوتيوب، ساوند كلاود، أرشيف..." class="block w-full pl-3 pr-10 py-3 bg-[#0a0a0a] border border-[#333] rounded-xl text-left text-gray-200 focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all disabled:opacity-50 outline-none" />
+                        </div>
+                        <button type="submit" id="btn-submit" class="px-6 py-3 bg-gradient-to-r from-cyan-600 to-pink-600 hover:from-cyan-500 hover:to-pink-500 disabled:from-[#333] disabled:to-[#333] disabled:text-gray-500 text-white font-medium rounded-xl flex items-center justify-center gap-2 transition-all min-w-[120px]" disabled>
+                            <i id="submit-icon" data-lucide="plus" class="w-5 h-5"></i>
+                            <span id="submit-text" class="hidden sm:inline">إضافة</span>
+                        </button>
+                    </form>
+                    <p id="error-msg" class="text-red-400 text-sm mb-4 hidden"></p>
+
+                    <div class="flex flex-col gap-3 border-t border-[#333] pt-4">
+                        <div class="flex flex-wrap items-center gap-3">
+                            <button onclick="setupIntroTrackPrompt()" type="button" class="text-xs sm:text-sm px-4 py-2 bg-[#222] text-orange-400 border border-orange-500/30 rounded-xl hover:bg-orange-500/10 transition-colors flex items-center gap-2">
+                                <i data-lucide="play-circle" class="w-4 h-4"></i> تتر البداية
+                            </button>
+                            <button onclick="editPlaylistBgColor()" type="button" class="text-xs sm:text-sm px-4 py-2 bg-[#222] text-rose-400 border border-rose-500/30 rounded-xl hover:bg-rose-500/10 transition-colors flex items-center gap-2">
+                                <i data-lucide="paint-bucket" class="w-4 h-4"></i> خلفية المقاطع
+                            </button>
+                            <button onclick="changeAdminPassword()" type="button" class="text-xs sm:text-sm px-4 py-2 bg-[#222] text-yellow-400 border border-yellow-500/30 rounded-xl hover:bg-yellow-500/10 transition-colors flex items-center gap-2">
+                                <i data-lucide="key" class="w-4 h-4"></i> كلمة المرور
+                            </button>
+                            <button onclick="setDefaultCoverUrl()" type="button" class="text-xs sm:text-sm px-4 py-2 bg-[#222] text-purple-400 border border-purple-500/30 rounded-xl hover:bg-purple-500/10 transition-colors flex items-center gap-2">
+                                <i data-lucide="image" class="w-4 h-4"></i> الشعار الافتراضي
+                            </button>
+                            <button onclick="removeDefaultCover()" type="button" class="text-xs sm:text-sm px-4 py-2 bg-[#222] text-red-400 border border-red-500/30 rounded-xl hover:bg-red-500/10 transition-colors flex items-center gap-2" id="btn-remove-default-cover">
+                                <i data-lucide="trash" class="w-4 h-4"></i> حذف الشعار
+                            </button>
+                            <button onclick="editAboutUs()" type="button" class="text-xs sm:text-sm px-4 py-2 bg-[#222] text-green-400 border border-green-500/30 rounded-xl hover:bg-green-500/10 transition-colors flex items-center gap-2">
+                                <i data-lucide="file-text" class="w-4 h-4"></i> (من نحن)
+                            </button>
+                            <button onclick="openMessagesModal()" type="button" class="text-xs sm:text-sm px-4 py-2 bg-[#222] text-blue-400 border border-blue-500/30 rounded-xl hover:bg-blue-500/10 transition-colors flex items-center gap-2">
+                                <i data-lucide="inbox" class="w-4 h-4"></i> رسائل الزوار
+                            </button>
+                        </div>
+                        
+                        <div class="flex items-center gap-2 w-full mt-2">
+                            <i data-lucide="sparkles" class="w-5 h-5 text-purple-400 flex-shrink-0"></i>
+                            <input type="password" id="gemini-api-key" placeholder="مفتاح الذكاء الاصطناعي (Gemini API Key)" class="flex-1 bg-[#0a0a0a] border border-[#333] rounded-xl px-3 py-2 text-sm text-gray-200 focus:ring-2 focus:ring-purple-500 outline-none transition-all" onchange="localStorage.setItem('geminiApiKey', this.value)">
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col gap-3 border-t border-[#333] pt-4 mt-2">
+                        <label class="block text-sm font-medium text-cyan-400 flex items-center gap-2">
+                            <i data-lucide="gauge" class="w-4 h-4"></i> سرعة الشريط المتحرك
+                        </label>
+                        <div class="flex items-center gap-4">
+                            <span class="text-xs text-gray-500 font-bold">سريع</span>
+                            <input type="range" id="ticker-speed-slider" min="10" max="60" value="30" dir="ltr" class="flex-1 h-1.5 bg-gray-800 rounded-lg appearance-none cursor-pointer custom-range" oninput="changeTickerSpeed(this.value)">
+                            <span class="text-xs text-gray-500 font-bold">بطيء</span>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col gap-3 border-t border-[#333] pt-4 mt-2">
+                        <label class="block text-sm font-medium text-cyan-400 flex items-center gap-2">
+                            <i data-lucide="fast-forward" class="w-4 h-4"></i> تخطي مقدمة المقطع (ثواني)
+                        </label>
+                        <div class="flex items-center gap-4">
+                            <input type="number" id="skip-seconds-input" min="0" max="300" value="20" class="w-20 bg-[#0a0a0a] border border-[#333] rounded-xl px-3 py-2 text-sm text-center text-gray-200 focus:ring-2 focus:ring-cyan-500 outline-none transition-all" oninput="changeSkipSeconds(this.value)">
+                            <span class="text-xs text-gray-500 font-medium">اختر 0 لإلغاء التخطي</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="playlist-main-container" class="border border-[#333] rounded-2xl overflow-hidden flex flex-col h-[450px] lg:h-full lg:max-h-[650px] transition-colors duration-500 shadow-xl" style="background-color: #1a1a1a;">
+                    
+                    <div class="p-4 border-b border-black/20 flex items-center justify-between bg-black/40 backdrop-blur-md z-10 relative">
+                        <h3 class="font-semibold text-gray-100 flex items-center gap-2 flex-wrap text-shadow">
+                            مقاطع المجموعة
+                            <div id="cloud-status-wrapper" class="flex items-center gap-1.5 px-2 py-0.5 rounded bg-black/50 border border-white/10">
+                                <i data-lucide="cloud-off" class="w-4 h-4 text-gray-400"></i>
+                                <span class="text-[11px] font-mono text-gray-400">جاري الاتصال...</span>
+                            </div>
+                        </h3>
+                        <span id="playlist-count" class="text-xs font-bold px-2 py-1 bg-black/50 text-white rounded-md border border-white/10 shadow-sm">0 مقاطع</span>
+                    </div>
+
+                    <div id="groups-container" class="flex items-center gap-3 p-4 bg-black/20 border-b border-black/20 relative z-20"></div>
+
+                    <div class="px-4 py-3 bg-black/40 border-b border-black/20 flex flex-col sm:flex-row gap-3 items-center backdrop-blur-md">
+                        <div class="relative w-full sm:flex-1">
+                            <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                <i data-lucide="search" class="w-4 h-4 text-gray-400"></i>
+                            </div>
+                            <input type="text" id="search-input" placeholder="ابحث عن مقطع..." class="block w-full pl-10 pr-10 py-2.5 bg-black/50 border border-white/10 rounded-xl text-sm text-gray-100 focus:ring-2 focus:ring-cyan-500 outline-none transition-all placeholder-gray-500" oninput="handleSearch(this.value)" />
+                        </div>
+                        <button onclick="switchGroup('local_queue')" class="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2.5 bg-pink-500/20 text-pink-300 border border-pink-500/30 rounded-xl hover:bg-pink-500/30 transition-all font-bold text-sm whitespace-nowrap shadow-sm backdrop-blur-sm" title="الاستماع للمقاطع التي أضفتها أنت">
+                            <i data-lucide="list-music" class="w-4 h-4"></i> قائمتي الخاصة
+                        </button>
+                    </div>
+                    
+                    <div id="playlist-container" class="flex-1 overflow-y-auto p-3 space-y-3 custom-scrollbar relative z-10"></div>
+                </div>
+                
+            </div>
+        </div>
+
+        <footer class="mt-12 pt-6 border-t border-gray-800 flex flex-col gap-8 pb-8">
+            <div class="flex flex-wrap items-center justify-center gap-4">
+                 <button onclick="installApp()" class="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-500 hover:to-purple-500 text-white rounded-xl shadow-lg shadow-pink-500/20 transition-all font-bold install-btn-container">
+                     <img src="[https://i.ibb.co/sp6xBm7K/Picsart-26-03-30-18-16-08-102.png](https://i.ibb.co/sp6xBm7K/Picsart-26-03-30-18-16-08-102.png)" class="w-6 h-6 rounded-md" alt="تطبيق راديو خالد"> تنزيل التطبيق
+                 </button>
+                 <button onclick="addToFavorites()" class="flex items-center gap-2 px-5 py-2.5 bg-[#222] hover:bg-[#333] border border-[#444] text-yellow-400 rounded-xl transition-all font-medium shadow-md">
+                     <i data-lucide="star" class="w-4 h-4"></i> المفضلة / الرئيسية
+                 </button>
+                 <button onclick="openContactModal()" class="flex items-center gap-2 px-5 py-2.5 bg-[#222] hover:bg-[#333] border border-[#444] text-cyan-400 rounded-xl transition-all font-medium shadow-md">
+                     <i data-lucide="mail" class="w-4 h-4"></i> تواصل معنا
+                 </button>
+                 <button onclick="showAboutUs()" class="flex items-center gap-2 px-5 py-2.5 bg-[#222] hover:bg-[#333] border border-[#444] text-purple-400 rounded-xl transition-all font-medium shadow-md">
+                     <i data-lucide="info" class="w-4 h-4"></i> من نحن
+                 </button>
+            </div>
+
+            <div class="flex flex-col sm:flex-row items-center justify-between gap-4 text-sm px-4">
+                <p class="text-gray-400 font-medium">تطوير <span class="text-cyan-400 font-bold">خالد محي الدين</span></p>
+                <div class="flex items-center gap-6">
+                    <a href="tel:00201018282460" class="flex items-center gap-2 text-gray-500 hover:text-cyan-400 transition-colors" title="اتصال">
+                        <i data-lucide="phone" class="w-4 h-4"></i><span dir="ltr">00201018282460</span>
+                    </a>
+                    <a href="[https://wa.me/201018282460](https://wa.me/201018282460)" target="_blank" class="flex items-center gap-2 text-gray-500 hover:text-green-500 transition-colors" title="واتساب">
+                        <i data-lucide="message-circle" class="w-4 h-4"></i><span>واتساب</span>
+                    </a>
+                    <a href="[https://www.facebook.com/khaledmohyalden](https://www.facebook.com/khaledmohyalden)" target="_blank" class="flex items-center gap-2 text-gray-500 hover:text-blue-500 transition-colors" title="فيسبوك">
+                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" clip-rule="evenodd" /></svg>
+                        <span>فيسبوك</span>
+                    </a>
+                </div>
+            </div>
+        </footer>
+
+    </div>
+
+    <!-- ربط ملف الجافاسكريبت هنا بدلاً من الكود المباشر -->
+    <script type="module" src="main.js"></script>
+</body>
+</html>
