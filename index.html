@@ -430,7 +430,6 @@
 
     </div>
 
-    <!-- كود الجافاسكريبت مدمج هنا بدلا من استدعائه من الخارج -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
@@ -483,16 +482,14 @@
 
             const resumeHandler = () => { 
                 if(autoScrollState[id]) {
-                    autoScrollState[id].pos = el.scrollTop; // تحديث الموقع لتجنب القفز
+                    autoScrollState[id].pos = el.scrollTop; 
                     autoScrollState[id].paused = false; 
                 }
             };
             
-            // التوقف عند اللمس أو تحريك الماوس فوق القائمة
             el.addEventListener('mouseenter', pauseHandler);
             el.addEventListener('touchstart', pauseHandler, { passive: true });
             
-            // الاستئناف عند إبعاد الماوس أو رفع الإصبع
             el.addEventListener('mouseleave', resumeHandler);
             el.addEventListener('touchend', resumeHandler, { passive: true });
             el.addEventListener('touchcancel', resumeHandler, { passive: true });
@@ -638,8 +635,9 @@
                     window.hlsPlayer.destroy();
                     window.hlsPlayer = null;
                 }
-                
-                if (!newSrc || newSrc.trim() === '') {
+
+                // تم إلغاء استخدام iframes في المشغل الرئيسي بالكامل
+                if (!newSrc || newSrc.trim() === '' || newSrc === 'soundcloud_widget') {
                     return; 
                 }
                 
@@ -677,69 +675,26 @@
             window.updatePlayerUI();
         };
 
-        window.playDramaMixRadio = async () => {
+        window.playDramaMixRadio = () => {
             playingGroupId = null;
             currentIndex = -4; 
             localStorage.setItem('lastTrackIndex', -4);
             localStorage.removeItem('lastPlayingGroupId');
 
-            const pageUrl = 'https://mixmix.neocities.org/fm/drama';
-            window.safeChangeTrack(''); 
+            window.safeChangeTrack('https://stream.zeno.fm/egynebf171zuv'); 
+            pendingRestoreTime = false;
+            window.initAudioBooster();
             
-            const titleEl = document.getElementById('track-title');
-            if (titleEl) titleEl.innerText = '⏳ جاري استخراج البث المباشر...';
+            window.safePlayAudio();
             window.updatePlayerUI();
-
-            try {
-                const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(pageUrl)}`;
-                const res = await fetch(proxyUrl);
-                const data = await res.json();
-                const htmlContent = data.contents;
-
-                let streamUrl = null;
-
-                const parser = new DOMParser();
-                const doc = parser.parseFromString(htmlContent, 'text/html');
-                const audioEl = doc.querySelector('audio source') || doc.querySelector('audio');
-                
-                if (audioEl && audioEl.src) {
-                    streamUrl = audioEl.src;
-                } else {
-                    const broadRegex = /(https?:\/\/[^\s"'<>]+(?:\.m3u8|\.mp3|zeno\.fm|radiojar|stream|live|listen)[^\s"'<>]*)/i;
-                    const match = htmlContent.match(broadRegex);
-                    if (match && match[1]) {
-                        streamUrl = match[1];
-                    }
-                }
-
-                if (streamUrl && streamUrl.startsWith('/')) {
-                    streamUrl = new URL(streamUrl, pageUrl).href;
-                }
-
-                if (streamUrl) {
-                    window.safeChangeTrack(streamUrl);
-                    pendingRestoreTime = false;
-                    window.initAudioBooster();
-                    window.safePlayAudio();
-                    if (titleEl) titleEl.innerText = 'دراما ميكس';
-                } else {
-                    throw new Error('لم يتم العثور على رابط بث مدعوم في الصفحة.');
-                }
-
-            } catch (err) {
-                console.error("Scraping Error:", err);
-                window.showToast('تعذر استخراج البث من الموقع المرجعي', 'error');
-                if (titleEl) titleEl.innerText = '❌ خطأ في البث المباشر';
-            }
         };
 
         window.playNewsRadio = () => {
             playingGroupId = null;
-            currentIndex = -5; // Unique index for News Radio
+            currentIndex = -5; 
             localStorage.setItem('lastTrackIndex', -5);
             localStorage.removeItem('lastPlayingGroupId');
 
-            // تم التحديث إلى سيرفر سكاي نيوز عربية (إخباري احترافي 24/7 ومستقر 100%)
             window.safeChangeTrack('https://radio.skynewsarabia.com/stream/radio/skynewsarabia');
             pendingRestoreTime = false;
             window.initAudioBooster();
@@ -750,7 +705,7 @@
 
         window.playMonteCarloRadio = () => {
             playingGroupId = null;
-            currentIndex = -6; // Unique index for Monte Carlo Radio
+            currentIndex = -6; 
             localStorage.setItem('lastTrackIndex', -6);
             localStorage.removeItem('lastPlayingGroupId');
 
@@ -767,9 +722,10 @@
             const isArchive = url.includes('archive.org/details/');
             const isYouTube = url.includes('youtube.com') || url.includes('youtu.be');
             const isSoundCloud = url.includes('soundcloud.com');
+            const isApplePodcast = url.includes('podcasts.apple.com');
             
-            if (!isTikTok && !isArchive && !isYouTube && !isSoundCloud) {
-                throw new Error('يرجى إدخال رابط صحيح (تيك توك، أرشيف، يوتيوب، ساوند كلاود).');
+            if (!isTikTok && !isArchive && !isYouTube && !isSoundCloud && !isApplePodcast) {
+                throw new Error('يرجى إدخال رابط صحيح (تيك توك، أرشيف، يوتيوب، ساوند كلاود، آبل بودكاست).');
             }
 
             if (isTikTok) {
@@ -846,95 +802,10 @@
                     throw new Error('فشل جلب بيانات الأرشيف.');
                 }
             } else if (isSoundCloud) {
-                const scClientIds = ['YUKXoArHAw1iwbA7iA6wXyIXXNfCrb6g', 'tQUb6PZc5t7tU2bX1qT297k9r4sXp2R3', 'a3e059563d7fd3372b49b37f00a00bcf'];
-                const targetUrl = url.split('?')[0];
-                let scData = null;
-                let usedCid = null;
-
-                // 1. محاولة قراءة الرابط (مقطع أو قائمة) من ساوند كلاود مباشرة
-                for (let cid of scClientIds) {
-                    try {
-                        const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent('https://api-v2.soundcloud.com/resolve?url=' + encodeURIComponent(targetUrl) + '&client_id=' + cid)}`;
-                        const res = await fetch(proxyUrl);
-                        if (res.ok) {
-                            scData = await res.json();
-                            usedCid = cid;
-                            break;
-                        }
-                    } catch (e) {}
-                }
-
-                if (scData) {
-                    // إذا كان الرابط لقائمة تشغيل (Set)
-                    if (scData.kind === 'playlist') {
-                        let playlistTracks = [];
-                        for (let i = 0; i < scData.tracks.length; i++) {
-                            let t = scData.tracks[i];
-                            // جلب تفاصيل المقطع في حال كانت القائمة كبيرة جداً ولم تأتِ محملة
-                            if (!t.media && t.id) {
-                                try {
-                                    const trRes = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent('https://api-v2.soundcloud.com/tracks/' + t.id + '?client_id=' + usedCid)}`);
-                                    if (trRes.ok) t = await trRes.json();
-                                } catch (e) {}
-                            }
-                            
-                            if (!t.media) continue;
-
-                            const progressive = t.media.transcodings?.find(tr => tr.format.protocol === 'progressive') || t.media.transcodings?.[0];
-                            if (progressive && progressive.url) {
-                                try {
-                                    const streamUrl = progressive.url + '?client_id=' + usedCid;
-                                    const streamRes = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(streamUrl)}`);
-                                    const streamData = await streamRes.json();
-                                    if (streamData.url) {
-                                        playlistTracks.push({
-                                            id: `sc_${t.id}_${Date.now()}_${i}`,
-                                            url: t.permalink_url || targetUrl,
-                                            title: t.title || `مقطع ساوند كلاود ${i+1}`,
-                                            author: t.user?.username || scData.user?.username || 'ساوند كلاود',
-                                            audioUrl: streamData.url,
-                                            cover: t.artwork_url ? t.artwork_url.replace('-large', '-t500x500') : (scData.artwork_url ? scData.artwork_url.replace('-large', '-t500x500') : ''),
-                                            details: t.description || scData.title || '',
-                                            customCover: '',
-                                            addedAt: Date.now() + i
-                                        });
-                                    }
-                                } catch(e) {}
-                            }
-                        }
-                        if (playlistTracks.length > 0) return playlistTracks;
-                        throw new Error('لم يتم العثور على مقاطع مدعومة في هذه القائمة.');
-                    
-                    // إذا كان الرابط لمقطع واحد فقط
-                    } else if (scData.kind === 'track') {
-                        const progressive = scData.media?.transcodings?.find(tr => tr.format.protocol === 'progressive') || scData.media?.transcodings?.[0];
-                        if (progressive && progressive.url) {
-                            try {
-                                const streamUrl = progressive.url + '?client_id=' + usedCid;
-                                const streamRes = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(streamUrl)}`);
-                                const streamData = await streamRes.json();
-                                if (streamData.url) {
-                                    return [{
-                                        id: `sc_${scData.id}_${Date.now()}`,
-                                        url: targetUrl,
-                                        title: scData.title,
-                                        author: scData.user?.username || 'ساوند كلاود',
-                                        audioUrl: streamData.url,
-                                        cover: scData.artwork_url ? scData.artwork_url.replace('-large', '-t500x500') : '',
-                                        details: scData.description || '',
-                                        customCover: '',
-                                        addedAt: Date.now()
-                                    }];
-                                }
-                            } catch(e) {}
-                        }
-                    }
-                }
-                
-                // 2. بديل احتياطي للمقاطع الفردية في حال فشل الطريقة الأصلية
+                // تعديل حصري وجذري: السحب بصيغة MP3 مباشرة من الساوند كلاود لتعمل خصائص الراديو الرئيسية بسلاسة
                 let audioUrl = '';
                 let title = 'مقطع ساوند كلاود';
-                let author = 'مستخدم';
+                let author = 'ساوند كلاود';
                 let coverUrl = '';
 
                 try {
@@ -945,32 +816,28 @@
                     if(noembedData.thumbnail_url) coverUrl = noembedData.thumbnail_url;
                 } catch(e) {}
 
-                const cobaltInstances = ['https://co.wuk.sh', 'https://api.zmrz.nl', 'https://cobalt.csthub.cc', 'https://cobalt-api.kwiatekit.com', 'https://cobalt.seasi.dev', 'https://cobalt.j02.xyz'];
-                const cobaltBody = JSON.stringify({ url: targetUrl, isAudioOnly: true, downloadMode: 'audio', aFormat: 'mp3' });
-                const cobaltHeaders = { 'Accept': 'application/json', 'Content-Type': 'application/json' };
-                const fetchers = [];
+                const scFetchers = [
+                    async () => { const r = await fetch(`https://api.vreden.my.id/api/soundcloud?url=${encodeURIComponent(url)}`); const d = await r.json(); return d?.result?.download || d?.result?.url; },
+                    async () => { const r = await fetch(`https://api.siputzx.my.id/api/d/soundcloud?url=${encodeURIComponent(url)}`); const d = await r.json(); return d?.data?.url; }
+                ];
 
-                cobaltInstances.forEach(instance => {
-                    fetchers.push(async () => { const r = await fetch(`${instance}/api/json`, { method: 'POST', headers: cobaltHeaders, body: cobaltBody }); const d = await r.json(); return d?.url; });
+                audioUrl = await new Promise((resolve) => {
+                    let pending = scFetchers.length;
+                    let resolved = false;
+                    scFetchers.forEach(async (fn) => {
+                        try {
+                            const resUrl = await fn();
+                            if (!resolved && resUrl && typeof resUrl === 'string' && resUrl.startsWith('http')) {
+                                resolved = true;
+                                resolve(resUrl);
+                            }
+                        } catch (e) {}
+                        finally {
+                            pending--;
+                            if (pending === 0 && !resolved) resolve('soundcloud_widget'); // حالة احتياطية لو تعطل السيرفر
+                        }
+                    });
                 });
-                
-                fetchers.push(
-                    async () => { const r = await fetch(`https://api.vreden.my.id/api/soundcloud?url=${encodeURIComponent(targetUrl)}`); const d = await r.json(); return d?.result?.download || d?.result?.url; },
-                    async () => { const r = await fetch(`https://api.agatz.xyz/api/soundcloud?url=${encodeURIComponent(targetUrl)}`); const d = await r.json(); return d?.data?.url || d?.data?.download; },
-                    async () => { const r = await fetch(`https://aemt.me/soundcloud?url=${encodeURIComponent(targetUrl)}`); const d = await r.json(); return d?.result || d?.url; },
-                    async () => { const r = await fetch(`https://api.nyxs.pw/dl/sc?url=${encodeURIComponent(targetUrl)}`); const d = await r.json(); return d?.result?.url || d?.url; },
-                    async () => { const r = await fetch(`https://api.siputzx.my.id/api/d/soundcloud?url=${encodeURIComponent(targetUrl)}`); const d = await r.json(); return d?.data?.dl || d?.data?.url; }
-                );
-
-                for (let fn of fetchers) {
-                    try {
-                        audioUrl = await fn();
-                        if (audioUrl && typeof audioUrl === 'string' && (audioUrl.startsWith('http://') || audioUrl.startsWith('https://'))) break; 
-                        audioUrl = ''; 
-                    } catch (e) {}
-                }
-
-                if (!audioUrl) throw new Error('فشل استخراج الرابط أو المقطع خاص.');
 
                 return [{
                     id: `sc_${Date.now()}`,
@@ -979,7 +846,7 @@
                     author: author,
                     audioUrl: audioUrl, 
                     cover: coverUrl,
-                    details: '',
+                    details: 'تم سحب هذا المقطع ليعمل عبر المشغل الرئيسي وتتفاعل معه خصائص الراديو كالشعار ومستوى الصوت بشكل مباشر.',
                     customCover: '',
                     addedAt: Date.now()
                 }];
@@ -999,28 +866,30 @@
                 } catch(e) {}
 
                 const targetUrl = url;
-                const fetchers = [];
-                const cobaltInstances = ['https://co.wuk.sh', 'https://api.zmrz.nl', 'https://cobalt.csthub.cc', 'https://cobalt-api.kwiatekit.com', 'https://cobalt.seasi.dev', 'https://cobalt.j02.xyz'];
-                const cobaltBody = JSON.stringify({ url: targetUrl, isAudioOnly: true, downloadMode: 'audio', aFormat: 'mp3' });
-                const cobaltHeaders = { 'Accept': 'application/json', 'Content-Type': 'application/json' };
-
-                cobaltInstances.forEach(instance => {
-                    fetchers.push(async () => { const r = await fetch(`${instance}/api/json`, { method: 'POST', headers: cobaltHeaders, body: cobaltBody }); const d = await r.json(); return d?.url; });
-                });
                 
-                fetchers.push(
+                const ytFetchers = [
                     async () => { const r = await fetch(`https://api.vreden.my.id/api/ytmp3?url=${encodeURIComponent(targetUrl)}`); const d = await r.json(); return d?.result?.download?.url || d?.result?.url; },
                     async () => { const r = await fetch(`https://api.siputzx.my.id/api/d/ytmp3?url=${encodeURIComponent(targetUrl)}`); const d = await r.json(); return d?.data?.dl || d?.data?.url; },
                     async () => { const r = await fetch(`https://api.ryzendesu.vip/api/downloader/ytmp3?url=${encodeURIComponent(targetUrl)}`); const d = await r.json(); return d?.url || d?.data?.url; }
-                );
+                ];
 
-                for (let fn of fetchers) {
-                    try {
-                        audioUrl = await fn();
-                        if (audioUrl && typeof audioUrl === 'string' && (audioUrl.startsWith('http://') || audioUrl.startsWith('https://'))) break; 
-                        audioUrl = ''; 
-                    } catch (e) {}
-                }
+                audioUrl = await new Promise((resolve) => {
+                    let pending = ytFetchers.length;
+                    let resolved = false;
+                    ytFetchers.forEach(async (fn) => {
+                        try {
+                            const resUrl = await fn();
+                            if (!resolved && resUrl && typeof resUrl === 'string' && resUrl.startsWith('http')) {
+                                resolved = true;
+                                resolve(resUrl);
+                            }
+                        } catch (e) {}
+                        finally {
+                            pending--;
+                            if (pending === 0 && !resolved) resolve('');
+                        }
+                    });
+                });
 
                 if (!audioUrl) throw new Error('فشل استخراج الرابط أو المقطع خاص.');
 
@@ -1035,6 +904,57 @@
                     customCover: '',
                     addedAt: Date.now()
                 }];
+            } else if (isApplePodcast) {
+                const match = url.match(/\/id(\d+)/);
+                if (!match) throw new Error('رابط آبل بودكاست غير صالح.');
+                const podcastId = match[1];
+
+                const proxyItunesUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent('https://itunes.apple.com/lookup?id=' + podcastId)}`;
+                const itunesRes = await fetch(proxyItunesUrl);
+                const itunesData = await itunesRes.json();
+                
+                if (!itunesData.results || itunesData.results.length === 0) throw new Error('لم يتم العثور على بيانات البودكاست.');
+                
+                const feedUrl = itunesData.results[0].feedUrl;
+                const podcastAuthor = itunesData.results[0].artistName || 'آبل بودكاست';
+                const podcastCover = itunesData.results[0].artworkUrl600 || itunesData.results[0].artworkUrl100 || '';
+
+                if (!feedUrl) throw new Error('لا يوجد رابط RSS متاح لهذا البودكاست.');
+
+                const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(feedUrl)}`;
+                const rssRes = await fetch(proxyUrl);
+                const rssText = await rssRes.text();
+
+                const parser = new DOMParser();
+                const xmlDoc = parser.parseFromString(rssText, "text/xml");
+                const items = xmlDoc.querySelectorAll("item");
+
+                if (items.length === 0) throw new Error('لا توجد حلقات في هذا البودكاست.');
+
+                const uniqueTracks = [];
+                items.forEach((item, index) => {
+                    const title = item.querySelector("title")?.textContent || `حلقة ${index + 1}`;
+                    const enclosure = item.querySelector("enclosure");
+                    if (enclosure && enclosure.getAttribute("url")) {
+                        let desc = item.querySelector("description")?.textContent || '';
+                        desc = desc.replace(/(<([^>]+)>)/gi, "").substring(0, 300); 
+
+                        uniqueTracks.push({
+                            id: `apple_${podcastId}_${Date.now()}_${index}`,
+                            url: url,
+                            title: title,
+                            author: podcastAuthor,
+                            audioUrl: enclosure.getAttribute("url"),
+                            cover: podcastCover,
+                            details: desc,
+                            customCover: '',
+                            addedAt: Date.now() + index
+                        });
+                    }
+                });
+
+                if (uniqueTracks.length === 0) throw new Error('لم يتم العثور على ملفات صوتية مدعومة في الحلقات.');
+                return uniqueTracks;
             }
             return [];
         };
@@ -1076,31 +996,44 @@
         };
 
         window.autoRefreshTrack = async function(track, group, index) {
-            window.showToast('الرابط انتهت صلاحيته... جاري تجديد المقطع تلقائياً 🔄', 'info');
+            window.showToast('جاري تحضير وتحديث المقطع للتشغيل المباشر... 🔄', 'info');
             const titleEl = document.getElementById('track-title');
-            if (titleEl) titleEl.innerText = '🔄 جاري التجديد التلقائي...';
+            if (titleEl) titleEl.innerText = '🔄 جاري التحضير التلقائي...';
             
             try {
                 const refreshedTracks = await window.fetchLinkInfo(track.url);
-                if (refreshedTracks && refreshedTracks.length > 0 && refreshedTracks[0].audioUrl) {
-                    track.audioUrl = refreshedTracks[0].audioUrl;
-                    track.isRefreshing = false;
+                if (refreshedTracks && refreshedTracks.length > 0) {
+                    let newAudioUrl = null;
                     
-                    if (group && !group.isLocal && isAdmin && user) window.saveToDB(); 
-                    
-                    if ((group && playingGroupId === group.id && currentIndex === index) || (currentIndex === -3 && track === introTrack)) {
-                        window.showToast('تم التجديد بنجاح! جاري التشغيل ✅', 'success');
-                        if (titleEl) titleEl.innerText = track.title;
-                        window.safeChangeTrack(track.audioUrl);
-                        window.initAudioBooster();
-                        window.safePlayAudio();
+                    if (refreshedTracks.length > 1 && track.id && track.id.startsWith('sc_')) {
+                        const scTrackId = track.id.split('_')[1];
+                        const matchedTrack = refreshedTracks.find(t => t.id && t.id.includes(`_${scTrackId}_`));
+                        if (matchedTrack) newAudioUrl = matchedTrack.audioUrl;
+                        else newAudioUrl = refreshedTracks[0].audioUrl;
+                    } else {
+                        newAudioUrl = refreshedTracks[0].audioUrl;
                     }
-                } else {
-                    throw new Error('Failed to refresh');
+
+                    if (newAudioUrl && newAudioUrl !== 'soundcloud_widget') {
+                        track.audioUrl = newAudioUrl;
+                        track.isRefreshing = false;
+                        
+                        if (group && !group.isLocal && isAdmin && user) window.saveToDB(); 
+                        
+                        if ((group && playingGroupId === group.id && currentIndex === index) || (currentIndex === -3 && track === introTrack)) {
+                            window.showToast('تم التجهيز بنجاح! جاري التشغيل ✅', 'success');
+                            if (titleEl) titleEl.innerText = track.title;
+                            window.safeChangeTrack(track.audioUrl);
+                            window.initAudioBooster();
+                            window.safePlayAudio();
+                        }
+                        return;
+                    }
                 }
+                throw new Error('Failed to refresh');
             } catch(e) {
                 track.isRefreshing = false;
-                window.showToast('فشل التجديد التلقائي، يرجى إعادة إضافة المقطع', 'error');
+                window.showToast('المقطع القديم يحتاج للتجديد أو توجد مشكلة في الاتصال', 'error');
                 if (titleEl) titleEl.innerText = '❌ خطأ في التشغيل';
             }
         };
@@ -1118,10 +1051,10 @@
                         const currentGroup = window.getPlayingGroup();
                         if (currentGroup && currentIndex >= 0) {
                             const track = currentGroup.tracks[currentIndex];
-                            if (track && track.url && (track.url.includes('soundcloud.com') || track.url.includes('youtube.com') || track.url.includes('youtu.be') || track.url.includes('tiktok.com'))) {
+                            if (track && track.url && (track.url.includes('youtube.com') || track.url.includes('youtu.be') || track.url.includes('tiktok.com') || track.url.includes('apple.com') || track.url.includes('soundcloud.com'))) {
                                 if (!track.isRefreshing) {
                                     track.isRefreshing = true;
-                                    console.warn("الرابط منتهي، جاري التجديد التلقائي...");
+                                    console.warn("الرابط منتهي أو محمي، جاري التجديد التلقائي...");
                                     window.autoRefreshTrack(track, currentGroup, currentIndex);
                                     return; 
                                 }
@@ -1129,28 +1062,20 @@
                         }
                     }
 
-                    if (audio.getAttribute('crossorigin')) {
-                        audio.removeAttribute('crossorigin');
-                        const currentSrc = audio.src;
-                        audio.removeAttribute('src');
-                        
-                        if (currentSrc && currentSrc !== window.location.href) {
-                            audio.src = currentSrc; 
-                            audio.load();
-                            window.safePlayAudio();
-                        } else {
-                            window.showToast('حدثت مشكلة في التشغيل', 'error');
-                            const titleEl = document.getElementById('track-title');
-                            if (titleEl) titleEl.innerText = '❌ خطأ في التشغيل';
-                            
-                            if (currentIndex === -3) {
-                                if(audio) { audio.pause(); audio.removeAttribute('src'); }
-                                currentIndex = -1;
-                                playingGroupId = null;
-                                isPlaying = false;
-                                window.updatePlayerUI();
-                            }
-                        }
+                    window.showToast('عذراً، الرابط معطل أو غير متاح مؤقتاً', 'error');
+                    const titleEl = document.getElementById('track-title');
+                    if (titleEl) titleEl.innerText = '❌ خطأ في التشغيل';
+                    
+                    if (currentIndex === -3) {
+                        if(audio) { audio.pause(); audio.removeAttribute('src'); }
+                        currentIndex = -1;
+                        playingGroupId = null;
+                        isPlaying = false;
+                        window.updatePlayerUI();
+                    } else {
+                        if(audio) audio.pause();
+                        isPlaying = false;
+                        window.updatePlayerUI();
                     }
                 }
             });
@@ -1401,7 +1326,7 @@
                 window.renderGroups();
             }
 
-            if (e.target.closest('button') || e.target.closest('input') || e.target.closest('textarea') || e.target.closest('a') || e.target.closest('select')) {
+            if (e.target.closest('button') || e.target.closest('input') || e.target.closest('textarea') || e.target.closest('a') || e.target.closest('select') || e.target.closest('iframe')) {
                 return;
             }
             
@@ -2436,12 +2361,62 @@
             e.stopPropagation();
             const group = window.getViewingGroup();
             if(!group || !group.tracks[index] || group.isLocal) return;
-            window.openPromptModal('تعديل عنوان المقطع:', 'أدخل العنوان الجديد', (newTitle) => {
-                group.tracks[index].title = newTitle;
-                window.saveToDB();
-                window.renderPlaylist();
-                if(playingGroupId === group.id && currentIndex === index) window.updatePlayerUI();
-            }, group.tracks[index].title);
+            
+            const track = group.tracks[index];
+            const safeTitle = track.title ? track.title.replace(/"/g, '&quot;') : '';
+            const safeUrl = track.url ? track.url.replace(/"/g, '&quot;') : '';
+
+            if(!modalContent) return;
+            modalContent.innerHTML = `
+                <div class="flex items-center justify-between mb-4 border-b border-[#333] pb-3">
+                    <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                        <i data-lucide="edit-2" class="w-5 h-5 text-cyan-400"></i>
+                        تعديل المقطع
+                    </h3>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm text-gray-400 mb-1">عنوان المقطع</label>
+                    <input type="text" id="edit-track-title" class="w-full bg-[#0a0a0a] border border-[#333] rounded-xl px-4 py-3 text-white focus:ring-2 focus:ring-cyan-500 outline-none" value="${safeTitle}" dir="auto">
+                </div>
+                <div class="mb-6">
+                    <label class="block text-sm text-gray-400 mb-1">الرابط المصدر (للقراءة والنسخ فقط)</label>
+                    <div class="flex gap-2">
+                        <input type="text" id="edit-track-url" class="w-full bg-[#0a0a0a] border border-[#333] rounded-xl px-4 py-3 text-gray-500 outline-none text-left" value="${safeUrl}" readonly dir="ltr">
+                        <button type="button" onclick="const el=document.getElementById('edit-track-url'); el.select(); document.execCommand('copy'); window.showToast('تم نسخ الرابط بنجاح', 'success');" class="px-4 py-3 bg-[#222] text-white rounded-xl hover:bg-cyan-500 hover:text-white border border-[#333] transition-colors" title="نسخ الرابط">
+                            <i data-lucide="copy" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="flex justify-end gap-3 mt-auto pt-4 border-t border-[#333]">
+                    <button onclick="closeModal()" class="px-5 py-2.5 rounded-lg text-gray-400 hover:bg-[#222] hover:text-white transition-colors">إلغاء</button>
+                    <button id="modal-confirm-edit-btn" class="px-5 py-2.5 rounded-lg bg-gradient-to-r from-cyan-600 to-cyan-500 hover:from-cyan-500 hover:to-cyan-400 text-white font-medium transition-all shadow-lg shadow-cyan-500/20">حفظ التعديل</button>
+                </div>
+            `;
+            if(modalOverlay) modalOverlay.classList.remove('hidden');
+            lucide.createIcons({ root: modalContent });
+
+            const titleInput = document.getElementById('edit-track-title');
+            if(titleInput) titleInput.focus();
+
+            const confirmBtn = document.getElementById('modal-confirm-edit-btn');
+            if(confirmBtn) {
+                confirmBtn.addEventListener('click', () => {
+                    const newTitle = titleInput ? titleInput.value.trim() : '';
+                    if (newTitle) {
+                        track.title = newTitle;
+                        window.saveToDB();
+                        window.renderPlaylist();
+                        if(playingGroupId === group.id && currentIndex === index) window.updatePlayerUI();
+                    }
+                    window.closeModal();
+                });
+            }
+            
+            if(titleInput) {
+                titleInput.addEventListener('keypress', (event) => {
+                    if (event.key === 'Enter' && confirmBtn) confirmBtn.click();
+                });
+            }
         };
 
         window.editTrackDetails = (e, index) => {
@@ -2710,7 +2685,7 @@
                 const track = playingTracks[currentIndex];
                 mediaTitle = track.title;
                 mediaArtist = track.author;
-                
+
                 if(trackTitle) trackTitle.innerText = mediaTitle;
                 if(trackAuthor) trackAuthor.innerText = mediaArtist;
                 
@@ -2761,6 +2736,16 @@
                 if (downloadContainer) downloadContainer.classList.add('hidden');
                 if (btnRestart) btnRestart.classList.add('hidden');
                 if (trackDetailsContainer) trackDetailsContainer.classList.add('hidden');
+            }
+
+            // تفعيل المشغل الرئيسي والشعار لجميع المقاطع (تم إزالة الإخفاء السابق الخاص بساوند كلاود)
+            if (coverContainer) coverContainer.style.display = 'flex';
+            if (visualizerCanvas) visualizerCanvas.style.display = 'block';
+            if (progressContainer) progressContainer.classList.remove('opacity-50', 'pointer-events-none');
+            
+            if (btnPlayPause) {
+                btnPlayPause.classList.remove('opacity-50');
+                btnPlayPause.disabled = (playingTracks.length === 0 && currentIndex === -1 && currentIndex !== -2 && currentIndex !== -3 && currentIndex !== -4 && currentIndex !== -5 && currentIndex !== -6);
             }
 
             if (isPlaying) {
@@ -2836,7 +2821,19 @@
             localStorage.setItem('lastPlayingGroupId', playingGroupId);
             localStorage.setItem('lastTrackIndex', currentIndex);
             
-            window.safeChangeTrack(targetGroup.tracks[currentIndex].audioUrl);
+            const track = targetGroup.tracks[currentIndex];
+
+            // تنشيط المقاطع القديمة المحفوظة في قاعدة البيانات لتسحب الرابط المباشر
+            if (track.audioUrl === 'soundcloud_widget') {
+                if (!track.isRefreshing) {
+                    track.isRefreshing = true;
+                    window.showToast('جاري تحضير مقطع الساوند كلاود للعمل على المشغل الرئيسي...', 'info');
+                    window.autoRefreshTrack(track, targetGroup, currentIndex);
+                }
+                return;
+            }
+
+            window.safeChangeTrack(track.audioUrl);
             pendingRestoreTime = true;
             
             window.initAudioBooster();
@@ -2959,6 +2956,25 @@
                     </button>
                 `;
 
+                // --- التعديل الجوهري: إظهار شكل مصدر الساوند كلاود كما بالصورة داخل القائمة فقط ---
+                const isSCTrack = track.url && (track.url.includes('soundcloud.com') || track.url.includes('on.soundcloud.com'));
+                let trackContentHtml = '';
+
+                if (isSCTrack) {
+                    trackContentHtml = `
+                        <div class="w-full relative h-[150px] sm:h-[166px] rounded-lg overflow-hidden pointer-events-none bg-white/5 border border-white/10 mt-1">
+                            <iframe width="100%" height="100%" scrolling="no" frameborder="no" allow="autoplay"
+                                src="https://w.soundcloud.com/player/?url=${encodeURIComponent(track.url)}&color=%23ec4899&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false&visual=false">
+                            </iframe>
+                        </div>
+                    `;
+                } else {
+                    trackContentHtml = `
+                        <p class="text-sm sm:text-base font-bold leading-relaxed break-words whitespace-normal ${textClasses} text-shadow-sm">${track.title}</p>
+                        <p class="text-xs text-cyan-300/80 truncate mt-1">@${track.author}</p>
+                    `;
+                }
+
                 return `
                     <div ${dragAttrs} onclick="playTrack(${index})" class="track-item group flex flex-col p-3 rounded-xl cursor-pointer transition-all ${activeClasses} mb-3">
                         <div class="flex items-start sm:items-center gap-3 w-full min-w-0">
@@ -2967,8 +2983,7 @@
                                 ${iconHtml}
                             </div>
                             <div class="flex-1 min-w-0 flex flex-col">
-                                <p class="text-sm sm:text-base font-bold leading-relaxed break-words whitespace-normal ${textClasses} text-shadow-sm">${track.title}</p>
-                                <p class="text-xs text-cyan-300/80 truncate mt-1">@${track.author}</p>
+                                ${trackContentHtml}
                             </div>
                         </div>
                         <div class="flex flex-wrap items-center justify-start gap-2 mt-3 pt-3 border-t border-white/10 w-full" onclick="event.stopPropagation()">
