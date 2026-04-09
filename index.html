@@ -2956,24 +2956,10 @@
                     </button>
                 `;
 
-                // --- التعديل الجوهري: إظهار شكل مصدر الساوند كلاود كما بالصورة داخل القائمة فقط ---
-                const isSCTrack = track.url && (track.url.includes('soundcloud.com') || track.url.includes('on.soundcloud.com'));
-                let trackContentHtml = '';
-
-                if (isSCTrack) {
-                    trackContentHtml = `
-                        <div class="w-full relative h-[150px] sm:h-[166px] rounded-lg overflow-hidden pointer-events-none bg-white/5 border border-white/10 mt-1">
-                            <iframe width="100%" height="100%" scrolling="no" frameborder="no" allow="autoplay"
-                                src="https://w.soundcloud.com/player/?url=${encodeURIComponent(track.url)}&color=%23ec4899&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false&visual=false">
-                            </iframe>
-                        </div>
-                    `;
-                } else {
-                    trackContentHtml = `
-                        <p class="text-sm sm:text-base font-bold leading-relaxed break-words whitespace-normal ${textClasses} text-shadow-sm">${track.title}</p>
-                        <p class="text-xs text-cyan-300/80 truncate mt-1">@${track.author}</p>
-                    `;
-                }
+                let trackContentHtml = `
+                    <p class="text-sm sm:text-base font-bold leading-relaxed break-words whitespace-normal ${textClasses} text-shadow-sm">${track.title}</p>
+                    <p class="text-xs text-cyan-300/80 truncate mt-1">@${track.author}</p>
+                `;
 
                 return `
                     <div ${dragAttrs} onclick="playTrack(${index})" class="track-item group flex flex-col p-3 rounded-xl cursor-pointer transition-all ${activeClasses} mb-3">
