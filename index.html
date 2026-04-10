@@ -603,7 +603,10 @@
         const audio = document.getElementById('audio-player');
 
         window.toggleQuranMenu = function(e) {
-            e.stopPropagation();
+            if(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
             const menu = document.getElementById('quran-dropdown-menu');
             const btn = document.getElementById('btn-quran-menu');
             if (!menu || !btn) return;
@@ -637,15 +640,14 @@
             }
         };
 
-        document.addEventListener('click', (e) => {
+        const closeMenuOutside = (e) => {
             if (!e.target.closest('#quran-dropdown-menu') && !e.target.closest('#btn-quran-menu')) {
                 window.closeQuranMenu();
             }
-        });
+        };
         
-        window.addEventListener('scroll', () => {
-            window.closeQuranMenu();
-        }, true);
+        document.addEventListener('click', closeMenuOutside);
+        document.addEventListener('touchstart', closeMenuOutside, { passive: true });
 
         window.startIntro = () => {
             const introOverlay = document.getElementById('intro-overlay');
