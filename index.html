@@ -366,34 +366,34 @@
                     </div>
                 </div>
 
-                <div id="playlist-main-container" class="border border-[#333] rounded-2xl overflow-hidden flex flex-col h-[450px] lg:h-full lg:max-h-[650px] transition-colors duration-500 shadow-xl" style="background-color: #1a1a1a;">
+                <div id="playlist-main-container" class="border border-[#333] rounded-2xl overflow-hidden flex flex-col h-[650px] transition-colors duration-500 shadow-xl" style="background-color: #111111;">
                     
-                    <div class="p-4 border-b border-black/20 flex items-center justify-between bg-black/40 backdrop-blur-md z-10 relative">
-                        <h3 class="font-semibold text-gray-100 flex items-center gap-2 flex-wrap text-shadow">
-                            مقاطع المجموعة
-                            <div id="cloud-status-wrapper" class="flex items-center gap-1.5 px-2 py-0.5 rounded bg-black/50 border border-white/10">
+                    <div class="p-4 bg-[#1a1d24] border-b border-[#333] flex flex-col sm:flex-row items-center justify-between gap-4 relative z-20">
+                        <div class="flex items-center gap-3 w-full sm:w-auto">
+                            <h3 class="font-bold text-gray-100 flex items-center gap-2 text-shadow text-lg">
+                                <i data-lucide="library" class="w-5 h-5 text-cyan-400"></i> مكتبة الأقسام
+                            </h3>
+                            <div id="cloud-status-wrapper" class="flex items-center gap-1.5 px-2 py-0.5 rounded bg-[#111] border border-[#333]">
                                 <i data-lucide="cloud-off" class="w-4 h-4 text-gray-400"></i>
                                 <span class="text-[11px] font-mono text-gray-400">جاري الاتصال...</span>
                             </div>
-                        </h3>
-                        <span id="playlist-count" class="text-xs font-bold px-2 py-1 bg-black/50 text-white rounded-md border border-white/10 shadow-sm">0 مقاطع</span>
+                        </div>
+
+                        <div class="relative w-full sm:flex-1 sm:max-w-xs ml-auto">
+                            <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                <i data-lucide="search" class="w-4 h-4 text-gray-500"></i>
+                            </div>
+                            <input type="text" id="search-input" placeholder="ابحث في القسم المفتوح..." class="block w-full pl-3 pr-10 py-2 bg-[#111] border border-[#333] rounded-xl text-sm text-gray-100 focus:ring-2 focus:ring-cyan-500 outline-none transition-all placeholder-gray-500 shadow-inner" oninput="handleSearch(this.value)" />
+                        </div>
+                        
+                        <div id="admin-add-group-wrapper" class="w-full sm:w-auto shrink-0"></div>
                     </div>
 
-                    <div id="groups-container" class="flex items-center gap-3 p-4 bg-black/20 border-b border-black/20 relative z-20"></div>
-
-                    <div class="px-4 py-3 bg-black/40 border-b border-black/20 flex flex-col sm:flex-row gap-3 items-center backdrop-blur-md">
-                        <div class="relative w-full sm:flex-1">
-                            <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                                <i data-lucide="search" class="w-4 h-4 text-gray-400"></i>
-                            </div>
-                            <input type="text" id="search-input" placeholder="ابحث عن مقطع..." class="block w-full pl-10 pr-10 py-2.5 bg-black/50 border border-white/10 rounded-xl text-sm text-gray-100 focus:ring-2 focus:ring-cyan-500 outline-none transition-all placeholder-gray-500" oninput="handleSearch(this.value)" />
-                        </div>
-                        <button onclick="switchGroup('local_queue')" class="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2.5 bg-pink-500/20 text-pink-300 border border-pink-500/30 rounded-xl hover:bg-pink-500/30 transition-all font-bold text-sm whitespace-nowrap shadow-sm backdrop-blur-sm" title="الاستماع للمقاطع التي أضفتها أنت">
-                            <i data-lucide="list-music" class="w-4 h-4"></i> قائمتي الخاصة
-                        </button>
+                    <!-- Accordion Container -->
+                    <div id="groups-container" class="flex-1 overflow-y-auto p-4 custom-scrollbar relative z-10">
+                        <!-- Accordions injected here -->
                     </div>
                     
-                    <div id="playlist-container" class="flex-1 overflow-y-auto p-3 space-y-3 custom-scrollbar relative z-10"></div>
                 </div>
                 
             </div>
@@ -442,7 +442,6 @@
 
         // Auto Scroll Logic
         const autoScrollState = {
-            'groups-dropdown-list': { dir: 1, paused: false, pos: 0 },
             'playlist-container': { dir: 1, paused: false, pos: 0 }
         };
 
@@ -589,9 +588,10 @@
         let lastPlayedTrackId = null; 
         let audioLoadTimeout; 
 
-        let isDropdownOpen = false; 
         let isAdmin = localStorage.getItem('radioAdmin') === 'true'; 
         let searchQuery = '';
+        
+        let loadedTracksCount = 100;
 
         const audio = document.getElementById('audio-player');
 
@@ -640,7 +640,6 @@
                     window.hlsPlayer = null;
                 }
 
-                // تم إلغاء استخدام iframes في المشغل الرئيسي بالكامل
                 if (!newSrc || newSrc.trim() === '' || newSrc === 'soundcloud_widget') {
                     return; 
                 }
@@ -806,7 +805,6 @@
                     throw new Error('فشل جلب بيانات الأرشيف.');
                 }
             } else if (isSoundCloud) {
-                // تعديل حصري وجذري: السحب بصيغة MP3 مباشرة من الساوند كلاود لتعمل خصائص الراديو الرئيسية بسلاسة
                 let audioUrl = '';
                 let title = 'مقطع ساوند كلاود';
                 let author = 'ساوند كلاود';
@@ -838,7 +836,7 @@
                         } catch (e) {}
                         finally {
                             pending--;
-                            if (pending === 0 && !resolved) resolve('soundcloud_widget'); // حالة احتياطية لو تعطل السيرفر
+                            if (pending === 0 && !resolved) resolve('soundcloud_widget'); 
                         }
                     });
                 });
@@ -1325,11 +1323,6 @@
         let clickCount = 0;
         let clickTimer;
         document.addEventListener('click', (e) => {
-            if (isDropdownOpen && !e.target.closest('#custom-dropdown-container')) {
-                isDropdownOpen = false;
-                window.renderGroups();
-            }
-
             if (e.target.closest('button') || e.target.closest('input') || e.target.closest('textarea') || e.target.closest('a') || e.target.closest('select') || e.target.closest('iframe')) {
                 return;
             }
@@ -1346,27 +1339,26 @@
             }
         });
 
-        window.toggleDropdown = (e) => {
-            if(e) e.stopPropagation();
-            isDropdownOpen = !isDropdownOpen;
-            window.renderGroups();
-        };
-
         window.handleSearch = function(val) {
             searchQuery = val.toLowerCase().trim();
+            if (searchQuery && !viewingGroupId && groups.length > 0) {
+                viewingGroupId = groups[0].id;
+                window.renderGroups();
+            }
             window.renderPlaylist();
         };
 
         window.getViewingGroup = function() {
             if (viewingGroupId === 'local_queue') {
-                return { id: 'local_queue', name: 'قائمة الاستماع الخاصة', tracks: localQueue, color: '#ec4899', isLocal: true };
+                return { id: 'local_queue', name: 'المفضلة', tracks: localQueue, color: '#ef4444', icon: 'heart', isLocal: true };
             }
-            return groups.find(g => g.id === viewingGroupId) || groups[0];
+            if (!viewingGroupId) return null;
+            return groups.find(g => g.id === viewingGroupId) || null;
         };
 
         window.getPlayingGroup = function() {
             if (playingGroupId === 'local_queue') {
-                return { id: 'local_queue', name: 'قائمة الاستماع الخاصة', tracks: localQueue, color: '#ec4899', isLocal: true };
+                return { id: 'local_queue', name: 'المفضلة', tracks: localQueue, color: '#ef4444', isLocal: true };
             }
             return groups.find(g => g.id === playingGroupId);
         };
@@ -2047,7 +2039,7 @@
                             groups = [{ id: 'main', name: 'الرئيسية', tracks: data.tracks }];
                         }
                         
-                        if (viewingGroupId !== 'local_queue' && !groups.find(g => g.id === viewingGroupId)) {
+                        if (viewingGroupId && viewingGroupId !== 'local_queue' && !groups.find(g => g.id === viewingGroupId)) {
                             viewingGroupId = groups[0] ? groups[0].id : null;
                         }
 
@@ -2320,8 +2312,12 @@
         };
 
         window.switchGroup = (groupId) => {
-            viewingGroupId = groupId;
-            isDropdownOpen = false; 
+            if (viewingGroupId === groupId) {
+                viewingGroupId = null; // إغلاق إذا كان مفتوحاً
+            } else {
+                viewingGroupId = groupId;
+                loadedTracksCount = 100; // إعادة تعيين عدد المقاطع المحملة
+            }
             window.renderGroups();
             window.renderPlaylist();
         };
@@ -2331,7 +2327,6 @@
                 const id = 'group_' + Date.now();
                 groups.push({ id, name, tracks: [] });
                 viewingGroupId = id;
-                isDropdownOpen = false;
                 window.saveToDB();
                 window.renderGroups();
                 window.renderPlaylist();
@@ -2507,62 +2502,60 @@
         };
 
         window.renderGroups = function() {
+            const groupsContainer = document.getElementById('groups-container');
             if (!groups || groups.length === 0 || !groupsContainer) return;
             
-            const viewingGroup = window.getViewingGroup();
-            
-            const toggleColorStyle = viewingGroup.color ? `color: ${viewingGroup.color}; text-shadow: 0 0 5px ${viewingGroup.color}80;` : 'color: #38bdf8; text-shadow: 0 0 5px rgba(56, 189, 248, 0.5);';
-            const toggleBorderStyle = viewingGroup.color ? `border-color: ${viewingGroup.color}66;` : 'border-color: #333;';
-            
-            const toggleHtml = `
-                <button onclick="toggleDropdown(event)" class="w-full flex items-center justify-between bg-black/40 border ${toggleBorderStyle} text-white px-4 py-3 rounded-xl hover:bg-black/60 transition-all focus:outline-none shadow-lg backdrop-blur-sm">
-                    <span class="flex items-center gap-2" style="${toggleColorStyle}">
-                        <i data-lucide="${viewingGroup.isLocal ? 'list-music' : 'folder-open'}" class="w-5 h-5"></i>
-                        <span class="font-bold text-base truncate">${viewingGroup.name}</span>
-                    </span>
-                    <i data-lucide="chevron-down" class="w-5 h-5 text-gray-400 transition-transform duration-300 ${isDropdownOpen ? 'rotate-180' : ''}"></i>
-                </button>
-            `;
+            // إضافة قائمة "المفضلة" كأول قسم مثل الصورة تماماً
+            const allGroups = [
+                { id: 'local_queue', name: 'المفضلة', tracks: localQueue, color: '#ef4444', icon: 'heart', isLocal: true },
+                ...groups.map(g => ({...g, icon: 'folder', color: g.color || '#ffffff'}))
+            ];
 
-            const menuItemsHtml = groups.map((g, index) => {
-                const isEven = index % 2 === 0;
-                const baseBgColor = isEven ? 'rgba(0, 0, 0, 0.2)' : 'rgba(0, 0, 0, 0.4)';
+            const accordionHtml = allGroups.map((g, index) => {
+                const isOpen = viewingGroupId === g.id;
+                const trackCount = g.tracks.length;
+                const color = g.color;
+                
+                const iconSvg = `<i data-lucide="${g.icon}" class="w-5 h-5" style="color: ${color}; fill: ${color};"></i>`;
 
-                const activeStyle = g.color ? `background-color: ${g.color}22; border-right: 3px solid ${g.color}; color: #ffffff; text-shadow: 0 0 5px ${g.color}80;` : 'background-color: rgba(6, 182, 212, 0.1); border-right: 3px solid #06b6d4; color: white; text-shadow: 0 0 5px rgba(6,182,212,0.5);';
-                const inactiveStyle = g.color ? `background-color: ${baseBgColor}; color: ${g.color}; border-right: 3px solid transparent;` : `background-color: ${baseBgColor}; color: #9ca3af; border-right: 3px solid transparent;`;
-                const appliedStyle = (g.id === viewingGroupId) ? activeStyle : inactiveStyle;
+                const adminControls = (isAdmin && !g.isLocal) ? `
+                    <div class="flex items-center gap-1 mr-3" onclick="event.stopPropagation()">
+                        <button onclick="editGroupColor(event, '${g.id}')" class="p-1.5 text-yellow-500 hover:text-yellow-400 hover:bg-yellow-500/10 rounded-lg transition-colors" title="تلوين القسم"><i data-lucide="palette" class="w-4 h-4"></i></button>
+                        <button onclick="editGroup(event, '${g.id}')" class="p-1.5 text-cyan-500 hover:text-cyan-400 hover:bg-cyan-500/10 rounded-lg transition-colors" title="تعديل الاسم"><i data-lucide="edit-2" class="w-4 h-4"></i></button>
+                        ${g.id !== 'main' ? `<button onclick="deleteGroup(event, '${g.id}')" class="p-1.5 text-gray-500 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors" title="حذف المجموعة"><i data-lucide="x" class="w-4 h-4"></i></button>` : ''}
+                    </div>
+                ` : '';
 
                 return `
-                <div class="flex items-center justify-between px-3 py-2 hover:bg-white/5 cursor-pointer border-b border-white/5 last:border-0 transition-colors backdrop-blur-md" style="${appliedStyle}" onclick="switchGroup('${g.id}')">
-                    <span class="font-medium text-xs sm:text-sm truncate flex-1 pl-2">${g.name}</span>
-                    <div class="flex items-center gap-1">
-                        ${isAdmin ? `<button onclick="editGroupColor(event, '${g.id}')" class="p-1.5 text-yellow-500 hover:text-yellow-400 hover:bg-yellow-500/10 rounded-lg transition-colors" title="تلوين القسم"><i data-lucide="palette" class="w-4 h-4"></i></button>` : ''}
-                        ${isAdmin ? `<button onclick="editGroup(event, '${g.id}')" class="p-1.5 text-cyan-500 hover:text-cyan-400 hover:bg-cyan-500/10 rounded-lg transition-colors" title="تعديل الاسم"><i data-lucide="edit-2" class="w-4 h-4"></i></button>` : ''}
-                        ${(isAdmin && g.id !== 'main') ? `<button onclick="deleteGroup(event, '${g.id}')" class="p-1.5 text-gray-500 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors" title="حذف المجموعة"><i data-lucide="x" class="w-4 h-4"></i></button>` : ''}
+                <div class="bg-[#1c2128] rounded-xl border border-[#333] overflow-hidden mb-3 shadow-md flex flex-col transition-all duration-300">
+                    <div class="flex justify-between items-center p-4 cursor-pointer hover:bg-[#252b36] transition-colors" style="border-right: 4px solid ${color};" onclick="switchGroup('${g.id}')">
+                        <div class="flex items-center gap-3">
+                            ${iconSvg}
+                            <span class="font-bold text-gray-100 text-sm sm:text-base">${g.name}</span>
+                            ${adminControls}
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <span class="bg-[#11141a] text-gray-400 text-xs font-bold px-3 py-1.5 rounded-full shadow-inner">${trackCount}</span>
+                            <i data-lucide="chevron-down" class="w-5 h-5 text-gray-500 transition-transform duration-300 ${isOpen ? 'rotate-180 text-cyan-400' : ''}"></i>
+                        </div>
                     </div>
+                    ${isOpen ? `<div id="playlist-container" class="bg-[#111] p-3 border-t border-[#333] max-h-[500px] overflow-y-auto custom-scrollbar"></div>` : ''}
                 </div>
                 `;
             }).join('');
 
-            const dropdownMenuHtml = `
-                <div id="groups-dropdown-list" class="${isDropdownOpen ? 'block' : 'hidden'} absolute top-full left-0 right-0 mt-2 bg-[#1a1a1a] border border-[#333] rounded-xl shadow-[0_10px_40px_rgba(0,0,0,0.8)] z-[60] max-h-40 overflow-y-auto custom-scrollbar origin-top animate-[opacity_0.2s_ease-out]">
-                    ${menuItemsHtml}
-                </div>
-            `;
-
-            groupsContainer.innerHTML = `
-                <div class="relative flex-1 w-full" id="custom-dropdown-container">
-                    ${toggleHtml}
-                    ${dropdownMenuHtml}
-                </div>
-                ${isAdmin ? `
-                    <button onclick="addGroup()" class="flex-shrink-0 flex items-center justify-center w-[52px] h-[52px] rounded-xl bg-black/40 text-cyan-400 border border-cyan-500/30 hover:bg-cyan-500/10 transition-colors shadow-lg backdrop-blur-sm" title="إضافة مجموعة جديدة">
-                        <i data-lucide="plus" class="w-6 h-6"></i>
-                    </button>
-                ` : ''}
-            `;
+            groupsContainer.innerHTML = accordionHtml;
             lucide.createIcons({ root: groupsContainer });
-            window.bindAutoScrollEvents('groups-dropdown-list');
+            
+            const adminAddWrapper = document.getElementById('admin-add-group-wrapper');
+            if (adminAddWrapper) {
+                adminAddWrapper.innerHTML = isAdmin ? `
+                    <button onclick="addGroup()" class="w-full sm:w-auto px-4 py-2.5 bg-[#252b36] hover:bg-[#2a323d] border border-[#333] text-cyan-400 font-bold rounded-xl transition-colors shadow-md flex items-center justify-center gap-2">
+                        <i data-lucide="plus" class="w-4 h-4"></i> إضافة قسم
+                    </button>
+                ` : '';
+                lucide.createIcons({ root: adminAddWrapper });
+            }
         };
 
         window.updatePlayerUI = function() {
@@ -2753,7 +2746,7 @@
             }
 
             if (isPlaying) {
-                if(coverContainer) {                                                
+                if(coverContainer) {                                                                
                     coverContainer.classList.add('border-pink-500', 'shadow-[0_0_30px_rgba(236,72,153,0.3)]', 'animate-spin-slow');
                     if (currentIndex === -2) {
                         coverContainer.classList.replace('border-pink-500', 'border-emerald-500');
@@ -2856,6 +2849,7 @@
 
         window.renderPlaylist = function() {
             const viewingGroup = window.getViewingGroup();
+            const playlistContainer = document.getElementById('playlist-container');
             if (!viewingGroup || !playlistContainer) return;
 
             let tracks = viewingGroup.tracks;
@@ -2869,21 +2863,14 @@
                     item.track.title.toLowerCase().includes(q) || 
                     item.track.author.toLowerCase().includes(q)
                 );
-                if(playlistCount) playlistCount.innerText = `${filteredTracksInfo.length} من ${tracks.length}`;
-            } else {
-                if(playlistCount) playlistCount.innerText = `${tracks.length} مقاطع`;
             }
 
             let extraHeaderHtml = '';
-            if (viewingGroup.isLocal && !isSearching) {
+            if (viewingGroup.isLocal && filteredTracksInfo.length > 0) {
                 extraHeaderHtml = `
-                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 px-3 py-4 bg-pink-500/10 rounded-xl border border-pink-500/20 gap-3 shadow-sm backdrop-blur-sm">
-                        <div class="flex flex-col">
-                            <span class="text-sm text-pink-300 font-bold flex items-center gap-2"><i data-lucide="info" class="w-4 h-4"></i> قائمتي الخاصة</span>
-                            <span class="text-xs text-gray-300 mt-1">يتم حفظ هذه المقاطع في متصفحك الحالي فقط وتعمل بالترتيب التلقائي.</span>
-                        </div>
-                        <button onclick="clearQueue()" class="text-xs px-4 py-2.5 bg-red-500/20 text-red-300 rounded-lg hover:bg-red-500 hover:text-white transition-colors flex items-center justify-center gap-2 font-medium w-full sm:w-auto shadow-sm backdrop-blur-md">
-                            <i data-lucide="trash-2" class="w-4 h-4"></i> مسح القائمة كاملة
+                    <div class="flex justify-end mb-3">
+                        <button onclick="clearQueue()" class="text-xs px-4 py-2 bg-red-500/20 text-red-300 rounded-lg hover:bg-red-500 hover:text-white transition-colors flex items-center gap-2 font-medium shadow-sm">
+                            <i data-lucide="trash-2" class="w-4 h-4"></i> مسح المفضلة بالكامل
                         </button>
                     </div>
                 `;
@@ -2893,14 +2880,17 @@
                 playlistContainer.innerHTML = extraHeaderHtml + `
                     <div class="h-full flex flex-col items-center justify-center text-white/50 space-y-3 p-4 text-center mt-10">
                         <i data-lucide="${isSearching ? 'search-x' : 'music'}" class="w-10 h-10 opacity-50"></i>
-                        <p>${isSearching ? 'لم يتم العثور على مقاطع مطابقة للبحث' : (viewingGroup.isLocal ? 'القائمة الخاصة بك فارغة حالياً. تصفح الأقسام واضغط على علامة ⨁ لإضافة مقاطع هنا.' : (isAdmin ? 'أضف روابط لتكوين مجموعة "' + viewingGroup.name + '"' : 'لا توجد مقاطع في هذه المجموعة حالياً'))}</p>
+                        <p>${isSearching ? 'لم يتم العثور على مقاطع مطابقة للبحث' : (viewingGroup.isLocal ? 'المفضلة فارغة حالياً. تصفح الأقسام واضغط على علامة ⨁ لإضافة مقاطع هنا.' : (isAdmin ? 'أضف روابط لتكوين قسم "' + viewingGroup.name + '"' : 'لا توجد مقاطع في هذا القسم حالياً'))}</p>
                     </div>
                 `;
                 lucide.createIcons({ root: playlistContainer });
                 return;
             }
 
-            const listHtml = filteredTracksInfo.map(({ track, index }, arrayIndex) => {
+            // تطبيق حد التحميل (pagination)
+            const tracksToShow = filteredTracksInfo.slice(0, loadedTracksCount);
+
+            const listHtml = tracksToShow.map(({ track, index }, arrayIndex) => {
                 const isActive = (playingGroupId === viewingGroup.id) && (currentIndex === index);
                 
                 const isEven = arrayIndex % 2 === 0;
@@ -2955,8 +2945,8 @@
                         <i data-lucide="minus-circle" class="w-4 h-4"></i><span class="text-xs font-bold">حذف من قائمتي</span>
                     </button>
                 ` : `
-                    <button onclick="addToQueue(event, '${track.id}')" class="px-3 py-1.5 text-white bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 rounded-lg transition-all flex items-center gap-1.5 shadow-md border border-indigo-400/50 transform hover:scale-105" title="إضافة لقائمتي الخاصة">
-                        <i data-lucide="plus-circle" class="w-4 h-4"></i><span class="text-xs font-bold">إضافة لقائمتي</span>
+                    <button onclick="addToQueue(event, '${track.id}')" class="px-3 py-1.5 text-white bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 rounded-lg transition-all flex items-center gap-1.5 shadow-md border border-indigo-400/50 transform hover:scale-105" title="إضافة للمفضلة">
+                        <i data-lucide="plus-circle" class="w-4 h-4"></i><span class="text-xs font-bold">إضافة للمفضلة</span>
                     </button>
                 `;
 
@@ -2985,9 +2975,23 @@
                 `;
             }).join('');
 
-            playlistContainer.innerHTML = extraHeaderHtml + listHtml;
+            let loadMoreHtml = '';
+            if (filteredTracksInfo.length > loadedTracksCount) {
+                loadMoreHtml = `
+                    <button onclick="loadMoreTracks()" class="w-full mt-4 px-4 py-3 bg-[#222] hover:bg-[#333] border border-[#444] text-cyan-400 font-bold rounded-xl transition-all shadow-md flex items-center justify-center gap-2">
+                        <i data-lucide="chevron-down" class="w-5 h-5"></i> تحميل المزيد من المقاطع...
+                    </button>
+                `;
+            }
+
+            playlistContainer.innerHTML = extraHeaderHtml + listHtml + loadMoreHtml;
             lucide.createIcons({ root: playlistContainer });
             window.bindAutoScrollEvents('playlist-container');
+        };
+
+        window.loadMoreTracks = function() {
+            loadedTracksCount += 100;
+            window.renderPlaylist();
         };
 
         if (linkInput) {
