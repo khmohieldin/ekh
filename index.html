@@ -19,18 +19,20 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="راديو خالد">
-    <link rel="manifest" href="manifest.json">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="راديو خالد">
+    <link rel="manifest" href="./manifest.json">
+    <link rel="icon" type="image/png" href="https://i.ibb.co/sp6xBm7K/Picsart-26-03-30-18-16-08-102.png">
     
     <script>
-        // تفعيل Service Worker الحقيقي للتطبيق بطريقة احترافية وآمنة
         if ('serviceWorker' in navigator && (window.location.protocol === 'https:' || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('./sw.js')
                     .then(reg => console.log('تم تفعيل خدمة التطبيق (PWA) بنجاح', reg.scope))
-                    .catch(err => console.warn('لم يتم العثور على ملف sw.js أو حدث خطأ:', err));
+                    .catch(err => console.warn('تنبيه: ملف sw.js غير جاهز أو يوجد خطأ في المسار:', err));
             });
-        } else {
-            console.log('ميزة Service Worker تحتاج إلى اتصال آمن (HTTPS) أو بيئة تطوير محلي (localhost).');
         }
     </script>
 
@@ -445,6 +447,9 @@
                             <button onclick="openMessagesModal()" type="button" class="text-xs sm:text-sm px-4 py-2 bg-[#222] text-blue-400 border border-blue-500/30 rounded-xl hover:bg-blue-500/10 transition-colors flex items-center gap-2">
                                 <i data-lucide="inbox" class="w-4 h-4"></i> رسائل الزوار
                             </button>
+                            <button onclick="testNewTracksPopup()" type="button" class="text-xs sm:text-sm px-4 py-2 bg-[#222] text-emerald-400 border border-emerald-500/30 rounded-xl hover:bg-emerald-500/10 transition-colors flex items-center gap-2">
+                                <i data-lucide="flask-conical" class="w-4 h-4"></i> تجربة الإشعارات
+                            </button>
                         </div>
                     </div>
 
@@ -782,6 +787,13 @@
                     }, 300);
                 };
             }
+        };
+
+        window.testNewTracksPopup = function() {
+            const tenDaysAgo = Date.now() - (10 * 24 * 60 * 60 * 1000);
+            localStorage.setItem('last_visit_time_' + appId, tenDaysAgo);
+            hasCheckedNewTracks = false; 
+            window.checkAndShowNewTracks();
         };
 
         window.toggleQuranMenu = function(e) {
