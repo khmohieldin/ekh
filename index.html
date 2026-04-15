@@ -230,25 +230,25 @@
             </div>
 
             <!-- أزرار الإذاعات المباشرة -->
-            <div class="flex items-center gap-3 w-full sm:w-auto overflow-x-auto radio-buttons-scroll vintage-shelf pb-2 sm:pb-0">
-                <button id="btn-quran-menu" onclick="toggleQuranMenu(event)" class="flex items-center gap-2 px-3 py-2 sm:px-4 sm:py-2 vintage-btn rounded-md shrink-0 whitespace-nowrap">
-                    <i data-lucide="book-open" class="w-4 h-4 sm:w-5 sm:h-5"></i>
-                    <span class="text-xs sm:text-sm font-bold">القرآن الكريم</span>
-                    <i data-lucide="chevron-down" class="w-3 h-3 mr-1"></i>
-                </button>
-                <button onclick="playDramaMixRadio()" class="flex items-center gap-2 px-3 py-2 sm:px-4 sm:py-2 vintage-btn rounded-md shrink-0 whitespace-nowrap">
-                    <i data-lucide="clapperboard" class="w-4 h-4 sm:w-5 sm:h-5"></i>
-                    <span class="text-xs sm:text-sm font-bold">دراما ميكس</span>
-                </button>
-                <button onclick="playNewsRadio()" class="flex items-center gap-2 px-3 py-2 sm:px-4 sm:py-2 vintage-btn rounded-md shrink-0 whitespace-nowrap">
-                    <i data-lucide="newspaper" class="w-4 h-4 sm:w-5 sm:h-5"></i>
-                    <span class="text-xs sm:text-sm font-bold">راديو الأخبار</span>
-                </button>
-                <button onclick="playMonteCarloRadio()" class="flex items-center gap-2 px-3 py-2 sm:px-4 sm:py-2 vintage-btn rounded-md shrink-0 whitespace-nowrap">
-                    <i data-lucide="globe" class="w-4 h-4 sm:w-5 sm:h-5"></i>
-                    <span class="text-xs sm:text-sm font-bold">مونت كارلو</span>
-                </button>
-            </div>
+            <div class="flex items-center gap-1.5 sm:gap-2 w-full sm:w-auto flex-wrap sm:flex-nowrap justify-center vintage-shelf pb-2 sm:pb-0">
+<button id="btn-quran-menu" onclick="toggleQuranMenu(event)" class="flex items-center gap-1.5 px-2.5 py-1.5 sm:px-3 sm:py-2 vintage-btn rounded-md shrink-0 whitespace-nowrap">
+<i data-lucide="book-open" class="w-4 h-4"></i>
+<span class="text-[11px] sm:text-xs font-bold">القرآن</span>
+<i data-lucide="chevron-down" class="w-3 h-3"></i>
+</button>
+<button onclick="playDramaMixRadio()" class="flex items-center gap-1.5 px-2.5 py-1.5 sm:px-3 sm:py-2 vintage-btn rounded-md shrink-0 whitespace-nowrap">
+<i data-lucide="clapperboard" class="w-4 h-4"></i>
+<span class="text-[11px] sm:text-xs font-bold">دراما</span>
+</button>
+<button onclick="playNewsRadio()" class="flex items-center gap-1.5 px-2.5 py-1.5 sm:px-3 sm:py-2 vintage-btn rounded-md shrink-0 whitespace-nowrap">
+<i data-lucide="newspaper" class="w-4 h-4"></i>
+<span class="text-[11px] sm:text-xs font-bold">الأخبار</span>
+</button>
+<button onclick="playMonteCarloRadio()" class="flex items-center gap-1.5 px-2.5 py-1.5 sm:px-3 sm:py-2 vintage-btn rounded-md shrink-0 whitespace-nowrap">
+<i data-lucide="globe" class="w-4 h-4"></i>
+<span class="text-[11px] sm:text-xs font-bold">مونت كارلو</span>
+</button>
+</div>
         </header>
 
         <!-- شريط الإحصائيات المتحرك -->
@@ -2642,10 +2642,15 @@
                 const isOpen = viewingGroupId === g.id;
                 const trackCount = g.tracks.length;
                 const color = g.color;
-                
-                const iconSvg = `<i data-lucide="${g.icon}" class="w-5 h-5" style="color: ${color}; fill: ${color};"></i>`;
 
-                const adminControls = (isAdmin && !g.isLocal) ? `
+            const iconSvg = `
+                <div class="relative flex items-center justify-center w-9 h-9 rounded-lg border-2 border-[#1a0f0a] shadow-[inset_0_2px_5px_rgba(255,255,255,0.15),inset_0_-3px_5px_rgba(0,0,0,0.9),0_4px_6px_rgba(0,0,0,0.6)] bg-gradient-to-br from-[#5c3a21] to-[#2c1810] overflow-hidden shrink-0 group-hover:scale-105 transition-transform">
+                    <div class="absolute inset-0 bg-gradient-to-tr from-transparent via-[rgba(255,255,255,0.2)] to-transparent pointer-events-none rounded-lg"></div>
+                    <i data-lucide="${g.icon}" class="w-5 h-5 relative z-10" style="color: ${color}; filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.9)); stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round;"></i>
+                </div>
+            `;
+
+            const adminControls = (isAdmin && !g.isLocal) ? `
                     <div class="flex items-center gap-1 mr-3" onclick="event.stopPropagation()">
                         <button onclick="editGroupColor(event, '${g.id}')" class="p-1.5 text-yellow-500 hover:text-yellow-400 hover:bg-yellow-500/10 rounded-lg transition-colors" title="تلوين القسم"><i data-lucide="palette" class="w-4 h-4"></i></button>
                         <button onclick="editGroup(event, '${g.id}')" class="p-1.5 text-cyan-500 hover:text-cyan-400 hover:bg-cyan-500/10 rounded-lg transition-colors" title="تعديل الاسم"><i data-lucide="edit-2" class="w-4 h-4"></i></button>
