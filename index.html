@@ -566,9 +566,10 @@
             'playlist-container': { dir: 1, paused: false, pos: 0 }
         };
 
-        function stepAutoScroll() {
-            requestAnimationFrame(stepAutoScroll);
-            Object.keys(autoScrollState).forEach(id => {
+                function stepAutoScroll() {
+            requestAnimationFrame(stepAutoScroll);
+            if (document.hidden) return;
+            Object.keys(autoScrollState).forEach(id => {
                 const el = document.getElementById(id);
                 if (!el) return;
                 const state = autoScrollState[id];
@@ -914,15 +915,18 @@
             }
         };
 
-        window.safeChangeTrack = function(newSrc) {
-            if(audio) {
-                audio.pause();
-                audio.removeAttribute('src'); 
-                
-                if(window.hlsPlayer) {
-                    window.hlsPlayer.destroy();
-                    window.hlsPlayer = null;
-                }
+                window.safeChangeTrack = function(newSrc) {
+            if(audio) {
+                audio.pause();
+                audio.removeAttribute('src'); 
+                audio.load();
+                
+                if(window.hlsPlayer) {
+                    window.hlsPlayer.stopLoad();
+                    window.hlsPlayer.detachMedia();
+                    window.hlsPlayer.destroy();
+                    window.hlsPlayer = null;
+                }
 
                 if (!newSrc || newSrc.trim() === '' || newSrc === 'soundcloud_widget') {
                     return; 
@@ -1282,12 +1286,20 @@
             }, playlistBgColor);
         };
 
-        window.autoRefreshTrack = async function(track, group, index) {
-            window.showToast('جاري تحضير وتحديث المقطع للتشغيل المباشر... 🔄', 'info');
-            const titleEl = document.getElementById('track-title');
-            if (titleEl) titleEl.innerText = '🔄 جاري التحضير التلقائي...';
-            
-            try {
+                window.autoRefreshTrack = async function(track, group, index) {
+            track.refreshAttempts = (track.refreshAttempts || 0) + 1;
+            if (track.refreshAttempts > 3) {
+                window.showToast('فشل التحديث بعد عدة محاولات، الرابط معطل.', 'error');
+                track.isRefreshing = false;
+                const titleEl = document.getElementById('track-title');
+                if (titleEl) titleEl.innerText = '❌ خطأ في التشغيل';
+                return;
+            }
+            window.showToast('جاري تحضير وتحديث المقطع للتشغيل المباشر... 🔄', 'info');
+            const titleEl = document.getElementById('track-title');
+            if (titleEl) titleEl.innerText = '🔄 جاري التحضير التلقائي...';
+            
+            try {
                 const refreshedTracks = await window.fetchLinkInfo(track.url);
                 if (refreshedTracks && refreshedTracks.length > 0) {
                     let newAudioUrl = null;
@@ -1301,9 +1313,10 @@
                         newAudioUrl = refreshedTracks[0].audioUrl;
                     }
 
-                    if (newAudioUrl && newAudioUrl !== 'soundcloud_widget') {
-                        track.audioUrl = newAudioUrl;
-                        track.isRefreshing = false;
+                                        if (newAudioUrl && newAudioUrl !== 'soundcloud_widget') {
+                        track.audioUrl = newAudioUrl;
+                        track.isRefreshing = false;
+                        track.refreshAttempts = 0;
                         
                         if (group && !group.isLocal && isAdmin && user) window.saveToDB(); 
                         
@@ -1605,24 +1618,27 @@
             window.saveToDB();
         };
 
-        let clickCount = 0;
-        let clickTimer;
-        document.addEventListener('click', (e) => {
-            if (e.target.closest('button') || e.target.closest('input') || e.target.closest('textarea') || e.target.closest('a') || e.target.closest('select') || e.target.closest('iframe')) {
-                return;
-            }
-            
-            clickCount++;
-            clearTimeout(clickTimer);
-            if (clickCount >= 5) {
-                if (!isAdmin) {
-                    window.openAdminLoginModal();
-                }
-                clickCount = 0;
-            } else {
-                clickTimer = setTimeout(() => { clickCount = 0; }, 1000); 
-            }
-        });
+                let clickCount = 0;
+        let clickTimer;
+        const headerElement = document.querySelector('header');
+        if (headerElement) {
+            headerElement.addEventListener('click', (e) => {
+                if (e.target.closest('button') || e.target.closest('input') || e.target.closest('a')) {
+                    return;
+                }
+                
+                clickCount++;
+                clearTimeout(clickTimer);
+                if (clickCount >= 5) {
+                    if (!isAdmin) {
+                        window.openAdminLoginModal();
+                    }
+                    clickCount = 0;
+                } else {
+                    clickTimer = setTimeout(() => { clickCount = 0; }, 1000); 
+                }
+            });
+        }
 
         window.handleSearch = function(val) {
             searchQuery = val.toLowerCase().trim();
@@ -2168,13 +2184,19 @@
 
                     gainNode = audioCtx.createGain();
                     
-                    analyserNode = audioCtx.createAnalyser();
-                    analyserNode.fftSize = 512; 
+                                        analyserNode = audioCtx.createAnalyser();
+                    analyserNode.fftSize = 512; 
 
-                    if(sourceNode) sourceNode.connect(compressorNode);
-                    compressorNode.connect(gainNode);
-                    gainNode.connect(analyserNode);
-                    analyserNode.connect(audioCtx.destination);
+                    if(sourceNode) {
+                        try {
+                            sourceNode.connect(compressorNode);
+                            compressorNode.connect(gainNode);
+                            gainNode.connect(analyserNode);
+                            analyserNode.connect(audioCtx.destination);
+                        } catch(e) {
+                            console.warn("تم تعطيل محلل الطيف مؤقتاً بسبب قيود CORS على هذا الرابط.");
+                        }
+                    }
 
                     gainNode.gain.value = volume;
                 } catch (e) {
@@ -2198,11 +2220,20 @@
             if (timestamp - lastDrawTime < 33) return;
             lastDrawTime = timestamp;
             
-            const bufferLength = analyserNode.frequencyBinCount;
-            const dataArray = new Uint8Array(bufferLength);
-            analyserNode.getByteFrequencyData(dataArray);
+                        const bufferLength = analyserNode.frequencyBinCount;
+            const dataArray = new Uint8Array(bufferLength);
+            analyserNode.getByteFrequencyData(dataArray);
 
-            canvasCtx.clearRect(0, 0, visualizerCanvas.width, visualizerCanvas.height);
+            let isSilent = true;
+            for(let i=0; i<dataArray.length; i++) { if(dataArray[i] > 0) { isSilent = false; break; } }
+           
+            if (isSilent && isPlaying && currentIndex < -1) {
+                for(let i=0; i<dataArray.length; i++) {
+                    dataArray[i] = Math.random() * 80 + 20;
+                }
+            }
+
+            canvasCtx.clearRect(0, 0, visualizerCanvas.width, visualizerCanvas.height);
 
             if (!isPlaying && audio && audio.paused) {
                 canvasCtx.fillStyle = 'rgba(6, 182, 212, 0.3)';
