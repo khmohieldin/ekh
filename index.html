@@ -1,11 +1,11 @@
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>راديو خالد</title>
-
+    
     <!-- SEO & Social Media Meta Tags (Open Graph) -->
     <meta name="description" content="راديو خالد - رحلة الى الزمن الجميل. استمع لأجمل المسلسلات والمقاطع الإذاعية.">
     <meta property="og:title" content="راديو خالد">
@@ -13,26 +13,26 @@
     <meta property="og:image" content="https://i.ibb.co/sp6xBm7K/Picsart-26-03-30-18-16-08-102.png">
     <meta property="og:type" content="website">
     <meta name="twitter:card" content="summary_large_image">
+    
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
 
     <!-- إعدادات PWA لتثبيت التطبيق بايقونة أصلية -->
     <meta name="theme-color" content="#ec4899">
     <link rel="apple-touch-icon" href="https://i.ibb.co/sp6xBm7K/Picsart-26-03-30-18-16-08-102.png">
-    <meta name="mobile-web-app-capable" content="yes">
+        <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="راديو خالد">
     <link rel="manifest" href="./manifest.json">
     <link rel="icon" type="image/png" href="https://i.ibb.co/sp6xBm7K/Picsart-26-03-30-18-16-08-102.png">
-
-    <script>
+    
+        <script>
         if ('serviceWorker' in navigator && (window.location.protocol === 'https:' || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('./sw.js?v=3').then(reg => {
                     console.log('PWA Ready');
                     if (reg.waiting) {
-                        reg.waiting.postMessage({
-                            type: 'SKIP_WAITING'
-                        });
+                        reg.waiting.postMessage({ type: 'SKIP_WAITING' });
                     }
                     reg.onupdatefound = () => {
                         const installingWorker = reg.installing;
@@ -55,50 +55,33 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     <!-- مكتبة HLS.js لتشغيل ملفات m3u8 -->
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-
+    
     <style>
         /* التعديل على السكرول ليصبح عريضاً وواضحاً ومميزاً */
-        .custom-scrollbar::-webkit-scrollbar {
-            width: 12px;
-            height: 12px;
+        .custom-scrollbar::-webkit-scrollbar { 
+            width: 12px; 
+            height: 12px; 
         }
-
-        .custom-scrollbar::-webkit-scrollbar-track {
-            background: #1a0f0a;
-            border-radius: 10px;
-            box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.8);
+        .custom-scrollbar::-webkit-scrollbar-track { 
+            background: #1a0f0a; 
+            border-radius: 10px; 
+            box-shadow: inset 0 0 5px rgba(0,0,0,0.8);
         }
-
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: linear-gradient(180deg, #d4af37, #996515);
-            border-radius: 10px;
-            border: 2px solid #2b1810;
-            box-shadow: inset 0 2px 2px rgba(255, 255, 255, 0.4);
+        .custom-scrollbar::-webkit-scrollbar-thumb { 
+            background: linear-gradient(180deg, #d4af37, #996515); 
+            border-radius: 10px; 
+            border: 2px solid #2b1810; 
+            box-shadow: inset 0 2px 2px rgba(255,255,255,0.4);
         }
-
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-            background: linear-gradient(180deg, #f3e5ab, #d4af37);
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { 
+            background: linear-gradient(180deg, #f3e5ab, #d4af37); 
         }
 
         /* سكرول أزرار الإذاعات العلوية */
-        .radio-buttons-scroll::-webkit-scrollbar {
-            height: 6px;
-        }
-
-        .radio-buttons-scroll::-webkit-scrollbar-track {
-            background: #1a0f0a;
-            border-radius: 10px;
-            box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.8);
-        }
-
-        .radio-buttons-scroll::-webkit-scrollbar-thumb {
-            background: linear-gradient(90deg, #d4af37, #996515);
-            border-radius: 10px;
-        }
-
-        .radio-buttons-scroll::-webkit-scrollbar-thumb:hover {
-            background: linear-gradient(90deg, #f3e5ab, #d4af37);
-        }
+        .radio-buttons-scroll::-webkit-scrollbar { height: 6px; }
+        .radio-buttons-scroll::-webkit-scrollbar-track { background: #1a0f0a; border-radius: 10px; box-shadow: inset 0 0 5px rgba(0,0,0,0.8); }
+        .radio-buttons-scroll::-webkit-scrollbar-thumb { background: linear-gradient(90deg, #d4af37, #996515); border-radius: 10px; }
+        .radio-buttons-scroll::-webkit-scrollbar-thumb:hover { background: linear-gradient(90deg, #f3e5ab, #d4af37); }
 
         .custom-range::-webkit-slider-thumb {
             -webkit-appearance: none;
@@ -108,195 +91,139 @@
             background: radial-gradient(circle at 30% 30%, #f3e5ab, #d4af37, #996515);
             border: 2px solid #2b1810;
             cursor: pointer;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.8), inset 0 2px 2px rgba(255, 255, 255, 0.6);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.8), inset 0 2px 2px rgba(255,255,255,0.6);
             transition: transform 0.1s;
         }
-
         .custom-range::-webkit-slider-thumb:hover {
             transform: scale(1.15);
             background: radial-gradient(circle at 30% 30%, #ffffff, #f3e5ab, #d4af37);
         }
 
-        @keyframes spin-slow {
-            100% {
-                transform: rotate(360deg);
-            }
-        }
-
-        .animate-spin-slow {
-            animation: spin-slow 10s linear infinite;
-        }
+        @keyframes spin-slow { 100% { transform: rotate(360deg); } }
+        .animate-spin-slow { animation: spin-slow 10s linear infinite; }
 
         @keyframes scroll-ltr {
-            0% {
-                transform: translateX(-100%);
-            }
-
-            100% {
-                transform: translateX(100vw);
-            }
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100vw); }
         }
-
         .animate-scroll-ltr {
             display: inline-block;
             white-space: nowrap;
             animation: scroll-ltr 30s linear infinite;
             will-change: transform;
         }
-
-        .animate-scroll-ltr:hover {
-            animation-play-state: paused;
-        }
+        .animate-scroll-ltr:hover { animation-play-state: paused; }
 
         @media all and (display-mode: standalone) {
-            .install-btn-container {
-                display: none !important;
-            }
+            .install-btn-container { display: none !important; }
         }
 
-        .drag-over {
-            border-color: #06b6d4 !important;
-            background-color: rgba(6, 182, 212, 0.1) !important;
-        }
-
-        .dragging {
-            opacity: 0.5;
-            background-color: #222;
-        }
+        .drag-over { border-color: #06b6d4 !important; background-color: rgba(6, 182, 212, 0.1) !important; }
+        .dragging { opacity: 0.5; background-color: #222; }
 
         /* خصائص الظل للنصوص */
-        .text-shadow {
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-        }
-
-        .text-shadow-sm {
-            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
-        }
+        .text-shadow { text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
+        .text-shadow-sm { text-shadow: 0 1px 2px rgba(0,0,0,0.5); }
 
         /* ستايلات الراديو القديم (خشب، زجاج، أزرار نحاسية) */
         .wood-panel {
             background-color: #3e2723;
-            background-image:
-                repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.03) 0px, rgba(255, 255, 255, 0.03) 1px, transparent 1px, transparent 10px),
-                repeating-linear-gradient(45deg, rgba(0, 0, 0, 0.15) 0px, rgba(0, 0, 0, 0.15) 2px, transparent 2px, transparent 6px),
+            background-image: 
+                repeating-linear-gradient(90deg, rgba(255,255,255,0.03) 0px, rgba(255,255,255,0.03) 1px, transparent 1px, transparent 10px),
+                repeating-linear-gradient(45deg, rgba(0,0,0,0.15) 0px, rgba(0,0,0,0.15) 2px, transparent 2px, transparent 6px), 
                 linear-gradient(to bottom, #4e342e, #3e2723, #21110b);
-            box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.9), inset 0 0 10px rgba(0, 0, 0, 0.7), 0 20px 40px rgba(0, 0, 0, 0.95);
+            box-shadow: inset 0 0 30px rgba(0,0,0,0.9), inset 0 0 10px rgba(0,0,0,0.7), 0 20px 40px rgba(0,0,0,0.95);
             border: 6px solid #1a0f0a;
             border-radius: 16px;
             position: relative;
         }
-
         .wood-panel::before {
             content: '';
             position: absolute;
-            top: 6px;
-            left: 6px;
-            right: 6px;
-            bottom: 6px;
-            border: 2px solid rgba(255, 255, 255, 0.05);
+            top: 6px; left: 6px; right: 6px; bottom: 6px;
+            border: 2px solid rgba(255,255,255,0.05);
             border-radius: 10px;
             pointer-events: none;
-            box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.6);
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.6);
             z-index: 0;
         }
-
         .glass-hollow {
             background: linear-gradient(135deg, #1f140e 0%, #0a0502 100%);
-            box-shadow: inset 0 8px 25px rgba(0, 0, 0, 1), inset 0 0 15px rgba(255, 160, 0, 0.15), inset 0 1px 3px rgba(255, 255, 255, 0.15), 0 3px 0 rgba(255, 255, 255, 0.08);
+            box-shadow: inset 0 8px 25px rgba(0,0,0,1), inset 0 0 15px rgba(255, 160, 0, 0.15), inset 0 1px 3px rgba(255,255,255,0.15), 0 3px 0 rgba(255,255,255,0.08);
             position: relative;
             overflow: hidden;
             border: 3px solid #080402;
             border-radius: 8px;
         }
-
         .glass-hollow::before {
             content: '';
             position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: repeating-linear-gradient(to bottom, rgba(0, 0, 0, 0.1) 0px, rgba(0, 0, 0, 0.1) 2px, transparent 2px, transparent 4px);
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: repeating-linear-gradient(to bottom, rgba(0,0,0,0.1) 0px, rgba(0,0,0,0.1) 2px, transparent 2px, transparent 4px);
             pointer-events: none;
             z-index: 1;
         }
-
         .glass-hollow::after {
             content: '';
             position: absolute;
-            top: -20%;
-            left: -10%;
-            right: -10%;
-            height: 60%;
-            background: linear-gradient(to bottom, rgba(255, 255, 255, 0.15), transparent);
+            top: -20%; left: -10%; right: -10%; height: 60%;
+            background: linear-gradient(to bottom, rgba(255,255,255,0.15), transparent);
             pointer-events: none;
             transform: rotate(-5deg);
             border-radius: 50% 50% 100% 100%;
             z-index: 2;
         }
-
         .vintage-btn {
             background: linear-gradient(to bottom, #f3e5ab, #d4af37, #996515);
             border: 2px solid #2b1810;
-            box-shadow: inset 0 2px 5px rgba(255, 255, 255, 0.8), inset 0 -2px 5px rgba(0, 0, 0, 0.4), 0 4px 0 #4a3018, 0 8px 15px rgba(0, 0, 0, 0.8);
+            box-shadow: inset 0 2px 5px rgba(255,255,255,0.8), inset 0 -2px 5px rgba(0,0,0,0.4), 0 4px 0 #4a3018, 0 8px 15px rgba(0,0,0,0.8);
             color: #1a0f0a !important;
-            text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+            text-shadow: 0 1px 0 rgba(255,255,255,0.5);
             transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
             font-weight: 900;
             text-transform: uppercase;
             letter-spacing: 0.5px;
             border-radius: 6px;
         }
-
         .vintage-btn:active {
             transform: translateY(4px);
-            box-shadow: inset 0 2px 5px rgba(255, 255, 255, 0.6), inset 0 -1px 2px rgba(0, 0, 0, 0.4), 0 0 0 #4a3018, 0 2px 5px rgba(0, 0, 0, 0.8);
+            box-shadow: inset 0 2px 5px rgba(255,255,255,0.6), inset 0 -1px 2px rgba(0,0,0,0.4), 0 0 0 #4a3018, 0 2px 5px rgba(0,0,0,0.8);
             background: linear-gradient(to bottom, #d4af37, #996515);
         }
-
         .vintage-btn:hover {
             filter: brightness(1.1);
         }
-
         .vintage-shelf {
             background: linear-gradient(to bottom, #5c3a21, #3e2723, #1a0f0a);
             border-bottom: 10px solid #0f0805;
             border-top: 2px solid #8c5a38;
-            box-shadow: inset 0 4px 10px rgba(0, 0, 0, 0.5), 0 15px 25px rgba(0, 0, 0, 0.95);
+            box-shadow: inset 0 4px 10px rgba(0,0,0,0.5), 0 15px 25px rgba(0,0,0,0.95);
             padding: 16px 10px;
             border-radius: 8px;
             position: relative;
         }
-
         .vintage-shelf::after {
             content: '';
             position: absolute;
-            bottom: -10px;
-            left: 5%;
-            right: 5%;
-            height: 10px;
-            background: linear-gradient(to right, transparent, rgba(0, 0, 0, 0.8), transparent);
+            bottom: -10px; left: 5%; right: 5%; height: 10px;
+            background: linear-gradient(to right, transparent, rgba(0,0,0,0.8), transparent);
             filter: blur(4px);
         }
-
         body {
             background-color: #0d0704;
-            background-image:
+            background-image: 
                 radial-gradient(circle at 50% 30%, #3e2415 0%, #0a0502 80%),
-                repeating-linear-gradient(45deg, rgba(0, 0, 0, 0.03) 0px, rgba(0, 0, 0, 0.03) 1px, transparent 1px, transparent 10px);
+                repeating-linear-gradient(45deg, rgba(0,0,0,0.03) 0px, rgba(0,0,0,0.03) 1px, transparent 1px, transparent 10px);
             font-family: 'Georgia', 'Times New Roman', serif;
         }
     </style>
 </head>
-
 <body class="min-h-screen text-amber-50 selection:bg-amber-900/50 flex flex-col">
 
     <!-- شاشة الترحيب لتشغيل تتر البداية -->
     <div id="intro-overlay" class="fixed inset-0 bg-[#0a0a0a] bg-opacity-95 z-[100] hidden flex-col items-center justify-center backdrop-blur-md transition-opacity duration-500">
         <div class="w-32 h-32 rounded-full bg-gradient-to-tr from-cyan-400 to-pink-500 flex items-center justify-center mb-8 animate-pulse cursor-pointer shadow-[0_0_50px_rgba(236,72,153,0.6)] hover:scale-105 transition-transform" onclick="startIntro()">
-            <svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-white ml-2">
-                <polygon points="6 3 20 12 6 21 6 3"></polygon>
-            </svg>
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-white ml-2"><polygon points="6 3 20 12 6 21 6 3"></polygon></svg>
         </div>
         <h2 class="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-cyan-300 to-pink-400 mb-3 text-center">مرحباً بك في راديو خالد</h2>
         <p class="text-gray-400 text-lg">اضغط للبدء والاستماع للزمن الجميل</p>
@@ -337,7 +264,7 @@
     <audio id="audio-player" crossorigin="anonymous"></audio>
 
     <div class="max-w-4xl mx-auto p-4 sm:p-6 lg:p-8 space-y-6 flex-grow w-full">
-
+        
         <!-- الترويسة -->
         <header class="flex flex-col sm:flex-row items-start sm:items-center justify-between pb-4 border-b border-gray-800 gap-4">
             <div class="flex items-center gap-4 glass-hollow px-4 py-3 rounded-2xl w-full sm:w-auto">
@@ -366,24 +293,24 @@
 
             <!-- أزرار الإذاعات المباشرة -->
             <div class="flex items-center gap-1.5 sm:gap-2 w-full sm:w-auto flex-wrap sm:flex-nowrap justify-center vintage-shelf pb-2 sm:pb-0">
-                <button id="btn-quran-menu" onclick="toggleQuranMenu(event)" class="flex items-center gap-1.5 px-2.5 py-1.5 sm:px-3 sm:py-2 vintage-btn rounded-md shrink-0 whitespace-nowrap">
-                    <i data-lucide="book-open" class="w-4 h-4"></i>
-                    <span class="text-[11px] sm:text-xs font-bold">القرآن</span>
-                    <i data-lucide="chevron-down" class="w-3 h-3"></i>
-                </button>
-                <button onclick="playDramaMixRadio()" class="flex items-center gap-1.5 px-2.5 py-1.5 sm:px-3 sm:py-2 vintage-btn rounded-md shrink-0 whitespace-nowrap">
-                    <i data-lucide="clapperboard" class="w-4 h-4"></i>
-                    <span class="text-[11px] sm:text-xs font-bold">دراما</span>
-                </button>
-                <button onclick="playNewsRadio()" class="flex items-center gap-1.5 px-2.5 py-1.5 sm:px-3 sm:py-2 vintage-btn rounded-md shrink-0 whitespace-nowrap">
-                    <i data-lucide="newspaper" class="w-4 h-4"></i>
-                    <span class="text-[11px] sm:text-xs font-bold">الأخبار</span>
-                </button>
-                <button onclick="playMonteCarloRadio()" class="flex items-center gap-1.5 px-2.5 py-1.5 sm:px-3 sm:py-2 vintage-btn rounded-md shrink-0 whitespace-nowrap">
-                    <i data-lucide="globe" class="w-4 h-4"></i>
-                    <span class="text-[11px] sm:text-xs font-bold">مونت كارلو</span>
-                </button>
-            </div>
+<button id="btn-quran-menu" onclick="toggleQuranMenu(event)" class="flex items-center gap-1.5 px-2.5 py-1.5 sm:px-3 sm:py-2 vintage-btn rounded-md shrink-0 whitespace-nowrap">
+<i data-lucide="book-open" class="w-4 h-4"></i>
+<span class="text-[11px] sm:text-xs font-bold">القرآن</span>
+<i data-lucide="chevron-down" class="w-3 h-3"></i>
+</button>
+<button onclick="playDramaMixRadio()" class="flex items-center gap-1.5 px-2.5 py-1.5 sm:px-3 sm:py-2 vintage-btn rounded-md shrink-0 whitespace-nowrap">
+<i data-lucide="clapperboard" class="w-4 h-4"></i>
+<span class="text-[11px] sm:text-xs font-bold">دراما</span>
+</button>
+<button onclick="playNewsRadio()" class="flex items-center gap-1.5 px-2.5 py-1.5 sm:px-3 sm:py-2 vintage-btn rounded-md shrink-0 whitespace-nowrap">
+<i data-lucide="newspaper" class="w-4 h-4"></i>
+<span class="text-[11px] sm:text-xs font-bold">الأخبار</span>
+</button>
+<button onclick="playMonteCarloRadio()" class="flex items-center gap-1.5 px-2.5 py-1.5 sm:px-3 sm:py-2 vintage-btn rounded-md shrink-0 whitespace-nowrap">
+<i data-lucide="globe" class="w-4 h-4"></i>
+<span class="text-[11px] sm:text-xs font-bold">مونت كارلو</span>
+</button>
+</div>
         </header>
 
         <!-- شريط الإحصائيات المتحرك -->
@@ -396,19 +323,19 @@
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-
+            
             <!-- القسم الأيمن: المشغل والتحكم -->
             <div class="lg:col-span-5 space-y-6">
                 <div class="wood-panel rounded-3xl p-6 shadow-2xl relative overflow-hidden">
                     <div class="absolute inset-0 opacity-20 mix-blend-multiply pointer-events-none" style="background-image: radial-gradient(#000 2px, transparent 2px); background-size: 8px 8px; z-index: 0;"></div>
-
+                    
                     <div id="playing-glow" class="hidden">
                         <div class="absolute top-0 right-0 w-48 h-48 bg-amber-500/20 blur-[60px] rounded-full pointer-events-none"></div>
                         <div class="absolute bottom-0 left-0 w-48 h-48 bg-orange-600/20 blur-[60px] rounded-full pointer-events-none"></div>
                     </div>
-
+                    
                     <div class="relative z-10 flex flex-col items-center text-center space-y-6">
-
+                        
                         <canvas id="visualizer" class="w-full h-24 mb-4 transition-opacity duration-500 opacity-0" width="800" height="96" title="محلل الطيف الصوتي"></canvas>
 
                         <div id="cover-container" class="w-40 h-40 rounded-full border-4 border-gray-800 flex items-center justify-center bg-black transition-all duration-500 overflow-hidden">
@@ -462,16 +389,14 @@
                             </button>
 
                             <button id="btn-play-pause" class="w-16 h-16 rounded-full vintage-btn flex items-center justify-center transition-all disabled:opacity-50" title="تشغيل / إيقاف">
-                                <svg id="svg-play" width="32" height="32" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ml-1">
-                                    <polygon points="6 3 20 12 6 21 6 3"></polygon>
-                                </svg>
+                                <svg id="svg-play" width="32" height="32" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ml-1"><polygon points="6 3 20 12 6 21 6 3"></polygon></svg>
                             </button>
 
                             <button id="btn-prev" class="p-3 text-gray-300 hover:text-white disabled:opacity-30 disabled:hover:text-gray-300 transition-colors" disabled>
                                 <i data-lucide="skip-back" class="w-7 h-7"></i>
                             </button>
                         </div>
-
+                        
                         <div id="download-container" class="pt-5 mt-2 border-t border-gray-800 w-full hidden">
                             <button id="btn-download" class="flex items-center justify-center gap-2 text-sm text-white bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 transition-all py-3 px-6 rounded-xl mx-auto shadow-lg shadow-blue-500/20 font-bold border border-blue-400/30 w-[85%] hover:scale-105 active:scale-95">
                                 <i data-lucide="download" class="w-5 h-5"></i>
@@ -492,7 +417,7 @@
 
             <!-- القسم الأيسر: القائمة والإضافة -->
             <div class="lg:col-span-7 space-y-6">
-
+                
                 <div id="admin-controls-wrapper" class="bg-[#1a1a1a] border border-[#333] rounded-2xl p-4 hidden">
                     <label class="block text-sm font-medium text-cyan-400 mb-3 flex items-center gap-2">
                         <i data-lucide="settings" class="w-4 h-4"></i>
@@ -564,7 +489,7 @@
                 </div>
 
                 <div id="playlist-main-container" class="wood-panel rounded-2xl overflow-hidden flex flex-col h-[650px] transition-colors duration-500 shadow-xl">
-
+                    
                     <div class="p-4 glass-hollow flex flex-col sm:flex-row items-center justify-between gap-4 relative z-20" style="border-radius: 0; border-bottom: 4px solid #1a0f0a;">
                         <div class="flex items-center gap-3 w-full sm:w-auto">
                             <h3 class="font-bold text-gray-100 flex items-center gap-2 text-shadow text-lg">
@@ -582,7 +507,7 @@
                             </div>
                             <input type="text" id="search-input" placeholder="ابحث في القسم المفتوح..." class="block w-full pl-3 pr-10 py-2 bg-[#111] border border-[#333] rounded-xl text-sm text-gray-100 focus:ring-2 focus:ring-cyan-500 outline-none transition-all placeholder-gray-500 shadow-inner" oninput="handleSearch(this.value)" />
                         </div>
-
+                        
                         <div id="admin-add-group-wrapper" class="w-full sm:w-auto shrink-0"></div>
                     </div>
 
@@ -590,26 +515,26 @@
                     <div id="groups-container" class="flex-1 overflow-y-auto p-4 custom-scrollbar relative z-10">
                         <!-- Accordions injected here -->
                     </div>
-
+                    
                 </div>
-
+                
             </div>
         </div>
 
         <footer class="mt-12 pt-6 border-t border-gray-800 flex flex-col gap-8 pb-8">
             <div class="flex flex-wrap items-center justify-center gap-4">
-                <button onclick="installApp()" class="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-500 hover:to-purple-500 text-white rounded-xl shadow-lg shadow-pink-500/20 transition-all font-bold install-btn-container">
-                    <img src="https://i.ibb.co/sp6xBm7K/Picsart-26-03-30-18-16-08-102.png" class="w-6 h-6 rounded-md" alt="تطبيق راديو خالد"> تنزيل التطبيق
-                </button>
-                <button onclick="addToFavorites()" class="flex items-center gap-2 px-5 py-2.5 bg-[#222] hover:bg-[#333] border border-[#444] text-yellow-400 rounded-xl transition-all font-medium shadow-md">
-                    <i data-lucide="star" class="w-4 h-4"></i> المفضلة / الرئيسية
-                </button>
-                <button onclick="openContactModal()" class="flex items-center gap-2 px-5 py-2.5 bg-[#222] hover:bg-[#333] border border-[#444] text-cyan-400 rounded-xl transition-all font-medium shadow-md">
-                    <i data-lucide="mail" class="w-4 h-4"></i> تواصل معنا
-                </button>
-                <button onclick="showAboutUs()" class="flex items-center gap-2 px-5 py-2.5 bg-[#222] hover:bg-[#333] border border-[#444] text-purple-400 rounded-xl transition-all font-medium shadow-md">
-                    <i data-lucide="info" class="w-4 h-4"></i> من نحن
-                </button>
+                 <button onclick="installApp()" class="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-500 hover:to-purple-500 text-white rounded-xl shadow-lg shadow-pink-500/20 transition-all font-bold install-btn-container">
+                     <img src="https://i.ibb.co/sp6xBm7K/Picsart-26-03-30-18-16-08-102.png" class="w-6 h-6 rounded-md" alt="تطبيق راديو خالد"> تنزيل التطبيق
+                 </button>
+                 <button onclick="addToFavorites()" class="flex items-center gap-2 px-5 py-2.5 bg-[#222] hover:bg-[#333] border border-[#444] text-yellow-400 rounded-xl transition-all font-medium shadow-md">
+                     <i data-lucide="star" class="w-4 h-4"></i> المفضلة / الرئيسية
+                 </button>
+                 <button onclick="openContactModal()" class="flex items-center gap-2 px-5 py-2.5 bg-[#222] hover:bg-[#333] border border-[#444] text-cyan-400 rounded-xl transition-all font-medium shadow-md">
+                     <i data-lucide="mail" class="w-4 h-4"></i> تواصل معنا
+                 </button>
+                 <button onclick="showAboutUs()" class="flex items-center gap-2 px-5 py-2.5 bg-[#222] hover:bg-[#333] border border-[#444] text-purple-400 rounded-xl transition-all font-medium shadow-md">
+                     <i data-lucide="info" class="w-4 h-4"></i> من نحن
+                 </button>
             </div>
 
             <div class="flex flex-col sm:flex-row items-center justify-between gap-4 text-sm px-4">
@@ -621,7 +546,7 @@
                     <a href="https://wa.me/201018282460" target="_blank" class="flex items-center gap-2 text-gray-500 hover:text-green-500 transition-colors" title="واتساب">
                         <i data-lucide="message-circle" class="w-4 h-4"></i><span>واتساب</span>
                     </a>
-                    <a href="https://www.facebook.com/khaledmohyalden" target="_blank" class="flex items-center gap-2 text-gray-500 hover:text-blue-500 transition-colors" title="فيسبوك">
+                                        <a href="https://www.facebook.com/khaledmohyalden" target="_blank" class="flex items-center gap-2 text-gray-500 hover:text-blue-500 transition-colors" title="فيسبوك">
                         <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                             <path fill-rule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0 -1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" clip-rule="evenodd"></path>
                         </svg>
@@ -634,41 +559,17 @@
     </div>
 
     <script type="module">
-        import {
-            initializeApp
-        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import {
-            getAuth,
-            signInAnonymously,
-            signInWithCustomToken,
-            onAuthStateChanged
-        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import {
-            getFirestore,
-            doc,
-            setDoc,
-            onSnapshot,
-            updateDoc,
-            increment,
-            collection,
-            addDoc,
-            getDocs,
-            deleteDoc
-        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-        import {
-            getAnalytics
-        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-analytics.js";
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, onSnapshot, updateDoc, increment, collection, addDoc, getDocs, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-analytics.js";
 
         // Auto Scroll Logic
         const autoScrollState = {
-            'playlist-container': {
-                dir: 1,
-                paused: false,
-                pos: 0
-            }
+            'playlist-container': { dir: 1, paused: false, pos: 0 }
         };
 
-        function stepAutoScroll() {
+                function stepAutoScroll() {
             requestAnimationFrame(stepAutoScroll);
             if (document.hidden) return;
             Object.keys(autoScrollState).forEach(id => {
@@ -676,15 +577,15 @@
                 if (!el) return;
                 const state = autoScrollState[id];
                 if (state.paused) return;
-
+                
                 if (el.scrollHeight <= el.clientHeight + 2) return;
 
                 if (Math.abs(el.scrollTop - state.pos) > 5) {
                     state.pos = el.scrollTop;
                 }
 
-                state.pos += state.dir * 0.3;
-
+                state.pos += state.dir * 0.3; 
+                
                 if (state.dir === 1 && state.pos >= el.scrollHeight - el.clientHeight) {
                     state.dir = -1;
                     state.pos = el.scrollHeight - el.clientHeight;
@@ -692,7 +593,7 @@
                     state.dir = 1;
                     state.pos = 0;
                 }
-
+                
                 el.scrollTop = state.pos;
             });
         }
@@ -702,30 +603,24 @@
             const el = document.getElementById(id);
             if (!el || el.dataset.scrollerBound) return;
             el.dataset.scrollerBound = 'true';
-
-            const pauseHandler = () => {
-                if (autoScrollState[id]) autoScrollState[id].paused = true;
+            
+            const pauseHandler = () => { 
+                if(autoScrollState[id]) autoScrollState[id].paused = true; 
             };
 
-            const resumeHandler = () => {
-                if (autoScrollState[id]) {
-                    autoScrollState[id].pos = el.scrollTop;
-                    autoScrollState[id].paused = false;
+            const resumeHandler = () => { 
+                if(autoScrollState[id]) {
+                    autoScrollState[id].pos = el.scrollTop; 
+                    autoScrollState[id].paused = false; 
                 }
             };
-
+            
             el.addEventListener('mouseenter', pauseHandler);
-            el.addEventListener('touchstart', pauseHandler, {
-                passive: true
-            });
-
+            el.addEventListener('touchstart', pauseHandler, { passive: true });
+            
             el.addEventListener('mouseleave', resumeHandler);
-            el.addEventListener('touchend', resumeHandler, {
-                passive: true
-            });
-            el.addEventListener('touchcancel', resumeHandler, {
-                passive: true
-            });
+            el.addEventListener('touchend', resumeHandler, { passive: true });
+            el.addEventListener('touchcancel', resumeHandler, { passive: true });
         };
 
         async function hashPassword(message) {
@@ -752,7 +647,7 @@
         let analytics;
         try {
             analytics = getAnalytics(app);
-        } catch (e) {
+        } catch(e) {
             console.warn("تنبيه: لم يتم تفعيل Analytics", e);
         }
 
@@ -769,14 +664,12 @@
             const toast = document.createElement('div');
             const bgColor = type === 'error' ? 'bg-red-500/90' : type === 'success' ? 'bg-emerald-500/90' : 'bg-cyan-500/90';
             const icon = type === 'error' ? 'alert-triangle' : type === 'success' ? 'check-circle' : 'info';
-
+            
             toast.className = `flex items-center gap-3 px-4 py-3 rounded-xl shadow-2xl text-white ${bgColor} animate-[slideIn_0.3s_ease-out]`;
             toast.innerHTML = `<i data-lucide="${icon}" class="w-5 h-5"></i><span class="font-medium text-sm">${message}</span>`;
-
+            
             toastContainer.appendChild(toast);
-            lucide.createIcons({
-                root: toast
-            });
+            lucide.createIcons({ root: toast });
 
             setTimeout(() => {
                 toast.style.opacity = '0';
@@ -786,33 +679,29 @@
             }, 3000);
         };
 
-        let groups = [{
-            id: 'main',
-            name: 'الرئيسية',
-            tracks: []
-        }];
-        let localQueue = JSON.parse(localStorage.getItem('my_local_queue') || '[]');
+        let groups = [{ id: 'main', name: 'الرئيسية', tracks: [] }];
+        let localQueue = JSON.parse(localStorage.getItem('my_local_queue') || '[]'); 
 
-        let introTrack = null;
-        let introPlayed = sessionStorage.getItem('introPlayed') === 'true';
+        let introTrack = null; 
+        let introPlayed = sessionStorage.getItem('introPlayed') === 'true'; 
 
-        let defaultCover = '';
-        let aboutUsText = '';
+        let defaultCover = ''; 
+        let aboutUsText = ''; 
 
-        let adminPasswordHash = 'f6392d475017045b85a3717dfb11de54fc911b2fc8d68dcb89bbdc77b311746f';
+        let adminPasswordHash = 'f6392d475017045b85a3717dfb11de54fc911b2fc8d68dcb89bbdc77b311746f'; 
 
-        let autoSkipSeconds = 20;
+        let autoSkipSeconds = 20; 
         let playlistBgColor = '#1a1a1a';
 
         let globalVisits = 0;
-        let totalTracksPlayed = 0;
-        let globalTrackPlays = {};
+        let totalTracksPlayed = 0; 
+        let globalTrackPlays = {}; 
         let tickerSpeed = parseInt(localStorage.getItem('radio_ticker_speed') || '30');
 
-        let viewingGroupId = 'main';
-        let playingGroupId = null;
+        let viewingGroupId = 'main'; 
+        let playingGroupId = null;   
 
-        let currentIndex = -1;
+        let currentIndex = -1; 
         let isPlaying = false;
         let isLooping = false;
         let isLoading = false;
@@ -820,13 +709,13 @@
         let volume = 1;
         let pendingRestoreTime = false;
         let isDraggingProgress = false;
-        let draggedIndex = -1;
-        let lastPlayedTrackId = null;
-        let audioLoadTimeout;
+        let draggedIndex = -1; 
+        let lastPlayedTrackId = null; 
+        let audioLoadTimeout; 
 
-        let isAdmin = localStorage.getItem('radioAdmin') === 'true';
+        let isAdmin = localStorage.getItem('radioAdmin') === 'true'; 
         let searchQuery = '';
-
+        
         let loadedTracksCount = 100;
         let hasCheckedNewTracks = false;
 
@@ -853,11 +742,7 @@
                 if (g.id === 'local_queue' || g.isLocal) return;
                 g.tracks.forEach((t, index) => {
                     if (t.addedAt && t.addedAt > lastVisitTime) {
-                        newTracks.push({
-                            ...t,
-                            groupId: g.id,
-                            index: index
-                        });
+                        newTracks.push({ ...t, groupId: g.id, index: index });
                     }
                 });
             });
@@ -865,7 +750,7 @@
             newTracks.sort((a, b) => b.addedAt - a.addedAt);
 
             if (newTracks.length > 0) {
-                if (!modalContent) return;
+                if(!modalContent) return;
 
                 const tracksListHtml = newTracks.map(t => `
                     <div onclick="playSpecificTrack('${t.groupId}', ${t.index}); closeModal();" class="flex items-center gap-3 p-3 bg-[#2b1810]/60 hover:bg-[#4a3018]/80 border border-[#4a3018] rounded-xl cursor-pointer transition-colors mb-2 group">
@@ -905,12 +790,10 @@
                         </div>
                     </div>
                 `;
-
-                if (modalOverlay) modalOverlay.classList.remove('hidden');
-                lucide.createIcons({
-                    root: modalContent
-                });
-
+                
+                if(modalOverlay) modalOverlay.classList.remove('hidden');
+                lucide.createIcons({ root: modalContent });
+                
                 const originalCloseModal = window.closeModal;
                 window.closeModal = function() {
                     originalCloseModal();
@@ -925,27 +808,27 @@
         window.testNewTracksPopup = function() {
             const tenDaysAgo = Date.now() - (10 * 24 * 60 * 60 * 1000);
             localStorage.setItem('last_visit_time_' + appId, tenDaysAgo);
-            hasCheckedNewTracks = false;
+            hasCheckedNewTracks = false; 
             window.checkAndShowNewTracks();
         };
 
         window.toggleQuranMenu = function(e) {
-            if (e) {
+            if(e) {
                 e.preventDefault();
                 e.stopPropagation();
             }
             const menu = document.getElementById('quran-dropdown-menu');
             const btn = document.getElementById('btn-quran-menu');
             if (!menu || !btn) return;
-
+            
             if (menu.classList.contains('hidden')) {
                 const rect = btn.getBoundingClientRect();
                 menu.style.top = (rect.bottom + 8) + 'px';
                 menu.style.right = (document.documentElement.clientWidth - rect.right) + 'px';
-
+                
                 menu.classList.remove('hidden');
                 menu.classList.add('flex');
-
+                
                 requestAnimationFrame(() => {
                     menu.classList.remove('opacity-0', 'scale-95');
                     menu.classList.add('opacity-100', 'scale-100');
@@ -972,14 +855,12 @@
                 window.closeQuranMenu();
             }
         };
-
+        
         document.addEventListener('click', closeMenuOutside);
-        document.addEventListener('touchstart', closeMenuOutside, {
-            passive: true
-        });
+        document.addEventListener('touchstart', closeMenuOutside, { passive: true });
 
         window.openInternalFrame = function(url, title) {
-            if (!modalContent) return;
+            if(!modalContent) return;
             modalContent.innerHTML = `
                 <div class="flex items-center justify-between mb-4 border-b border-[#333] pb-3">
                     <h3 class="text-lg font-bold text-white flex items-center gap-2">
@@ -997,11 +878,9 @@
                     <iframe src="${url}" class="w-full h-full border-none relative z-10" onload="this.previousElementSibling.style.display='none'"></iframe>
                 </div>
             `;
-            if (modalOverlay) modalOverlay.classList.remove('hidden');
-            lucide.createIcons({
-                root: modalContent
-            });
-            if (window.closeQuranMenu) window.closeQuranMenu();
+            if(modalOverlay) modalOverlay.classList.remove('hidden');
+            lucide.createIcons({ root: modalContent });
+            if(window.closeQuranMenu) window.closeQuranMenu();
         };
 
         window.startIntro = () => {
@@ -1013,7 +892,7 @@
                     introOverlay.classList.remove('flex');
                 }, 500);
             }
-
+            
             if (currentIndex === -3) {
                 window.initAudioBooster();
                 window.safePlayAudio();
@@ -1027,7 +906,7 @@
         window.safePlayAudio = function() {
             if (!audio) return;
             if (!audio.getAttribute('src') && !window.hlsPlayer && !audio.currentSrc) return;
-            if (audio.src === window.location.href) return;
+            if (audio.src === window.location.href) return; 
 
             const playPromise = audio.play();
             if (playPromise !== undefined) {
@@ -1039,13 +918,14 @@
             }
         };
 
+                window.liveRetryCount = 0;
         window.safeChangeTrack = function(newSrc) {
-            if (audio) {
+            if(audio) {
                 audio.pause();
-                audio.removeAttribute('src');
+                audio.removeAttribute('src'); 
                 audio.load();
-
-                if (window.hlsPlayer) {
+                
+                if(window.hlsPlayer) {
                     window.hlsPlayer.stopLoad();
                     window.hlsPlayer.detachMedia();
                     window.hlsPlayer.destroy();
@@ -1053,11 +933,11 @@
                 }
 
                 if (!newSrc || newSrc.trim() === '' || newSrc === 'soundcloud_widget') {
-                    return;
+                    return; 
                 }
-
-                audio.setAttribute('crossorigin', 'anonymous');
-
+                
+                audio.setAttribute('crossorigin', 'anonymous'); 
+                
                 if (newSrc.includes('.m3u8')) {
                     if (typeof Hls !== 'undefined' && Hls.isSupported()) {
                         window.hlsPlayer = new Hls();
@@ -1076,39 +956,39 @@
             }
         };
 
-        window.playQuranRadio = () => {
+                window.playQuranRadio = () => {
             playingGroupId = null;
-            currentIndex = -2;
+            currentIndex = -2; 
             localStorage.setItem('lastTrackIndex', -2);
             localStorage.removeItem('lastPlayingGroupId');
 
-            // إضافة طابع زمني لمنع المتصفح من استخدام كاش قديم (Cache-Busting)
-            const quranUrl = 'https://stream.radiojar.com/8s5u5tpdtwzuv?nocache=' + Date.now();
-            window.safeChangeTrack(quranUrl);
+            // استخدام الرابط الأساسي مع كاسر الكاش
+            const quranUrl = 'https://stream.radiojar.com/8s5u5tpdtwzuv?_=' + Date.now();
+            window.safeChangeTrack(quranUrl); 
             pendingRestoreTime = false;
             window.initAudioBooster();
-
+            
             window.safePlayAudio();
             window.updatePlayerUI();
         };
 
         window.playDramaMixRadio = () => {
             playingGroupId = null;
-            currentIndex = -4;
+            currentIndex = -4; 
             localStorage.setItem('lastTrackIndex', -4);
             localStorage.removeItem('lastPlayingGroupId');
 
-            window.safeChangeTrack('https://stream.zeno.fm/egynebf171zuv');
+            window.safeChangeTrack('https://stream.zeno.fm/egynebf171zuv'); 
             pendingRestoreTime = false;
             window.initAudioBooster();
-
+            
             window.safePlayAudio();
             window.updatePlayerUI();
         };
 
         window.playNewsRadio = () => {
             playingGroupId = null;
-            currentIndex = -5;
+            currentIndex = -5; 
             localStorage.setItem('lastTrackIndex', -5);
             localStorage.removeItem('lastPlayingGroupId');
 
@@ -1122,7 +1002,7 @@
 
         window.playMonteCarloRadio = () => {
             playingGroupId = null;
-            currentIndex = -6;
+            currentIndex = -6; 
             localStorage.setItem('lastTrackIndex', -6);
             localStorage.removeItem('lastPlayingGroupId');
 
@@ -1140,7 +1020,7 @@
             const isYouTube = url.includes('youtube.com') || url.includes('youtu.be');
             const isSoundCloud = url.includes('soundcloud.com');
             const isApplePodcast = url.includes('podcasts.apple.com');
-
+            
             if (!isTikTok && !isArchive && !isYouTube && !isSoundCloud && !isApplePodcast) {
                 throw new Error('يرجى إدخال رابط صحيح (تيك توك، أرشيف، يوتيوب، ساوند كلاود، آبل بودكاست).');
             }
@@ -1154,7 +1034,7 @@
                         url: url,
                         title: json.data.title || 'مقطع تيك توك',
                         author: json.data.author.nickname || 'مستخدم',
-                        audioUrl: json.data.play,
+                        audioUrl: json.data.play, 
                         cover: json.data.cover,
                         details: '',
                         customCover: '',
@@ -1172,10 +1052,10 @@
                 const json = await res.json();
 
                 if (json && json.files && json.files.length > 0) {
-                    const audioFiles = json.files.filter(f =>
-                        f.name.toLowerCase().endsWith('.mp3') ||
-                        f.name.toLowerCase().endsWith('.m4a') ||
-                        f.format === 'VBR MP3' ||
+                    const audioFiles = json.files.filter(f => 
+                        f.name.toLowerCase().endsWith('.mp3') || 
+                        f.name.toLowerCase().endsWith('.m4a') || 
+                        f.format === 'VBR MP3' || 
                         f.format === 'MP3'
                     );
 
@@ -1199,7 +1079,7 @@
                                 uniqueTracks.push({
                                     id: `${archiveId}_${Date.now()}_${uniqueTracks.length}`,
                                     url: url,
-                                    title: title,
+                                    title: title, 
                                     author: creator,
                                     audioUrl: `https://archive.org/download/${archiveId}/${file.name}`,
                                     cover: `https://archive.org/services/img/${archiveId}`,
@@ -1209,13 +1089,8 @@
                                 });
                             }
                         }
-                        uniqueTracks.sort((a, b) => a.title.localeCompare(b.title, undefined, {
-                            numeric: true,
-                            sensitivity: 'base'
-                        }));
-                        uniqueTracks.forEach((track, index) => {
-                            track.addedAt = Date.now() + index;
-                        });
+                        uniqueTracks.sort((a, b) => a.title.localeCompare(b.title, undefined, { numeric: true, sensitivity: 'base' }));
+                        uniqueTracks.forEach((track, index) => { track.addedAt = Date.now() + index; });
                         return uniqueTracks;
                     } else {
                         throw new Error('لم يتم العثور على ملفات صوتية مدعومة.');
@@ -1232,22 +1107,14 @@
                 try {
                     const noembedRes = await fetch(`https://noembed.com/embed?url=${url}`);
                     const noembedData = await noembedRes.json();
-                    if (noembedData.title) title = noembedData.title;
-                    if (noembedData.author_name) author = noembedData.author_name;
-                    if (noembedData.thumbnail_url) coverUrl = noembedData.thumbnail_url;
-                } catch (e) {}
+                    if(noembedData.title) title = noembedData.title;
+                    if(noembedData.author_name) author = noembedData.author_name;
+                    if(noembedData.thumbnail_url) coverUrl = noembedData.thumbnail_url;
+                } catch(e) {}
 
                 const scFetchers = [
-                    async () => {
-                            const r = await fetch(`https://api.vreden.my.id/api/soundcloud?url=${encodeURIComponent(url)}`);
-                            const d = await r.json();
-                            return d?.result?.download || d?.result?.url;
-                        },
-                        async () => {
-                            const r = await fetch(`https://api.siputzx.my.id/api/d/soundcloud?url=${encodeURIComponent(url)}`);
-                            const d = await r.json();
-                            return d?.data?.url;
-                        }
+                    async () => { const r = await fetch(`https://api.vreden.my.id/api/soundcloud?url=${encodeURIComponent(url)}`); const d = await r.json(); return d?.result?.download || d?.result?.url; },
+                    async () => { const r = await fetch(`https://api.siputzx.my.id/api/d/soundcloud?url=${encodeURIComponent(url)}`); const d = await r.json(); return d?.data?.url; }
                 ];
 
                 audioUrl = await new Promise((resolve) => {
@@ -1260,9 +1127,10 @@
                                 resolved = true;
                                 resolve(resUrl);
                             }
-                        } catch (e) {} finally {
+                        } catch (e) {}
+                        finally {
                             pending--;
-                            if (pending === 0 && !resolved) resolve('soundcloud_widget');
+                            if (pending === 0 && !resolved) resolve('soundcloud_widget'); 
                         }
                     });
                 });
@@ -1272,7 +1140,7 @@
                     url: url,
                     title: title,
                     author: author,
-                    audioUrl: audioUrl,
+                    audioUrl: audioUrl, 
                     cover: coverUrl,
                     details: 'تم سحب هذا المقطع ليعمل عبر المشغل الرئيسي وتتفاعل معه خصائص الراديو كالشعار ومستوى الصوت بشكل مباشر.',
                     customCover: '',
@@ -1288,29 +1156,17 @@
                 try {
                     const noembedRes = await fetch(`https://noembed.com/embed?url=${url}`);
                     const noembedData = await noembedRes.json();
-                    if (noembedData.title) title = noembedData.title;
-                    if (noembedData.author_name) author = noembedData.author_name;
-                    if (noembedData.thumbnail_url) coverUrl = noembedData.thumbnail_url;
-                } catch (e) {}
+                    if(noembedData.title) title = noembedData.title;
+                    if(noembedData.author_name) author = noembedData.author_name;
+                    if(noembedData.thumbnail_url) coverUrl = noembedData.thumbnail_url;
+                } catch(e) {}
 
                 const targetUrl = url;
-
+                
                 const ytFetchers = [
-                    async () => {
-                            const r = await fetch(`https://api.vreden.my.id/api/ytmp3?url=${encodeURIComponent(targetUrl)}`);
-                            const d = await r.json();
-                            return d?.result?.download?.url || d?.result?.url;
-                        },
-                        async () => {
-                                const r = await fetch(`https://api.siputzx.my.id/api/d/ytmp3?url=${encodeURIComponent(targetUrl)}`);
-                                const d = await r.json();
-                                return d?.data?.dl || d?.data?.url;
-                            },
-                            async () => {
-                                const r = await fetch(`https://api.ryzendesu.vip/api/downloader/ytmp3?url=${encodeURIComponent(targetUrl)}`);
-                                const d = await r.json();
-                                return d?.url || d?.data?.url;
-                            }
+                    async () => { const r = await fetch(`https://api.vreden.my.id/api/ytmp3?url=${encodeURIComponent(targetUrl)}`); const d = await r.json(); return d?.result?.download?.url || d?.result?.url; },
+                    async () => { const r = await fetch(`https://api.siputzx.my.id/api/d/ytmp3?url=${encodeURIComponent(targetUrl)}`); const d = await r.json(); return d?.data?.dl || d?.data?.url; },
+                    async () => { const r = await fetch(`https://api.ryzendesu.vip/api/downloader/ytmp3?url=${encodeURIComponent(targetUrl)}`); const d = await r.json(); return d?.url || d?.data?.url; }
                 ];
 
                 audioUrl = await new Promise((resolve) => {
@@ -1323,7 +1179,8 @@
                                 resolved = true;
                                 resolve(resUrl);
                             }
-                        } catch (e) {} finally {
+                        } catch (e) {}
+                        finally {
                             pending--;
                             if (pending === 0 && !resolved) resolve('');
                         }
@@ -1337,7 +1194,7 @@
                     url: url,
                     title: title,
                     author: author,
-                    audioUrl: audioUrl,
+                    audioUrl: audioUrl, 
                     cover: coverUrl,
                     details: '',
                     customCover: '',
@@ -1351,9 +1208,9 @@
                 const proxyItunesUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent('https://itunes.apple.com/lookup?id=' + podcastId)}`;
                 const itunesRes = await fetch(proxyItunesUrl);
                 const itunesData = await itunesRes.json();
-
+                
                 if (!itunesData.results || itunesData.results.length === 0) throw new Error('لم يتم العثور على بيانات البودكاست.');
-
+                
                 const feedUrl = itunesData.results[0].feedUrl;
                 const podcastAuthor = itunesData.results[0].artistName || 'آبل بودكاست';
                 const podcastCover = itunesData.results[0].artworkUrl600 || itunesData.results[0].artworkUrl100 || '';
@@ -1376,7 +1233,7 @@
                     const enclosure = item.querySelector("enclosure");
                     if (enclosure && enclosure.getAttribute("url")) {
                         let desc = item.querySelector("description")?.textContent || '';
-                        desc = desc.replace(/(<([^>]+)>)/gi, "").substring(0, 300);
+                        desc = desc.replace(/(<([^>]+)>)/gi, "").substring(0, 300); 
 
                         uniqueTracks.push({
                             id: `apple_${podcastId}_${Date.now()}_${index}`,
@@ -1400,13 +1257,13 @@
 
         window.setupIntroTrackPrompt = function() {
             window.openPromptModal('هوية الإذاعة (مقطع البداية)', 'ضع رابط التيك توك أو غيره هنا، أو اتركه فارغاً للحذف', async (url) => {
-                if (!url || url.trim() === '') {
+                if(!url || url.trim() === '') {
                     introTrack = null;
                     window.saveToDB();
                     window.showToast('تم إزالة تتر البداية بنجاح', 'info');
                     return;
                 }
-
+                
                 window.showToast('جاري سحب وتحضير تتر البداية...', 'info');
                 try {
                     const tracks = await window.fetchLinkInfo(url.trim());
@@ -1434,7 +1291,7 @@
             }, playlistBgColor);
         };
 
-        window.autoRefreshTrack = async function(track, group, index) {
+                window.autoRefreshTrack = async function(track, group, index) {
             track.refreshAttempts = (track.refreshAttempts || 0) + 1;
             if (track.refreshAttempts > 3) {
                 window.showToast('فشل التحديث بعد عدة محاولات، الرابط معطل.', 'error');
@@ -1446,12 +1303,12 @@
             window.showToast('جاري تحضير وتحديث المقطع للتشغيل المباشر... 🔄', 'info');
             const titleEl = document.getElementById('track-title');
             if (titleEl) titleEl.innerText = '🔄 جاري التحضير التلقائي...';
-
+            
             try {
                 const refreshedTracks = await window.fetchLinkInfo(track.url);
                 if (refreshedTracks && refreshedTracks.length > 0) {
                     let newAudioUrl = null;
-
+                    
                     if (refreshedTracks.length > 1 && track.id && track.id.startsWith('sc_')) {
                         const scTrackId = track.id.split('_')[1];
                         const matchedTrack = refreshedTracks.find(t => t.id && t.id.includes(`_${scTrackId}_`));
@@ -1461,13 +1318,13 @@
                         newAudioUrl = refreshedTracks[0].audioUrl;
                     }
 
-                    if (newAudioUrl && newAudioUrl !== 'soundcloud_widget') {
+                                        if (newAudioUrl && newAudioUrl !== 'soundcloud_widget') {
                         track.audioUrl = newAudioUrl;
                         track.isRefreshing = false;
                         track.refreshAttempts = 0;
-
-                        if (group && !group.isLocal && isAdmin && user) window.saveToDB();
-
+                        
+                        if (group && !group.isLocal && isAdmin && user) window.saveToDB(); 
+                        
                         if ((group && playingGroupId === group.id && currentIndex === index) || (currentIndex === -3 && track === introTrack)) {
                             window.showToast('تم التجهيز بنجاح! جاري التشغيل ✅', 'success');
                             if (titleEl) titleEl.innerText = track.title;
@@ -1479,15 +1336,15 @@
                     }
                 }
                 throw new Error('Failed to refresh');
-            } catch (e) {
+            } catch(e) {
                 track.isRefreshing = false;
                 window.showToast('المقطع القديم يحتاج للتجديد أو توجد مشكلة في الاتصال', 'error');
                 if (titleEl) titleEl.innerText = '❌ خطأ في التشغيل';
             }
         };
 
-        if (audio) {
-                        audio.addEventListener('error', () => {
+        if(audio) {
+            audio.addEventListener('error', () => {
                 if (audio.error && (audio.error.code === 4 || audio.error.code === 3)) { 
                     if (currentIndex === -3 && introTrack) {
                          if (!introTrack.isRefreshing) {
@@ -1496,14 +1353,27 @@
                              return;
                          }
                     } else if (currentIndex === -2 || currentIndex === -4 || currentIndex === -5 || currentIndex === -6) {
-                        // نظام التعافي الذاتي: إعادة الاتصال التلقائي بأي إذاعة بث مباشر عند انقطاع السيرفر
-                        console.warn("انقطع بث الراديو، جاري إعادة الاتصال التلقائي...");
-                        setTimeout(() => {
-                            if (currentIndex === -2) window.playQuranRadio();
-                            else if (currentIndex === -4) window.playDramaMixRadio();
-                            else if (currentIndex === -5) window.playNewsRadio();
-                            else if (currentIndex === -6) window.playMonteCarloRadio();
-                        }, 1500);
+                        // نظام التعافي الذاتي مع حدود للمحاولات لمنع الانهيار
+                        if (window.liveRetryCount < 3) {
+                            window.liveRetryCount++;
+                            console.warn(`انقطع البث، المحاولة ${window.liveRetryCount} لإعادة الاتصال...`);
+                            const titleEl = document.getElementById('track-title');
+                            if (titleEl) titleEl.innerText = '🔄 جاري إعادة الاتصال...';
+                            
+                            setTimeout(() => {
+                                if (currentIndex === -2) window.playQuranRadio();
+                                else if (currentIndex === -4) window.playDramaMixRadio();
+                                else if (currentIndex === -5) window.playNewsRadio();
+                                else if (currentIndex === -6) window.playMonteCarloRadio();
+                            }, 2500);
+                        } else {
+                            window.showToast('السيرفر لا يستجيب حالياً، يرجى المحاولة لاحقاً', 'error');
+                            const titleEl = document.getElementById('track-title');
+                            if (titleEl) titleEl.innerText = '❌ البث متوقف مؤقتاً';
+                            isPlaying = false;
+                            window.updatePlayerUI();
+                            window.liveRetryCount = 0;
+                        }
                         return;
                     } else {
                         const currentGroup = window.getPlayingGroup();
@@ -1514,7 +1384,7 @@
                                     track.isRefreshing = true;
                                     console.warn("الرابط منتهي أو محمي، جاري التجديد التلقائي...");
                                     window.autoRefreshTrack(track, currentGroup, currentIndex);
-                                    return;
+                                    return; 
                                 }
                             }
                         }
@@ -1523,18 +1393,15 @@
                     window.showToast('عذراً، الرابط معطل أو غير متاح مؤقتاً', 'error');
                     const titleEl = document.getElementById('track-title');
                     if (titleEl) titleEl.innerText = '❌ خطأ في التشغيل';
-
+                    
                     if (currentIndex === -3) {
-                        if (audio) {
-                            audio.pause();
-                            audio.removeAttribute('src');
-                        }
+                        if(audio) { audio.pause(); audio.removeAttribute('src'); }
                         currentIndex = -1;
                         playingGroupId = null;
                         isPlaying = false;
                         window.updatePlayerUI();
                     } else {
-                        if (audio) audio.pause();
+                        if(audio) audio.pause();
                         isPlaying = false;
                         window.updatePlayerUI();
                     }
@@ -1549,7 +1416,7 @@
             });
 
             audio.addEventListener('playing', () => {
-                clearTimeout(audioLoadTimeout);
+                clearTimeout(audioLoadTimeout); 
                 window.updatePlayerUI();
             });
         }
@@ -1602,17 +1469,12 @@
         window.addToQueue = (e, trackId) => {
             e.stopPropagation();
             let trackObj = null;
-
+            
             for (let g of groups) {
                 const found = g.tracks.find(t => t.id === trackId);
-                if (found) {
-                    trackObj = {
-                        ...found
-                    };
-                    break;
-                }
+                if (found) { trackObj = { ...found }; break; } 
             }
-
+            
             if (trackObj) {
                 trackObj.queueId = 'q_' + Date.now() + Math.random().toString(36).substring(2);
                 localQueue.push(trackObj);
@@ -1626,17 +1488,14 @@
             e.stopPropagation();
             localQueue.splice(index, 1);
             localStorage.setItem('my_local_queue', JSON.stringify(localQueue));
-
+            
             if (playingGroupId === 'local_queue') {
                 if (currentIndex === index) {
                     if (localQueue.length > 0) {
                         const nextIndex = index >= localQueue.length ? 0 : index;
                         window.playTrack(nextIndex);
                     } else {
-                        if (audio) {
-                            audio.pause();
-                            audio.removeAttribute('src');
-                        }
+                        if(audio) { audio.pause(); audio.removeAttribute('src'); }
                         currentIndex = -1;
                         playingGroupId = null;
                         isPlaying = false;
@@ -1650,14 +1509,11 @@
         };
 
         window.clearQueue = () => {
-            if (!confirm('هل أنت متأكد من مسح جميع المقاطع من قائمتك الخاصة؟')) return;
+            if(!confirm('هل أنت متأكد من مسح جميع المقاطع من قائمتك الخاصة؟')) return;
             localQueue = [];
             localStorage.setItem('my_local_queue', JSON.stringify(localQueue));
             if (playingGroupId === 'local_queue') {
-                if (audio) {
-                    audio.pause();
-                    audio.removeAttribute('src');
-                }
+                if(audio) { audio.pause(); audio.removeAttribute('src'); }
                 currentIndex = -1;
                 playingGroupId = null;
                 isPlaying = false;
@@ -1694,14 +1550,14 @@
             const adminControls = document.getElementById('admin-controls-wrapper');
             const badge = document.getElementById('admin-badge');
             if (isAdmin) {
-                if (adminControls) adminControls.classList.remove('hidden');
-                if (badge) badge.classList.remove('hidden');
-
+                if(adminControls) adminControls.classList.remove('hidden');
+                if(badge) badge.classList.remove('hidden');
+                
                 const skipInput = document.getElementById('skip-seconds-input');
-                if (skipInput) skipInput.value = autoSkipSeconds;
+                if(skipInput) skipInput.value = autoSkipSeconds;
             } else {
-                if (adminControls) adminControls.classList.add('hidden');
-                if (badge) badge.classList.add('hidden');
+                if(adminControls) adminControls.classList.add('hidden');
+                if(badge) badge.classList.add('hidden');
             }
             window.renderGroups();
             window.renderPlaylist();
@@ -1709,7 +1565,7 @@
         };
 
         window.openAdminLoginModal = function() {
-            if (modalContent) {
+            if(modalContent) {
                 modalContent.innerHTML = `
                     <div class="flex items-center gap-3 mb-4 text-pink-400 border-b border-[#333] pb-4">
                         <i data-lucide="shield-check" class="w-6 h-6"></i>
@@ -1727,21 +1583,19 @@
                     </div>
                 `;
             }
-            if (modalOverlay) modalOverlay.classList.remove('hidden');
-            lucide.createIcons({
-                root: modalContent
-            });
-
+            if(modalOverlay) modalOverlay.classList.remove('hidden');
+            lucide.createIcons({ root: modalContent });
+            
             const passInput = document.getElementById('admin-password');
             const submitLoginBtn = document.getElementById('btn-submit-login');
 
-            if (passInput) passInput.focus();
-
-            if (submitLoginBtn) {
+            if(passInput) passInput.focus();
+            
+            if(submitLoginBtn) {
                 submitLoginBtn.addEventListener('click', window.submitAdminLogin);
             }
 
-            if (passInput) {
+            if(passInput) {
                 passInput.addEventListener('keypress', (e) => {
                     if (e.key === 'Enter') window.submitAdminLogin();
                 });
@@ -1759,9 +1613,9 @@
 
             const inputHash = await hashPassword(password);
 
-            if (inputHash === adminPasswordHash) {
+            if (inputHash === adminPasswordHash) { 
                 isAdmin = true;
-                localStorage.setItem('radioAdmin', 'true');
+                localStorage.setItem('radioAdmin', 'true'); 
                 window.showToast('تم تسجيل الدخول بنجاح', 'success');
                 window.applyAdminMode();
                 window.closeModal();
@@ -1779,7 +1633,7 @@
 
         window.changeAdminPassword = function() {
             window.openPromptModal('تغيير كلمة المرور:', 'أدخل كلمة المرور الجديدة...', async (newPass) => {
-                if (newPass.trim() !== '') {
+                if(newPass.trim() !== '') {
                     adminPasswordHash = await hashPassword(newPass.trim());
                     window.saveToDB();
                     window.showToast('تم تغيير كلمة المرور وتشفيرها بنجاح', 'success');
@@ -1792,7 +1646,7 @@
             window.saveToDB();
         };
 
-        let clickCount = 0;
+                let clickCount = 0;
         let clickTimer;
         const headerElement = document.querySelector('header');
         if (headerElement) {
@@ -1800,7 +1654,7 @@
                 if (e.target.closest('button') || e.target.closest('input') || e.target.closest('a')) {
                     return;
                 }
-
+                
                 clickCount++;
                 clearTimeout(clickTimer);
                 if (clickCount >= 5) {
@@ -1809,9 +1663,7 @@
                     }
                     clickCount = 0;
                 } else {
-                    clickTimer = setTimeout(() => {
-                        clickCount = 0;
-                    }, 1000);
+                    clickTimer = setTimeout(() => { clickCount = 0; }, 1000); 
                 }
             });
         }
@@ -1827,14 +1679,7 @@
 
         window.getViewingGroup = function() {
             if (viewingGroupId === 'local_queue') {
-                return {
-                    id: 'local_queue',
-                    name: 'المفضلة',
-                    tracks: localQueue,
-                    color: '#ef4444',
-                    icon: 'heart',
-                    isLocal: true
-                };
+                return { id: 'local_queue', name: 'المفضلة', tracks: localQueue, color: '#ef4444', icon: 'heart', isLocal: true };
             }
             if (!viewingGroupId) return null;
             return groups.find(g => g.id === viewingGroupId) || null;
@@ -1842,13 +1687,7 @@
 
         window.getPlayingGroup = function() {
             if (playingGroupId === 'local_queue') {
-                return {
-                    id: 'local_queue',
-                    name: 'المفضلة',
-                    tracks: localQueue,
-                    color: '#ef4444',
-                    isLocal: true
-                };
+                return { id: 'local_queue', name: 'المفضلة', tracks: localQueue, color: '#ef4444', isLocal: true };
             }
             return groups.find(g => g.id === playingGroupId);
         };
@@ -1877,58 +1716,58 @@
         window.updateTickerUI = () => {
             const textEl = document.getElementById('ticker-text');
             if (!textEl) return;
-
+            
             const totalTracks = groups.reduce((acc, g) => acc + g.tracks.length, 0);
-            const totalHours = (totalTracks * 3.5 / 60).toFixed(1);
-
+            const totalHours = (totalTracks * 3.5 / 60).toFixed(1); 
+            
             let latestTime = 0;
             let lastAddedTrack = null;
             let lastAddedGroup = null;
             let lastAddedIndex = -1;
 
             let mostPlayedTrackId = null;
-            let maxPlays = 0;
-            for (const [id, count] of Object.entries(globalTrackPlays)) {
-                if (count > maxPlays) {
-                    maxPlays = count;
-                    mostPlayedTrackId = id;
+let maxPlays = 0;
+for (const [id, count] of Object.entries(globalTrackPlays)) {
+if (count > maxPlays) {
+maxPlays = count;
+mostPlayedTrackId = id;
+}
+}
+
+        let mostPlayedTrack = null;
+        let mostPlayedGroup = null;
+        let mostPlayedIndex = -1;
+
+        for (let g of groups) {
+            for (let i = 0; i < g.tracks.length; i++) {
+                let t = g.tracks[i];
+                
+                if (t.addedAt && t.addedAt > latestTime) {
+                    latestTime = t.addedAt;
+                    lastAddedTrack = t;
+                    lastAddedGroup = g.id;
+                    lastAddedIndex = i;
+                }
+                
+                if (mostPlayedTrackId && t.id === mostPlayedTrackId) {
+                    mostPlayedTrack = t;
+                    mostPlayedGroup = g.id;
+                    mostPlayedIndex = i;
                 }
             }
+        }
 
-            let mostPlayedTrack = null;
-            let mostPlayedGroup = null;
-            let mostPlayedIndex = -1;
-
+        if (!mostPlayedTrack && groups.length > 0) {
             for (let g of groups) {
-                for (let i = 0; i < g.tracks.length; i++) {
-                    let t = g.tracks[i];
-
-                    if (t.addedAt && t.addedAt > latestTime) {
-                        latestTime = t.addedAt;
-                        lastAddedTrack = t;
-                        lastAddedGroup = g.id;
-                        lastAddedIndex = i;
-                    }
-
-                    if (mostPlayedTrackId && t.id === mostPlayedTrackId) {
-                        mostPlayedTrack = t;
-                        mostPlayedGroup = g.id;
-                        mostPlayedIndex = i;
-                    }
+                if (g.tracks && g.tracks.length > 0 && !g.isLocal) {
+                    mostPlayedTrack = g.tracks[0];
+                    mostPlayedGroup = g.id;
+                    mostPlayedIndex = 0;
+                    maxPlays = 0;
+                    break;
                 }
             }
-
-            if (!mostPlayedTrack && groups.length > 0) {
-                for (let g of groups) {
-                    if (g.tracks && g.tracks.length > 0 && !g.isLocal) {
-                        mostPlayedTrack = g.tracks[0];
-                        mostPlayedGroup = g.id;
-                        mostPlayedIndex = 0;
-                        maxPlays = 0;
-                        break;
-                    }
-                }
-            }
+        }
 
             if (latestTime === 0) {
                 const activeGroup = window.getViewingGroup() || groups[0];
@@ -1952,10 +1791,10 @@
             const mostPlayedHtml = mostPlayedTrack ? `<span class="cursor-pointer text-pink-400 hover:text-pink-300 hover:underline transition-colors px-1 font-bold" onclick="playSpecificTrack('${mostPlayedGroup}', ${mostPlayedIndex})">${mostPlayedTrack.title} (${maxPlays} مرة)</span>` : 'لا يوجد';
 
             const statsText = `📊 إحصائيات الموقع:  ✦  إجمالي المقاطع: ${totalTracks} مقطع  ✦  إجمالي الساعات (تقريبي): ${totalHours} ساعة  ✦  إجمالي مرات التشغيل: ${totalTracksPlayed} مرة حول العالم  ✦  إجمالي الزوار: ${globalVisits} زائر  ✦  أكثر مقطع تشغيلاً: ${mostPlayedHtml}  ✦  آخر مقطع مضاف: ${lastAddedHtml}`;
-
+            
             textEl.innerHTML = statsText;
             textEl.style.animationDuration = `${tickerSpeed}s`;
-
+            
             const speedSlider = document.getElementById('ticker-speed-slider');
             if (speedSlider) speedSlider.value = tickerSpeed;
         };
@@ -1981,17 +1820,17 @@
         };
 
         window.removeDefaultCover = () => {
-            defaultCover = '';
-            window.saveToDB();
-            window.updatePlayerUI();
+             defaultCover = '';
+             window.saveToDB();
+             window.updatePlayerUI();
         };
 
         window.closeModal = () => {
-            if (modalOverlay) modalOverlay.classList.add('hidden');
+            if(modalOverlay) modalOverlay.classList.add('hidden');
         };
 
         window.openPromptModal = function(title, placeholder, onConfirm, initialValue = '') {
-            if (!modalContent) return;
+            if(!modalContent) return;
             modalContent.innerHTML = `
                 <h3 class="text-lg font-bold text-white mb-4">${title}</h3>
                 <input type="text" id="modal-input" class="w-full bg-[#0a0a0a] border border-[#333] rounded-xl px-4 py-3 text-white focus:ring-2 focus:ring-cyan-500 outline-none mb-6" placeholder="${placeholder}" value="${initialValue}" autocomplete="off" dir="auto">
@@ -2000,23 +1839,20 @@
                     <button id="modal-confirm-btn" class="px-5 py-2.5 rounded-lg bg-gradient-to-r from-cyan-600 to-cyan-500 hover:from-cyan-500 hover:to-cyan-400 text-white font-medium transition-all shadow-lg shadow-cyan-500/20">تأكيد</button>
                 </div>
             `;
-            if (modalOverlay) modalOverlay.classList.remove('hidden');
+            if(modalOverlay) modalOverlay.classList.remove('hidden');
             const inputField = document.getElementById('modal-input');
-            if (inputField) {
+            if(inputField) {
                 inputField.focus();
-                if (initialValue) inputField.select();
-
+                if(initialValue) inputField.select();
+                
                 const confirmBtn = document.getElementById('modal-confirm-btn');
-                if (confirmBtn) {
+                if(confirmBtn) {
                     confirmBtn.addEventListener('click', () => {
                         const val = inputField.value.trim();
-                        if (val || val === '') {
-                            onConfirm(val);
-                            window.closeModal();
-                        }
+                        if (val || val === '') { onConfirm(val); window.closeModal(); }
                     });
                 }
-
+                
                 inputField.addEventListener('keypress', (e) => {
                     if (e.key === 'Enter' && confirmBtn) confirmBtn.click();
                 });
@@ -2024,7 +1860,7 @@
         };
 
         window.openColorModal = function(title, onConfirm, initialColor = '#06b6d4') {
-            if (!modalContent) return;
+            if(!modalContent) return;
             modalContent.innerHTML = `
                 <h3 class="text-lg font-bold text-white mb-4">${title}</h3>
                 <div class="flex items-center justify-center gap-4 mb-6">
@@ -2036,21 +1872,21 @@
                     <button id="modal-confirm-btn" class="px-5 py-2.5 rounded-lg bg-gradient-to-r from-cyan-600 to-cyan-500 hover:from-cyan-500 hover:to-cyan-400 text-white font-medium transition-all shadow-lg shadow-cyan-500/20">حفظ اللون</button>
                 </div>
             `;
-            if (modalOverlay) modalOverlay.classList.remove('hidden');
-
+            if(modalOverlay) modalOverlay.classList.remove('hidden');
+            
             const confirmBtn = document.getElementById('modal-confirm-btn');
-            if (confirmBtn) {
+            if(confirmBtn) {
                 confirmBtn.addEventListener('click', () => {
                     const colorInput = document.getElementById('modal-color-input');
                     const val = colorInput ? colorInput.value : initialColor;
-                    onConfirm(val);
+                    onConfirm(val); 
                     window.closeModal();
                 });
             }
         };
 
         window.openMultiTrackModal = function(tracks, onConfirm) {
-            if (!modalContent) return;
+            if(!modalContent) return;
             const tracksHtml = tracks.map((t, index) => `
                 <div class="mb-3">
                     <label class="text-xs text-gray-400 mb-1 block">مقطع ${index + 1}</label>
@@ -2071,21 +1907,16 @@
                     <button id="modal-confirm-btn" class="px-5 py-2.5 rounded-lg bg-gradient-to-r from-cyan-600 to-cyan-500 hover:from-cyan-500 hover:to-cyan-400 text-white font-medium transition-all shadow-lg shadow-cyan-500/20">حفظ المقاطع</button>
                 </div>
             `;
-            if (modalOverlay) modalOverlay.classList.remove('hidden');
-            lucide.createIcons({
-                root: modalContent
-            });
+            if(modalOverlay) modalOverlay.classList.remove('hidden');
+            lucide.createIcons({ root: modalContent });
 
             const confirmBtn = document.getElementById('modal-confirm-btn');
-            if (confirmBtn) {
+            if(confirmBtn) {
                 confirmBtn.addEventListener('click', () => {
                     const updatedTracks = tracks.map((t, index) => {
                         const inputEl = document.getElementById(`multi-track-${index}`);
                         const inputVal = inputEl ? inputEl.value.trim() : '';
-                        return {
-                            ...t,
-                            title: inputVal || t.title
-                        };
+                        return { ...t, title: inputVal || t.title };
                     });
                     onConfirm(updatedTracks);
                     window.closeModal();
@@ -2094,7 +1925,7 @@
         };
 
         window.openTextareaModal = function(title, placeholder, onConfirm, initialValue = '') {
-            if (!modalContent) return;
+            if(!modalContent) return;
             modalContent.innerHTML = `
                 <h3 class="text-lg font-bold text-white mb-4">${title}</h3>
                 <textarea id="modal-textarea" class="w-full h-40 bg-[#0a0a0a] border border-[#333] rounded-xl px-4 py-3 text-white focus:ring-2 focus:ring-cyan-500 outline-none mb-6 resize-none custom-scrollbar" placeholder="${placeholder}">${initialValue}</textarea>
@@ -2103,22 +1934,22 @@
                     <button id="modal-confirm-btn" class="px-5 py-2.5 rounded-lg bg-gradient-to-r from-cyan-600 to-cyan-500 hover:from-cyan-500 hover:to-cyan-400 text-white font-medium transition-all shadow-lg shadow-cyan-500/20">حفظ النص</button>
                 </div>
             `;
-            if (modalOverlay) modalOverlay.classList.remove('hidden');
+            if(modalOverlay) modalOverlay.classList.remove('hidden');
             const inputField = document.getElementById('modal-textarea');
-            if (inputField) inputField.focus();
-
+            if(inputField) inputField.focus();
+            
             const confirmBtn = document.getElementById('modal-confirm-btn');
-            if (confirmBtn) {
+            if(confirmBtn) {
                 confirmBtn.addEventListener('click', () => {
                     const val = inputField ? inputField.value.trim() : '';
-                    onConfirm(val);
+                    onConfirm(val); 
                     window.closeModal();
                 });
             }
         };
 
         window.openDetailsModal = function(title, trackTitle, onConfirm, initialValue = '') {
-            if (!modalContent) return;
+            if(!modalContent) return;
             modalContent.innerHTML = `
                 <div class="flex items-center justify-between mb-4 border-b border-[#333] pb-3">
                     <h3 class="text-lg font-bold text-white truncate max-w-[60%]">${title}</h3>
@@ -2129,25 +1960,23 @@
                     <button id="modal-confirm-btn" class="px-5 py-2.5 rounded-lg bg-gradient-to-r from-cyan-600 to-cyan-500 hover:from-cyan-500 hover:to-cyan-400 text-white font-medium transition-all shadow-lg shadow-cyan-500/20">حفظ التفاصيل</button>
                 </div>
             `;
-            if (modalOverlay) modalOverlay.classList.remove('hidden');
-            lucide.createIcons({
-                root: modalContent
-            });
+            if(modalOverlay) modalOverlay.classList.remove('hidden');
+            lucide.createIcons({ root: modalContent });
             const inputField = document.getElementById('modal-textarea');
-            if (inputField) inputField.focus();
+            if(inputField) inputField.focus();
 
             const confirmBtn = document.getElementById('modal-confirm-btn');
-            if (confirmBtn) {
+            if(confirmBtn) {
                 confirmBtn.addEventListener('click', () => {
                     const val = inputField ? inputField.value.trim() : '';
-                    onConfirm(val);
+                    onConfirm(val); 
                     window.closeModal();
                 });
             }
         };
 
         window.openConfirmModal = function(message, onConfirm) {
-            if (!modalContent) return;
+            if(!modalContent) return;
             modalContent.innerHTML = `
                 <div class="flex items-center gap-3 mb-4 text-red-400 border-b border-[#333] pb-4">
                     <i data-lucide="alert-triangle" class="w-6 h-6"></i>
@@ -2159,22 +1988,19 @@
                     <button id="modal-confirm-btn" class="px-5 py-2.5 rounded-lg bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white font-medium transition-all shadow-lg shadow-red-500/20">نعم، احذف</button>
                 </div>
             `;
-            lucide.createIcons({
-                root: modalContent
-            });
-            if (modalOverlay) modalOverlay.classList.remove('hidden');
-
+            lucide.createIcons({ root: modalContent });
+            if(modalOverlay) modalOverlay.classList.remove('hidden');
+            
             const confirmBtn = document.getElementById('modal-confirm-btn');
-            if (confirmBtn) {
+            if(confirmBtn) {
                 confirmBtn.addEventListener('click', () => {
-                    onConfirm();
-                    window.closeModal();
+                    onConfirm(); window.closeModal();
                 });
             }
         };
 
         window.openAlertModal = function(title, message) {
-            if (!modalContent) return;
+            if(!modalContent) return;
             const formattedMessage = message.replace(/\n/g, '<br>');
             modalContent.innerHTML = `
                 <div class="flex items-center gap-3 mb-4 text-cyan-400 border-b border-[#333] pb-4">
@@ -2188,10 +2014,8 @@
                     <button onclick="closeModal()" class="px-6 py-2.5 rounded-xl bg-[#222] text-white hover:bg-[#333] border border-[#444] transition-colors font-medium">إغلاق</button>
                 </div>
             `;
-            lucide.createIcons({
-                root: modalContent
-            });
-            if (modalOverlay) modalOverlay.classList.remove('hidden');
+            lucide.createIcons({ root: modalContent });
+            if(modalOverlay) modalOverlay.classList.remove('hidden');
         };
 
         window.editAboutUs = function() {
@@ -2220,12 +2044,10 @@
                 window.openAlertModal('تنبيه', 'التطبيق مثبت بالفعل على هاتفك! ابحث عن أيقونة "راديو خالد" في قائمة تطبيقاتك.');
                 return;
             }
-
+            
             if (deferredPrompt) {
                 deferredPrompt.prompt();
-                const {
-                    outcome
-                } = await deferredPrompt.userChoice;
+                const { outcome } = await deferredPrompt.userChoice;
                 if (outcome === 'accepted') {
                     deferredPrompt = null;
                 }
@@ -2235,7 +2057,7 @@
         };
 
         window.openContactModal = function() {
-            if (!modalContent) return;
+            if(!modalContent) return;
             modalContent.innerHTML = `
                 <div class="flex items-center justify-between mb-4 border-b border-[#333] pb-3">
                     <h3 class="text-lg font-bold text-white flex items-center gap-2">
@@ -2263,10 +2085,8 @@
                     <button onclick="submitContactMessage()" id="modal-submit-contact" class="px-5 py-2.5 rounded-lg bg-gradient-to-r from-cyan-600 to-cyan-500 hover:from-cyan-500 hover:to-cyan-400 text-white font-medium transition-all shadow-lg shadow-cyan-500/20 flex items-center gap-2">إرسال <i data-lucide="send" class="w-4 h-4"></i></button>
                 </div>
             `;
-            if (modalOverlay) modalOverlay.classList.remove('hidden');
-            lucide.createIcons({
-                root: modalContent
-            });
+            if(modalOverlay) modalOverlay.classList.remove('hidden');
+            lucide.createIcons({ root: modalContent });
         };
 
         window.submitContactMessage = async function() {
@@ -2286,12 +2106,10 @@
                 return;
             }
 
-            if (btn) {
+            if(btn) {
                 btn.disabled = true;
                 btn.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> جاري الإرسال...';
-                lucide.createIcons({
-                    root: btn.parentElement
-                });
+                lucide.createIcons({ root: btn.parentElement });
             }
 
             try {
@@ -2313,7 +2131,7 @@
         window.openMessagesModal = async function() {
             if (!user) return;
             if (!modalContent) return;
-
+            
             modalContent.innerHTML = `
                 <div class="flex items-center justify-between mb-4 border-b border-[#333] pb-3">
                     <h3 class="text-lg font-bold text-white flex items-center gap-2">
@@ -2331,17 +2149,15 @@
                     <button onclick="closeModal()" class="px-5 py-2.5 rounded-lg bg-[#222] text-white hover:bg-[#333] border border-[#444] transition-colors font-medium">إغلاق</button>
                 </div>
             `;
-            if (modalOverlay) modalOverlay.classList.remove('hidden');
-            lucide.createIcons({
-                root: modalContent
-            });
+            if(modalOverlay) modalOverlay.classList.remove('hidden');
+            lucide.createIcons({ root: modalContent });
 
             try {
                 const messagesRef = collection(db, 'artifacts', appId, 'public', 'data', 'messages');
                 const snapshot = await getDocs(messagesRef);
                 const messagesList = document.getElementById('messages-list');
-                if (!messagesList) return;
-
+                if(!messagesList) return;
+                
                 if (snapshot.empty) {
                     messagesList.innerHTML = '<p class="text-center text-gray-500 py-8">لا توجد رسائل حالياً.</p>';
                     return;
@@ -2349,10 +2165,7 @@
 
                 let msgs = [];
                 snapshot.forEach(doc => {
-                    msgs.push({
-                        id: doc.id,
-                        ...doc.data()
-                    });
+                    msgs.push({ id: doc.id, ...doc.data() });
                 });
 
                 msgs.sort((a, b) => b.timestamp - a.timestamp);
@@ -2373,23 +2186,21 @@
                         </div>
                     `;
                 }).join('');
-                lucide.createIcons({
-                    root: messagesList
-                });
+                lucide.createIcons({ root: messagesList });
 
             } catch (e) {
                 console.error("خطأ في جلب الرسائل", e);
                 const messagesList = document.getElementById('messages-list');
-                if (messagesList) messagesList.innerHTML = '<p class="text-center text-red-500 py-8">حدث خطأ في الاتصال وجلب الرسائل.</p>';
+                if(messagesList) messagesList.innerHTML = '<p class="text-center text-red-500 py-8">حدث خطأ في الاتصال وجلب الرسائل.</p>';
             }
         };
 
         window.deleteMessage = async function(msgId) {
-            if (!confirm('هل أنت متأكد من حذف هذه الرسالة نهائياً؟')) return;
+            if(!confirm('هل أنت متأكد من حذف هذه الرسالة نهائياً؟')) return;
             try {
                 await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'messages', msgId));
-                window.openMessagesModal();
-            } catch (e) {
+                window.openMessagesModal(); 
+            } catch(e) {
                 console.error(e);
                 alert('حدث خطأ أثناء الحذف');
             }
@@ -2402,8 +2213,8 @@
                 try {
                     const AudioContext = window.AudioContext || window.webkitAudioContext;
                     audioCtx = new AudioContext();
-                    if (audio) sourceNode = audioCtx.createMediaElementSource(audio);
-
+                    if(audio) sourceNode = audioCtx.createMediaElementSource(audio);
+                    
                     compressorNode = audioCtx.createDynamicsCompressor();
                     compressorNode.threshold.setValueAtTime(-24, audioCtx.currentTime);
                     compressorNode.knee.setValueAtTime(30, audioCtx.currentTime);
@@ -2412,17 +2223,17 @@
                     compressorNode.release.setValueAtTime(0.25, audioCtx.currentTime);
 
                     gainNode = audioCtx.createGain();
+                    
+                                        analyserNode = audioCtx.createAnalyser();
+                    analyserNode.fftSize = 512; 
 
-                    analyserNode = audioCtx.createAnalyser();
-                    analyserNode.fftSize = 512;
-
-                    if (sourceNode) {
+                    if(sourceNode) {
                         try {
                             sourceNode.connect(compressorNode);
                             compressorNode.connect(gainNode);
                             gainNode.connect(analyserNode);
                             analyserNode.connect(audioCtx.destination);
-                        } catch (e) {
+                        } catch(e) {
                             console.warn("تم تعطيل محلل الطيف مؤقتاً بسبب قيود CORS على هذا الرابط.");
                         }
                     }
@@ -2442,28 +2253,22 @@
         };
 
         let lastDrawTime = performance.now();
-
         function drawVisualizer(timestamp = performance.now()) {
             if (!analyserNode || !canvasCtx || !visualizerCanvas) return;
             animationId = requestAnimationFrame(drawVisualizer);
 
             if (timestamp - lastDrawTime < 33) return;
             lastDrawTime = timestamp;
-
-            const bufferLength = analyserNode.frequencyBinCount;
+            
+                        const bufferLength = analyserNode.frequencyBinCount;
             const dataArray = new Uint8Array(bufferLength);
             analyserNode.getByteFrequencyData(dataArray);
 
             let isSilent = true;
-            for (let i = 0; i < dataArray.length; i++) {
-                if (dataArray[i] > 0) {
-                    isSilent = false;
-                    break;
-                }
-            }
-
+            for(let i=0; i<dataArray.length; i++) { if(dataArray[i] > 0) { isSilent = false; break; } }
+           
             if (isSilent && isPlaying && currentIndex < -1) {
-                for (let i = 0; i < dataArray.length; i++) {
+                for(let i=0; i<dataArray.length; i++) {
                     dataArray[i] = Math.random() * 80 + 20;
                 }
             }
@@ -2476,21 +2281,21 @@
                 return;
             }
 
-            const halfCount = 32;
+            const halfCount = 32; 
             const barWidth = visualizerCanvas.width / (halfCount * 2);
             const centerX = visualizerCanvas.width / 2;
 
             const gradient = canvasCtx.createLinearGradient(0, visualizerCanvas.height, 0, 0);
-            gradient.addColorStop(0, '#06b6d4');
-            gradient.addColorStop(0.5, '#f59e0b');
-            gradient.addColorStop(1, '#ef4444');
+            gradient.addColorStop(0, '#06b6d4');    
+            gradient.addColorStop(0.5, '#f59e0b');  
+            gradient.addColorStop(1, '#ef4444');    
 
             for (let i = 0; i < halfCount; i++) {
-                let barHeight = Math.max((dataArray[i] / 255) * visualizerCanvas.height * 1.2, 2);
+                let barHeight = Math.max((dataArray[i] / 255) * visualizerCanvas.height * 1.2, 2); 
                 if (barHeight > visualizerCanvas.height) barHeight = visualizerCanvas.height;
 
                 canvasCtx.fillStyle = gradient;
-
+                
                 let xRight = centerX + (i * barWidth);
                 canvasCtx.fillRect(xRight, visualizerCanvas.height - barHeight, barWidth - 3, barHeight);
 
@@ -2505,7 +2310,7 @@
                 let iconName = 'cloud';
                 let iconClass = 'w-4 h-4 text-gray-500 animate-pulse';
                 let textClass = 'text-[11px] font-mono text-gray-500';
-
+                
                 if (state === 'success') {
                     iconClass = 'w-4 h-4 text-cyan-500';
                     textClass = 'text-[11px] font-mono text-cyan-400';
@@ -2514,14 +2319,12 @@
                     iconClass = 'w-4 h-4 text-red-500';
                     textClass = 'text-[11px] font-mono text-red-400';
                 }
-
+                
                 wrapper.innerHTML = `
                     <i data-lucide="${iconName}" class="${iconClass}"></i>
                     <span class="${textClass}">${message}</span>
                 `;
-                lucide.createIcons({
-                    root: wrapper
-                });
+                lucide.createIcons({ root: wrapper });
             }
         };
 
@@ -2544,7 +2347,7 @@
         initFirebaseAndAuth().then(() => {
             onAuthStateChanged(auth, (currentUser) => {
                 user = currentUser;
-                if (!user) return;
+                if (!user) return; 
 
                 window.applyAdminMode();
                 setupFirestoreListeners();
@@ -2560,22 +2363,22 @@
                 unsubMain = onSnapshot(docRef, (docSnap) => {
                     if (docSnap.exists() && docSnap.data()) {
                         const data = docSnap.data();
-
+                        
                         defaultCover = data.defaultCover || '';
                         if (data.aboutUsText !== undefined) {
                             aboutUsText = data.aboutUsText;
                         }
-
+                        
                         if (data.adminPasswordHash !== undefined) {
                             adminPasswordHash = data.adminPasswordHash;
                         } else if (data.adminPassword !== undefined) {
-                            hashPassword(data.adminPassword).then(h => adminPasswordHash = h);
+                             hashPassword(data.adminPassword).then(h => adminPasswordHash = h);
                         }
-
+                        
                         if (data.autoSkipSeconds !== undefined) {
                             autoSkipSeconds = data.autoSkipSeconds;
                         }
-
+                        
                         if (data.introTrack !== undefined) {
                             introTrack = data.introTrack;
                         }
@@ -2589,31 +2392,27 @@
                         if (data.groups) {
                             groups = data.groups;
                         } else if (data.tracks) {
-                            groups = [{
-                                id: 'main',
-                                name: 'الرئيسية',
-                                tracks: data.tracks
-                            }];
+                            groups = [{ id: 'main', name: 'الرئيسية', tracks: data.tracks }];
                         }
-
+                        
                         if (viewingGroupId && viewingGroupId !== 'local_queue' && !groups.find(g => g.id === viewingGroupId)) {
                             viewingGroupId = groups[0] ? groups[0].id : null;
                         }
 
                         window.applyAdminMode();
                         window.checkAndShowNewTracks();
-
+                        
                         if (introTrack && !introPlayed) {
                             sessionStorage.setItem('introPlayed', 'true');
                             introPlayed = true;
 
                             playingGroupId = 'intro';
                             currentIndex = -3;
-
+                            
                             window.safeChangeTrack(introTrack.audioUrl);
                             window.initAudioBooster();
                             window.safePlayAudio();
-
+                            
                             const playPromise = audio.play();
                             if (playPromise !== undefined) {
                                 playPromise.catch(e => {
@@ -2633,21 +2432,22 @@
                                 });
                             }
                             window.updatePlayerUI();
-                        } else if (currentIndex === -1 && playingGroupId === null) {
+                        }
+                        else if (currentIndex === -1 && playingGroupId === null) {
                             const savedGroupId = localStorage.getItem('lastPlayingGroupId');
                             const savedIndex = parseInt(localStorage.getItem('lastTrackIndex'));
-
+                            
                             let savedGroup = null;
                             if (savedGroupId === 'local_queue') {
                                 savedGroup = window.getPlayingGroup();
                             } else {
                                 savedGroup = groups.find(g => g.id === savedGroupId);
                             }
-
+                            
                             if (savedGroup && !isNaN(savedIndex) && savedIndex >= 0 && savedIndex < savedGroup.tracks.length) {
                                 playingGroupId = savedGroupId;
                                 currentIndex = savedIndex;
-                                if (audio) audio.src = savedGroup.tracks[currentIndex].audioUrl;
+                                if(audio) audio.src = savedGroup.tracks[currentIndex].audioUrl;
                                 pendingRestoreTime = true;
                                 window.updatePlayerUI();
                             }
@@ -2671,35 +2471,29 @@
                     const countDisplay = document.getElementById('visitor-count-display');
                     if (docSnap.exists()) {
                         globalVisits = docSnap.data().visits || 0;
-                        totalTracksPlayed = docSnap.data().plays || 0;
-                        globalTrackPlays = docSnap.data().trackPlays || {};
-                        if (countDisplay) countDisplay.innerText = globalVisits;
+                        totalTracksPlayed = docSnap.data().plays || 0; 
+                        globalTrackPlays = docSnap.data().trackPlays || {}; 
+                        if(countDisplay) countDisplay.innerText = globalVisits;
                     } else {
-                        if (countDisplay) countDisplay.innerText = 0;
+                        if(countDisplay) countDisplay.innerText = 0;
                         totalTracksPlayed = 0;
                         globalTrackPlays = {};
                     }
-                    window.updateTickerUI();
+                    window.updateTickerUI(); 
                 }, (error) => {
                     console.error("Stats listener error:", error);
                 });
 
                 const visitKey = 'visited_' + appId;
                 if (!localStorage.getItem(visitKey)) {
-                    localStorage.setItem(visitKey, 'true');
-                    updateDoc(statsRef, {
-                        visits: increment(1)
-                    }).catch(async (e) => {
-                        if (e.code === 'not-found') {
-                            await setDoc(statsRef, {
-                                visits: 1,
-                                plays: 0,
-                                trackPlays: {}
-                            });
+                    localStorage.setItem(visitKey, 'true'); 
+                    updateDoc(statsRef, { visits: increment(1) }).catch(async (e) => {
+                        if(e.code === 'not-found') {
+                            await setDoc(statsRef, { visits: 1, plays: 0, trackPlays: {} });
                         }
                     });
                 }
-            } catch (e) {
+            } catch(e) {
                 console.error(e);
             }
         }
@@ -2709,17 +2503,15 @@
             try {
                 window.setCloudState('connecting', 'جاري الاتصال...');
                 const dataRef = doc(db, 'artifacts', appId, 'public', 'data', 'shared_playlist', 'main');
-                await setDoc(dataRef, {
-                    groups: groups,
-                    defaultCover: defaultCover,
+                await setDoc(dataRef, { 
+                    groups: groups, 
+                    defaultCover: defaultCover, 
                     aboutUsText: aboutUsText,
-                    adminPasswordHash: adminPasswordHash,
+                    adminPasswordHash: adminPasswordHash, 
                     autoSkipSeconds: autoSkipSeconds,
                     introTrack: introTrack,
                     playlistBgColor: playlistBgColor
-                }, {
-                    merge: true
-                });
+                }, { merge: true });
                 window.setCloudState('success', 'تم الحفظ بنجاح');
             } catch (e) {
                 console.error(e);
@@ -2728,10 +2520,10 @@
         };
 
         window.handleDragStart = (e, index) => {
-            if (searchQuery) return;
+            if (searchQuery) return; 
             const group = window.getViewingGroup();
             if (!group || (!group.isLocal && !isAdmin)) return;
-
+            
             draggedIndex = index;
             e.dataTransfer.effectAllowed = 'move';
             setTimeout(() => {
@@ -2791,12 +2583,12 @@
                 localStorage.setItem('lastTrackIndex', currentIndex);
             }
 
-            if (group.isLocal) {
+            if(group.isLocal) {
                 localStorage.setItem('my_local_queue', JSON.stringify(group.tracks));
             } else {
                 window.saveToDB();
             }
-
+            
             window.renderPlaylist();
             if (playingGroupId === group.id) window.updatePlayerUI();
             window.updateTickerUI();
@@ -2805,17 +2597,17 @@
         window.moveTrackPrompt = (e, index) => {
             e.stopPropagation();
             const currentGroup = window.getViewingGroup();
-            if (!currentGroup || !currentGroup.tracks[index] || currentGroup.isLocal) return;
+            if(!currentGroup || !currentGroup.tracks[index] || currentGroup.isLocal) return;
 
             const otherGroups = groups.filter(g => g.id !== currentGroup.id);
-            if (otherGroups.length === 0) {
+            if(otherGroups.length === 0) {
                 alert('لا توجد أقسام أخرى. قم بإنشاء قسم جديد أولاً لكي تتمكن من النقل.');
                 return;
             }
 
             let selectOptions = otherGroups.map(g => `<option value="${g.id}">${g.name}</option>`).join('');
-
-            if (!modalContent) return;
+            
+            if(!modalContent) return;
             modalContent.innerHTML = `
                 <div class="flex items-center justify-between mb-4 border-b border-[#333] pb-3">
                     <h3 class="text-lg font-bold text-white flex items-center gap-2">
@@ -2832,16 +2624,14 @@
                     <button id="modal-confirm-move-btn" class="px-5 py-2.5 rounded-lg bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white font-medium transition-all shadow-lg shadow-blue-500/20">نقل الآن</button>
                 </div>
             `;
-            if (modalOverlay) modalOverlay.classList.remove('hidden');
-            lucide.createIcons({
-                root: modalContent
-            });
+            if(modalOverlay) modalOverlay.classList.remove('hidden');
+            lucide.createIcons({ root: modalContent });
 
             const moveConfirmBtn = document.getElementById('modal-confirm-move-btn');
-            if (moveConfirmBtn) {
+            if(moveConfirmBtn) {
                 moveConfirmBtn.addEventListener('click', () => {
                     const selectEl = document.getElementById('move-target-group');
-                    if (selectEl) {
+                    if(selectEl) {
                         window.executeMoveTrack(currentGroup.id, selectEl.value, index);
                     }
                     window.closeModal();
@@ -2861,7 +2651,7 @@
             if (playingGroupId === sourceGroupId) {
                 if (currentIndex === trackIndex) {
                     playingGroupId = targetGroupId;
-                    currentIndex = targetGroup.tracks.length - 1;
+                    currentIndex = targetGroup.tracks.length - 1; 
                     localStorage.setItem('lastPlayingGroupId', playingGroupId);
                     localStorage.setItem('lastTrackIndex', currentIndex);
                 } else if (currentIndex > trackIndex) {
@@ -2869,7 +2659,7 @@
                     localStorage.setItem('lastTrackIndex', currentIndex);
                 }
             }
-
+            
             window.saveToDB();
             window.renderPlaylist();
             window.updateTickerUI();
@@ -2892,51 +2682,47 @@
         window.addGroup = () => {
             window.openPromptModal('اسم المجموعة الجديدة:', 'مثال: بودكاست، مسلسلات...', (name) => {
                 const id = 'group_' + Date.now();
-                groups.push({
-                    id,
-                    name,
-                    tracks: []
-                });
+                groups.push({ id, name, tracks: [] });
                 viewingGroupId = id;
                 window.saveToDB();
                 window.renderGroups();
                 window.renderPlaylist();
-            }, '');
+            }, ''); 
         };
 
         window.editGroup = (e, groupId) => {
             e.stopPropagation();
             const group = groups.find(g => g.id === groupId);
-            if (!group) return;
+            if(!group) return;
             window.openPromptModal('تعديل اسم المجموعة:', 'أدخل الاسم الجديد', (newName) => {
                 group.name = newName;
                 window.saveToDB();
                 window.renderGroups();
-                if (playingGroupId === groupId) window.updatePlayerUI();
-            }, group.name);
+                if(playingGroupId === groupId) window.updatePlayerUI();
+            }, group.name); 
         };
 
         window.editGroupColor = (e, groupId) => {
             e.stopPropagation();
             const group = groups.find(g => g.id === groupId);
-            if (!group) return;
+            if(!group) return;
             window.openColorModal('تلوين القسم:', (newColor) => {
                 group.color = newColor;
                 window.saveToDB();
                 window.renderGroups();
-            }, group.color || '#06b6d4');
+            }, group.color || '#06b6d4'); 
         };
 
         window.editTrack = (e, index) => {
             e.stopPropagation();
             const group = window.getViewingGroup();
-            if (!group || !group.tracks[index] || group.isLocal) return;
-
+            if(!group || !group.tracks[index] || group.isLocal) return;
+            
             const track = group.tracks[index];
             const safeTitle = track.title ? track.title.replace(/"/g, '&quot;') : '';
             const safeUrl = track.url ? track.url.replace(/"/g, '&quot;') : '';
 
-            if (!modalContent) return;
+            if(!modalContent) return;
             modalContent.innerHTML = `
                 <div class="flex items-center justify-between mb-4 border-b border-[#333] pb-3">
                     <h3 class="text-lg font-bold text-white flex items-center gap-2">
@@ -2962,29 +2748,27 @@
                     <button id="modal-confirm-edit-btn" class="px-5 py-2.5 rounded-lg bg-gradient-to-r from-cyan-600 to-cyan-500 hover:from-cyan-500 hover:to-cyan-400 text-white font-medium transition-all shadow-lg shadow-cyan-500/20">حفظ التعديل</button>
                 </div>
             `;
-            if (modalOverlay) modalOverlay.classList.remove('hidden');
-            lucide.createIcons({
-                root: modalContent
-            });
+            if(modalOverlay) modalOverlay.classList.remove('hidden');
+            lucide.createIcons({ root: modalContent });
 
             const titleInput = document.getElementById('edit-track-title');
-            if (titleInput) titleInput.focus();
+            if(titleInput) titleInput.focus();
 
             const confirmBtn = document.getElementById('modal-confirm-edit-btn');
-            if (confirmBtn) {
+            if(confirmBtn) {
                 confirmBtn.addEventListener('click', () => {
                     const newTitle = titleInput ? titleInput.value.trim() : '';
                     if (newTitle) {
                         track.title = newTitle;
                         window.saveToDB();
                         window.renderPlaylist();
-                        if (playingGroupId === group.id && currentIndex === index) window.updatePlayerUI();
+                        if(playingGroupId === group.id && currentIndex === index) window.updatePlayerUI();
                     }
                     window.closeModal();
                 });
             }
-
-            if (titleInput) {
+            
+            if(titleInput) {
                 titleInput.addEventListener('keypress', (event) => {
                     if (event.key === 'Enter' && confirmBtn) confirmBtn.click();
                 });
@@ -2994,12 +2778,12 @@
         window.editTrackDetails = (e, index) => {
             e.stopPropagation();
             const group = window.getViewingGroup();
-            if (!group || !group.tracks[index] || group.isLocal) return;
+            if(!group || !group.tracks[index] || group.isLocal) return;
             window.openDetailsModal('تفاصيل ومعلومات المقطع', group.tracks[index].title, (newDetails) => {
                 group.tracks[index].details = newDetails;
                 window.saveToDB();
                 window.renderPlaylist();
-                if (playingGroupId === group.id && currentIndex === index) window.updatePlayerUI();
+                if(playingGroupId === group.id && currentIndex === index) window.updatePlayerUI();
             }, group.tracks[index].details || '');
         };
 
@@ -3007,13 +2791,13 @@
             e.stopPropagation();
             window.openConfirmModal('سيتم حذف هذه المجموعة بجميع المقاطع الموجودة بداخلها نهائياً. هل أنت متأكد؟', () => {
                 groups = groups.filter(g => g.id !== groupId);
-
+                
                 if (viewingGroupId === groupId) {
                     viewingGroupId = groups.length > 0 ? groups[0].id : null;
                 }
-
+                
                 if (playingGroupId === groupId) {
-                    if (audio) {
+                    if(audio) {
                         audio.pause();
                         audio.removeAttribute('src');
                     }
@@ -3024,7 +2808,7 @@
                     localStorage.removeItem('lastTrackIndex');
                     window.updatePlayerUI();
                 }
-
+                
                 window.saveToDB();
                 window.renderGroups();
                 window.renderPlaylist();
@@ -3034,7 +2818,7 @@
 
         window.removeTrack = (e, index) => {
             e.stopPropagation();
-
+            
             const viewingGroup = window.getViewingGroup();
             if (!viewingGroup || viewingGroup.isLocal) return;
 
@@ -3042,16 +2826,16 @@
             if (trackToDelete) {
                 localStorage.removeItem('trackProgress_' + trackToDelete.id);
             }
-
+            
             viewingGroup.tracks.splice(index, 1);
-
+            
             if (playingGroupId === viewingGroup.id) {
                 if (currentIndex === index) {
                     if (viewingGroup.tracks.length > 0) {
                         const nextIndex = index >= viewingGroup.tracks.length ? 0 : index;
                         window.playTrack(nextIndex);
                     } else {
-                        if (audio) {
+                        if(audio) {
                             audio.pause();
                             audio.removeAttribute('src');
                         }
@@ -3068,7 +2852,7 @@
                     window.updatePlayerUI();
                 }
             }
-
+            
             window.saveToDB();
             window.renderPlaylist();
             window.updateTickerUI();
@@ -3077,21 +2861,11 @@
         window.renderGroups = function() {
             const groupsContainer = document.getElementById('groups-container');
             if (!groups || groups.length === 0 || !groupsContainer) return;
-
+            
             // إضافة قائمة "المفضلة" كأول قسم مثل الصورة تماماً
-            const allGroups = [{
-                    id: 'local_queue',
-                    name: 'المفضلة',
-                    tracks: localQueue,
-                    color: '#ef4444',
-                    icon: 'heart',
-                    isLocal: true
-                },
-                ...groups.map(g => ({
-                    ...g,
-                    icon: 'folder',
-                    color: g.color || '#ffffff'
-                }))
+            const allGroups = [
+                { id: 'local_queue', name: 'المفضلة', tracks: localQueue, color: '#ef4444', icon: 'heart', isLocal: true },
+                ...groups.map(g => ({...g, icon: 'folder', color: g.color || '#ffffff'}))
             ];
 
             const accordionHtml = allGroups.map((g, index) => {
@@ -3099,14 +2873,14 @@
                 const trackCount = g.tracks.length;
                 const color = g.color;
 
-                const iconSvg = `
+            const iconSvg = `
                 <div class="relative flex items-center justify-center w-9 h-9 rounded-lg border-2 border-[#1a0f0a] shadow-[inset_0_2px_5px_rgba(255,255,255,0.15),inset_0_-3px_5px_rgba(0,0,0,0.9),0_4px_6px_rgba(0,0,0,0.6)] bg-gradient-to-br from-[#5c3a21] to-[#2c1810] overflow-hidden shrink-0 group-hover:scale-105 transition-transform">
                     <div class="absolute inset-0 bg-gradient-to-tr from-transparent via-[rgba(255,255,255,0.2)] to-transparent pointer-events-none rounded-lg"></div>
                     <i data-lucide="${g.icon}" class="w-5 h-5 relative z-10" style="color: ${color}; filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.9)); stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round;"></i>
                 </div>
             `;
 
-                const adminControls = (isAdmin && !g.isLocal) ? `
+            const adminControls = (isAdmin && !g.isLocal) ? `
                     <div class="flex items-center gap-1 mr-3" onclick="event.stopPropagation()">
                         <button onclick="editGroupColor(event, '${g.id}')" class="p-1.5 text-yellow-500 hover:text-yellow-400 hover:bg-yellow-500/10 rounded-lg transition-colors" title="تلوين القسم"><i data-lucide="palette" class="w-4 h-4"></i></button>
                         <button onclick="editGroup(event, '${g.id}')" class="p-1.5 text-cyan-500 hover:text-cyan-400 hover:bg-cyan-500/10 rounded-lg transition-colors" title="تعديل الاسم"><i data-lucide="edit-2" class="w-4 h-4"></i></button>
@@ -3133,10 +2907,8 @@
             }).join('');
 
             groupsContainer.innerHTML = accordionHtml;
-            lucide.createIcons({
-                root: groupsContainer
-            });
-
+            lucide.createIcons({ root: groupsContainer });
+            
             const adminAddWrapper = document.getElementById('admin-add-group-wrapper');
             if (adminAddWrapper) {
                 adminAddWrapper.innerHTML = isAdmin ? `
@@ -3144,19 +2916,17 @@
                         <i data-lucide="plus" class="w-4 h-4"></i> إضافة قسم
                     </button>
                 ` : '';
-                lucide.createIcons({
-                    root: adminAddWrapper
-                });
+                lucide.createIcons({ root: adminAddWrapper });
             }
         };
 
         window.updatePlayerUI = function() {
             const currentPlayingGroup = window.getPlayingGroup();
             const playingTracks = currentPlayingGroup ? currentPlayingGroup.tracks : [];
-
-            if (btnPlayPause) btnPlayPause.disabled = (playingTracks.length === 0 && currentIndex === -1 && currentIndex !== -2 && currentIndex !== -3 && currentIndex !== -4 && currentIndex !== -5 && currentIndex !== -6);
-            if (btnNext) btnNext.disabled = currentIndex === -2 || currentIndex === -3 || currentIndex === -4 || currentIndex === -5 || currentIndex === -6 || currentIndex >= playingTracks.length - 1 || playingTracks.length === 0;
-            if (btnPrev) btnPrev.disabled = currentIndex === -2 || currentIndex === -3 || currentIndex === -4 || currentIndex === -5 || currentIndex === -6 || currentIndex <= 0 || playingTracks.length === 0;
+            
+            if(btnPlayPause) btnPlayPause.disabled = (playingTracks.length === 0 && currentIndex === -1 && currentIndex !== -2 && currentIndex !== -3 && currentIndex !== -4 && currentIndex !== -5 && currentIndex !== -6);
+            if(btnNext) btnNext.disabled = currentIndex === -2 || currentIndex === -3 || currentIndex === -4 || currentIndex === -5 || currentIndex === -6 || currentIndex >= playingTracks.length - 1 || playingTracks.length === 0;
+            if(btnPrev) btnPrev.disabled = currentIndex === -2 || currentIndex === -3 || currentIndex === -4 || currentIndex === -5 || currentIndex === -6 || currentIndex <= 0 || playingTracks.length === 0;
 
             let mediaTitle = 'راديو خالد';
             let mediaArtist = 'رحلة الى الزمن الجميل';
@@ -3165,20 +2935,20 @@
             if (currentIndex === -2) {
                 mediaTitle = 'إذاعة القرآن الكريم من القاهرة';
                 mediaArtist = 'بث مباشر 🔴';
-                if (trackTitle) trackTitle.innerText = mediaTitle;
-                if (trackAuthor) trackAuthor.innerText = mediaArtist;
-
-                if (playingGroupBadge) {
+                if(trackTitle) trackTitle.innerText = mediaTitle;
+                if(trackAuthor) trackAuthor.innerText = mediaArtist;
+                
+                if(playingGroupBadge) {
                     playingGroupBadge.innerText = 'بث حي';
                     playingGroupBadge.classList.remove('hidden');
                 }
 
-                if (trackCover) {
+                if(trackCover) {
                     trackCover.src = mediaArtwork;
                     trackCover.classList.remove('hidden');
                 }
-                if (defaultIcon) defaultIcon.classList.add('hidden');
-
+                if(defaultIcon) defaultIcon.classList.add('hidden');
+                
                 if (downloadContainer) downloadContainer.classList.add('hidden');
                 if (btnRestart) btnRestart.classList.add('hidden');
                 if (trackDetailsContainer) trackDetailsContainer.classList.add('hidden');
@@ -3186,20 +2956,20 @@
             } else if (currentIndex === -4) {
                 mediaTitle = 'دراما ميكس';
                 mediaArtist = 'بث مباشر 🔴';
-                if (trackTitle) trackTitle.innerText = mediaTitle;
-                if (trackAuthor) trackAuthor.innerText = mediaArtist;
-
-                if (playingGroupBadge) {
+                if(trackTitle) trackTitle.innerText = mediaTitle;
+                if(trackAuthor) trackAuthor.innerText = mediaArtist;
+                
+                if(playingGroupBadge) {
                     playingGroupBadge.innerText = 'بث حي';
                     playingGroupBadge.classList.remove('hidden');
                 }
 
-                if (trackCover) {
-                    trackCover.src = mediaArtwork;
+                if(trackCover) {
+                    trackCover.src = mediaArtwork; 
                     trackCover.classList.remove('hidden');
                 }
-                if (defaultIcon) defaultIcon.classList.add('hidden');
-
+                if(defaultIcon) defaultIcon.classList.add('hidden');
+                
                 if (downloadContainer) downloadContainer.classList.add('hidden');
                 if (btnRestart) btnRestart.classList.add('hidden');
                 if (trackDetailsContainer) trackDetailsContainer.classList.add('hidden');
@@ -3207,19 +2977,19 @@
             } else if (currentIndex === -5) {
                 mediaTitle = 'راديو الأخبار (سكاي نيوز)';
                 mediaArtist = 'بث مباشر 🔴';
-                if (trackTitle) trackTitle.innerText = mediaTitle;
-                if (trackAuthor) trackAuthor.innerText = mediaArtist;
+                if(trackTitle) trackTitle.innerText = mediaTitle;
+                if(trackAuthor) trackAuthor.innerText = mediaArtist;
 
-                if (playingGroupBadge) {
+                if(playingGroupBadge) {
                     playingGroupBadge.innerText = 'أخبار حية';
                     playingGroupBadge.classList.remove('hidden');
                 }
 
-                if (trackCover) {
-                    trackCover.src = mediaArtwork;
+                if(trackCover) {
+                    trackCover.src = mediaArtwork; 
                     trackCover.classList.remove('hidden');
                 }
-                if (defaultIcon) defaultIcon.classList.add('hidden');
+                if(defaultIcon) defaultIcon.classList.add('hidden');
 
                 if (downloadContainer) downloadContainer.classList.add('hidden');
                 if (btnRestart) btnRestart.classList.add('hidden');
@@ -3228,19 +2998,19 @@
             } else if (currentIndex === -6) {
                 mediaTitle = 'مونت كارلو الدولية';
                 mediaArtist = 'بث مباشر 🔴';
-                if (trackTitle) trackTitle.innerText = mediaTitle;
-                if (trackAuthor) trackAuthor.innerText = mediaArtist;
+                if(trackTitle) trackTitle.innerText = mediaTitle;
+                if(trackAuthor) trackAuthor.innerText = mediaArtist;
 
-                if (playingGroupBadge) {
+                if(playingGroupBadge) {
                     playingGroupBadge.innerText = 'أخبار دولية';
                     playingGroupBadge.classList.remove('hidden');
                 }
 
-                if (trackCover) {
-                    trackCover.src = mediaArtwork;
+                if(trackCover) {
+                    trackCover.src = mediaArtwork; 
                     trackCover.classList.remove('hidden');
                 }
-                if (defaultIcon) defaultIcon.classList.add('hidden');
+                if(defaultIcon) defaultIcon.classList.add('hidden');
 
                 if (downloadContainer) downloadContainer.classList.add('hidden');
                 if (btnRestart) btnRestart.classList.add('hidden');
@@ -3249,21 +3019,21 @@
             } else if (currentIndex === -3 && introTrack) {
                 mediaTitle = introTrack.title || 'هوية الإذاعة';
                 mediaArtist = introTrack.author || 'راديو خالد';
-                if (trackTitle) trackTitle.innerText = mediaTitle;
-                if (trackAuthor) trackAuthor.innerText = mediaArtist;
-
-                if (playingGroupBadge) {
+                if(trackTitle) trackTitle.innerText = mediaTitle;
+                if(trackAuthor) trackAuthor.innerText = mediaArtist;
+                
+                if(playingGroupBadge) {
                     playingGroupBadge.innerText = 'تتر البداية';
                     playingGroupBadge.classList.remove('hidden');
                 }
-
+                
                 const finalCover = introTrack.customCover || defaultCover || introTrack.cover;
                 if (finalCover) {
-                    if (trackCover) {
+                    if(trackCover) {
                         trackCover.src = finalCover;
                         trackCover.classList.remove('hidden');
                     }
-                    if (defaultIcon) defaultIcon.classList.add('hidden');
+                    if(defaultIcon) defaultIcon.classList.add('hidden');
                 }
 
                 if (downloadContainer) downloadContainer.classList.add('hidden');
@@ -3275,10 +3045,10 @@
                 mediaTitle = track.title;
                 mediaArtist = track.author;
 
-                if (trackTitle) trackTitle.innerText = mediaTitle;
-                if (trackAuthor) trackAuthor.innerText = mediaArtist;
-
-                if (playingGroupBadge) {
+                if(trackTitle) trackTitle.innerText = mediaTitle;
+                if(trackAuthor) trackAuthor.innerText = mediaArtist;
+                
+                if(playingGroupBadge) {
                     playingGroupBadge.innerText = currentPlayingGroup.name;
                     playingGroupBadge.classList.remove('hidden');
                 }
@@ -3287,39 +3057,39 @@
                 if (finalCover) mediaArtwork = finalCover;
 
                 if (finalCover) {
-                    if (trackCover) {
+                    if(trackCover) {
                         trackCover.src = finalCover;
                         trackCover.classList.remove('hidden');
                     }
-                    if (defaultIcon) defaultIcon.classList.add('hidden');
+                    if(defaultIcon) defaultIcon.classList.add('hidden');
                 } else {
-                    if (trackCover) trackCover.classList.add('hidden');
-                    if (defaultIcon) defaultIcon.classList.remove('hidden');
+                    if(trackCover) trackCover.classList.add('hidden');
+                    if(defaultIcon) defaultIcon.classList.remove('hidden');
                 }
-
+                
                 if (downloadContainer) downloadContainer.classList.remove('hidden');
                 if (btnRestart) btnRestart.classList.remove('hidden');
 
                 if (track.details && track.details.trim() !== '') {
-                    if (trackDetailsText) trackDetailsText.innerHTML = track.details.replace(/\n/g, '<br>');
-                    if (trackDetailsContainer) trackDetailsContainer.classList.remove('hidden');
+                    if(trackDetailsText) trackDetailsText.innerHTML = track.details.replace(/\n/g, '<br>');
+                    if(trackDetailsContainer) trackDetailsContainer.classList.remove('hidden');
                 } else {
-                    if (trackDetailsContainer) trackDetailsContainer.classList.add('hidden');
+                    if(trackDetailsContainer) trackDetailsContainer.classList.add('hidden');
                 }
 
             } else {
-                if (trackTitle) trackTitle.innerText = 'محطة الراديو جاهزة';
-                if (trackAuthor) trackAuthor.innerText = 'اختر مقطعاً لتشغيله';
-                if (trackCover) trackCover.classList.add('hidden');
-                if (playingGroupBadge) playingGroupBadge.classList.add('hidden');
-                if (defaultIcon) defaultIcon.classList.remove('hidden');
-
+                if(trackTitle) trackTitle.innerText = 'محطة الراديو جاهزة';
+                if(trackAuthor) trackAuthor.innerText = 'اختر مقطعاً لتشغيله';
+                if(trackCover) trackCover.classList.add('hidden');
+                if(playingGroupBadge) playingGroupBadge.classList.add('hidden');
+                if(defaultIcon) defaultIcon.classList.remove('hidden');
+                
                 if (defaultCover) {
-                    if (trackCover) {
+                    if(trackCover) {
                         trackCover.src = defaultCover;
                         trackCover.classList.remove('hidden');
                     }
-                    if (defaultIcon) defaultIcon.classList.add('hidden');
+                    if(defaultIcon) defaultIcon.classList.add('hidden');
                 }
 
                 if (downloadContainer) downloadContainer.classList.add('hidden');
@@ -3331,14 +3101,14 @@
             if (coverContainer) coverContainer.style.display = 'flex';
             if (visualizerCanvas) visualizerCanvas.style.display = 'block';
             if (progressContainer) progressContainer.classList.remove('opacity-50', 'pointer-events-none');
-
+            
             if (btnPlayPause) {
                 btnPlayPause.classList.remove('opacity-50');
                 btnPlayPause.disabled = (playingTracks.length === 0 && currentIndex === -1 && currentIndex !== -2 && currentIndex !== -3 && currentIndex !== -4 && currentIndex !== -5 && currentIndex !== -6);
             }
 
             if (isPlaying) {
-                if (coverContainer) {
+                if(coverContainer) {                                                                
                     coverContainer.classList.add('border-pink-500', 'shadow-[0_0_30px_rgba(236,72,153,0.3)]', 'animate-spin-slow');
                     if (currentIndex === -2) {
                         coverContainer.classList.replace('border-pink-500', 'border-emerald-500');
@@ -3353,24 +3123,24 @@
                         coverContainer.classList.replace('border-pink-500', 'border-orange-500');
                         coverContainer.classList.replace('shadow-[0_0_30px_rgba(236,72,153,0.3)]', 'shadow-[0_0_30px_rgba(249,115,22,0.3)]');
                     } else if (currentIndex === -3) {
-                        coverContainer.classList.replace('border-pink-500', 'border-orange-500');
-                        coverContainer.classList.replace('shadow-[0_0_30px_rgba(236,72,153,0.3)]', 'shadow-[0_0_30px_rgba(249,115,22,0.3)]');
+                         coverContainer.classList.replace('border-pink-500', 'border-orange-500');
+                         coverContainer.classList.replace('shadow-[0_0_30px_rgba(236,72,153,0.3)]', 'shadow-[0_0_30px_rgba(249,115,22,0.3)]');
                     }
                     coverContainer.classList.remove('border-gray-800');
                 }
-                if (defaultIcon) defaultIcon.classList.replace('text-gray-600', 'text-cyan-400');
-                if (playingGlow) playingGlow.classList.remove('hidden');
-                if (visualizerCanvas) visualizerCanvas.classList.replace('opacity-0', 'opacity-100');
-                if (btnPlayPause) btnPlayPause.innerHTML = SVG_PAUSE;
+                if(defaultIcon) defaultIcon.classList.replace('text-gray-600', 'text-cyan-400');
+                if(playingGlow) playingGlow.classList.remove('hidden');
+                if(visualizerCanvas) visualizerCanvas.classList.replace('opacity-0', 'opacity-100');
+                if(btnPlayPause) btnPlayPause.innerHTML = SVG_PAUSE;
             } else {
-                if (coverContainer) {
+                if(coverContainer) {
                     coverContainer.classList.remove('border-pink-500', 'border-emerald-500', 'border-purple-500', 'border-blue-500', 'border-orange-500', 'shadow-[0_0_30px_rgba(236,72,153,0.3)]', 'shadow-[0_0_30px_rgba(16,185,129,0.3)]', 'shadow-[0_0_30px_rgba(168,85,247,0.3)]', 'shadow-[0_0_30px_rgba(59,130,246,0.3)]', 'shadow-[0_0_30px_rgba(249,115,22,0.3)]', 'animate-spin-slow');
                     coverContainer.classList.add('border-gray-800');
                 }
-                if (defaultIcon) defaultIcon.classList.replace('text-cyan-400', 'text-gray-600');
-                if (playingGlow) playingGlow.classList.add('hidden');
-
-                if (visualizerCanvas) {
+                if(defaultIcon) defaultIcon.classList.replace('text-cyan-400', 'text-gray-600');
+                if(playingGlow) playingGlow.classList.add('hidden');
+                
+                if(visualizerCanvas) {
                     if (currentIndex !== -1) {
                         visualizerCanvas.classList.replace('opacity-0', 'opacity-50');
                         visualizerCanvas.classList.replace('opacity-100', 'opacity-50');
@@ -3379,50 +3149,37 @@
                         visualizerCanvas.classList.replace('opacity-50', 'opacity-0');
                     }
                 }
-
-                if (btnPlayPause) btnPlayPause.innerHTML = SVG_PLAY;
+                
+                if(btnPlayPause) btnPlayPause.innerHTML = SVG_PLAY;
             }
-
+            
             if ('mediaSession' in navigator) {
                 navigator.mediaSession.metadata = new MediaMetadata({
                     title: mediaTitle,
                     artist: mediaArtist,
                     album: 'راديو خالد',
-                    artwork: [{
-                            src: mediaArtwork,
-                            sizes: '512x512',
-                            type: 'image/png'
-                        },
-                        {
-                            src: mediaArtwork,
-                            sizes: '256x256',
-                            type: 'image/png'
-                        },
-                        {
-                            src: mediaArtwork,
-                            sizes: '128x128',
-                            type: 'image/png'
-                        }
+                    artwork: [
+                        { src: mediaArtwork, sizes: '512x512', type: 'image/png' },
+                        { src: mediaArtwork, sizes: '256x256', type: 'image/png' },
+                        { src: mediaArtwork, sizes: '128x128', type: 'image/png' }
                     ]
                 });
             }
-
+            
             window.renderPlaylist();
-            if (trackDetailsContainer) lucide.createIcons({
-                root: trackDetailsContainer
-            });
+            if(trackDetailsContainer) lucide.createIcons({ root: trackDetailsContainer });
         };
 
         window.playTrack = (index) => {
             const targetGroup = window.getViewingGroup();
             if (!targetGroup || !targetGroup.tracks[index]) return;
-
+            
             playingGroupId = targetGroup.id;
             currentIndex = index;
-
+            
             localStorage.setItem('lastPlayingGroupId', playingGroupId);
             localStorage.setItem('lastTrackIndex', currentIndex);
-
+            
             const track = targetGroup.tracks[currentIndex];
 
             // تنشيط المقاطع القديمة المحفوظة في قاعدة البيانات لتسحب الرابط المباشر
@@ -3437,15 +3194,15 @@
 
             window.safeChangeTrack(track.audioUrl);
             pendingRestoreTime = true;
-
+            
             window.initAudioBooster();
             window.safePlayAudio();
-
+            
             clearTimeout(audioLoadTimeout);
             audioLoadTimeout = setTimeout(() => {
                 if (audio && audio.paused && currentIndex !== -2 && currentIndex !== -3 && currentIndex !== -4 && currentIndex !== -5 && currentIndex !== -6) {
                     window.showToast('المقطع يستغرق وقتاً طويلاً. قد تكون هناك مشكلة بالرابط أو بالإنترنت. يرجى تحديث الصفحة.', 'error');
-                    if (trackTitle) trackTitle.innerText = '⚠️ تأخر أو خطأ في التحميل';
+                    if(trackTitle) trackTitle.innerText = '⚠️ تأخر أو خطأ في التحميل';
                 }
             }, 15000);
 
@@ -3458,17 +3215,14 @@
             if (!viewingGroup || !playlistContainer) return;
 
             let tracks = viewingGroup.tracks;
-
+            
             const isSearching = searchQuery.trim() !== '';
-            let filteredTracksInfo = tracks.map((track, index) => ({
-                track,
-                index
-            }));
-
+            let filteredTracksInfo = tracks.map((track, index) => ({ track, index }));
+            
             if (isSearching) {
                 const q = searchQuery.toLowerCase();
-                filteredTracksInfo = filteredTracksInfo.filter(item =>
-                    item.track.title.toLowerCase().includes(q) ||
+                filteredTracksInfo = filteredTracksInfo.filter(item => 
+                    item.track.title.toLowerCase().includes(q) || 
                     item.track.author.toLowerCase().includes(q)
                 );
             }
@@ -3491,32 +3245,27 @@
                         <p>${isSearching ? 'لم يتم العثور على مقاطع مطابقة للبحث' : (viewingGroup.isLocal ? 'المفضلة فارغة حالياً. تصفح الأقسام واضغط على علامة ⨁ لإضافة مقاطع هنا.' : (isAdmin ? 'أضف روابط لتكوين قسم "' + viewingGroup.name + '"' : 'لا توجد مقاطع في هذا القسم حالياً'))}</p>
                     </div>
                 `;
-                lucide.createIcons({
-                    root: playlistContainer
-                });
+                lucide.createIcons({ root: playlistContainer });
                 return;
             }
 
             // تطبيق حد التحميل (pagination)
             const tracksToShow = filteredTracksInfo.slice(0, loadedTracksCount);
 
-            const listHtml = tracksToShow.map(({
-                track,
-                index
-            }, arrayIndex) => {
+            const listHtml = tracksToShow.map(({ track, index }, arrayIndex) => {
                 const isActive = (playingGroupId === viewingGroup.id) && (currentIndex === index);
-
+                
                 const isEven = arrayIndex % 2 === 0;
-                const baseBgColor = isEven ? 'bg-[#1e1e1e]/95' : 'bg-[#151515]/95';
+                const baseBgColor = isEven ? 'bg-[#1e1e1e]/95' : 'bg-[#151515]/95'; 
 
-                const activeClasses = isActive ?
-                    'bg-gradient-to-r from-pink-900/40 to-cyan-900/40 border border-pink-500/60 shadow-[0_0_20px_rgba(236,72,153,0.15)] ring-1 ring-pink-500/30' :
-                    `hover:bg-[#2a2a2a] border border-[#333] shadow-md ${baseBgColor} hover:border-[#555]`;
-
+                const activeClasses = isActive 
+                    ? 'bg-gradient-to-r from-pink-900/40 to-cyan-900/40 border border-pink-500/60 shadow-[0_0_20px_rgba(236,72,153,0.15)] ring-1 ring-pink-500/30' 
+                    : `hover:bg-[#2a2a2a] border border-[#333] shadow-md ${baseBgColor} hover:border-[#555]`;
+                    
                 const textClasses = isActive ? 'text-pink-300 font-extrabold' : 'text-gray-100 font-bold';
-
+                
                 let iconHtml = `<span class="text-gray-500 text-sm group-hover:hidden">${index + 1}</span><i data-lucide="play" class="w-4 h-4 text-cyan-400 hidden group-hover:block ml-0.5"></i>`;
-
+                
                 if (isActive) {
                     if (isPlaying) {
                         iconHtml = `
@@ -3598,9 +3347,7 @@
             }
 
             playlistContainer.innerHTML = extraHeaderHtml + listHtml + loadMoreHtml;
-            lucide.createIcons({
-                root: playlistContainer
-            });
+            lucide.createIcons({ root: playlistContainer });
             window.bindAutoScrollEvents('playlist-container');
         };
 
@@ -3611,26 +3358,26 @@
 
         if (linkInput) {
             linkInput.addEventListener('input', (e) => {
-                if (btnSubmit) btnSubmit.disabled = e.target.value.trim() === '' || isLoading;
+                if(btnSubmit) btnSubmit.disabled = e.target.value.trim() === '' || isLoading;
             });
         }
 
         if (linkForm) {
             linkForm.addEventListener('submit', async (e) => {
                 e.preventDefault();
-                if (!linkInput) return;
+                if(!linkInput) return;
                 const url = linkInput.value.trim();
-                if (errorMsg) errorMsg.classList.add('hidden');
-
+                if(errorMsg) errorMsg.classList.add('hidden');
+                
                 const viewingGroup = window.getViewingGroup();
-                if (!viewingGroup || viewingGroup.isLocal) {
+                if(!viewingGroup || viewingGroup.isLocal) {
                     alert('لا يمكنك إضافة مقاطع من الرابط مباشرة إلى القائمة الخاصة بك. أضفها في قسم عادي أولاً ثم أضفها لقائمتك الخاصة بضغط زر الإضافة.');
                     return;
                 }
-
+                
                 const alreadyExists = viewingGroup.tracks.some(t => t.url === url);
                 if (alreadyExists) {
-                    if (errorMsg) {
+                    if(errorMsg) {
                         errorMsg.innerText = 'هذا الرابط تمت إضافته من قبل في هذه المجموعة!';
                         errorMsg.classList.remove('hidden');
                     }
@@ -3638,17 +3385,15 @@
                 }
 
                 isLoading = true;
-                if (btnSubmit) {
+                if(btnSubmit) {
                     btnSubmit.disabled = true;
                     btnSubmit.innerHTML = `
                         <i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i>
                         <span class="hidden sm:inline">جاري السحب</span>
                     `;
-                    lucide.createIcons({
-                        root: btnSubmit.parentElement
-                    });
+                    lucide.createIcons({ root: btnSubmit.parentElement });
                 }
-                if (linkInput) linkInput.disabled = true;
+                if(linkInput) linkInput.disabled = true;
 
                 try {
                     const tracks = await window.fetchLinkInfo(url);
@@ -3665,42 +3410,40 @@
                         }
                     }
                 } catch (err) {
-                    if (errorMsg) {
+                    if(errorMsg) {
                         errorMsg.innerText = err.message || 'حدث خطأ أثناء الاتصال بالخادم.';
                         errorMsg.classList.remove('hidden');
                     }
                 } finally {
                     isLoading = false;
-                    if (linkInput) linkInput.disabled = false;
-                    if (btnSubmit) {
+                    if(linkInput) linkInput.disabled = false;
+                    if(btnSubmit) {
                         btnSubmit.disabled = false;
                         btnSubmit.innerHTML = `
                             <i data-lucide="plus" class="w-5 h-5"></i>
                             <span class="hidden sm:inline">إضافة</span>
                         `;
-                        lucide.createIcons({
-                            root: btnSubmit.parentElement
-                        });
+                        lucide.createIcons({ root: btnSubmit.parentElement });
                     }
                 }
             });
         }
 
         window.finishAdding = function(viewingGroup, newTracksArray) {
-            if (!newTracksArray || newTracksArray.length === 0) return;
-
+            if(!newTracksArray || newTracksArray.length === 0) return;
+            
             const numAdded = newTracksArray.length;
             viewingGroup.tracks.unshift(...newTracksArray);
-
+            
             if (playingGroupId === viewingGroup.id && currentIndex !== -1) {
                 currentIndex += numAdded;
                 localStorage.setItem('lastTrackIndex', currentIndex);
             }
 
             window.saveToDB();
-            window.updateTickerUI();
-            if (linkInput) linkInput.value = '';
-
+            window.updateTickerUI(); 
+            if(linkInput) linkInput.value = '';
+            
             if (playingGroupId === null && currentIndex === -1 && viewingGroup.tracks.length === numAdded) {
                 window.playTrack(0);
             } else {
@@ -3711,7 +3454,7 @@
         btnPlayPause?.addEventListener('click', () => {
             if (currentIndex === -2 || currentIndex === -3 || currentIndex === -4 || currentIndex === -5 || currentIndex === -6) {
                 if (isPlaying) {
-                    if (audio) audio.pause();
+                    if(audio) audio.pause();
                 } else {
                     window.initAudioBooster();
                     window.safePlayAudio();
@@ -3720,7 +3463,7 @@
             }
 
             const currentGroup = window.getPlayingGroup();
-
+            
             if (!currentGroup || currentIndex === -1 || currentGroup.tracks.length === 0) {
                 const viewingGroup = window.getViewingGroup();
                 if (viewingGroup && viewingGroup.tracks.length > 0) {
@@ -3730,9 +3473,9 @@
                 }
                 return;
             }
-
+            
             if (isPlaying) {
-                if (audio) audio.pause();
+                if(audio) audio.pause();
             } else {
                 window.initAudioBooster();
                 window.safePlayAudio();
@@ -3740,7 +3483,7 @@
         });
 
         btnRestart?.addEventListener('click', () => {
-            if (audio) audio.currentTime = 0;
+            if(audio) audio.currentTime = 0;
             if (currentIndex === -3) {
                 if (!isPlaying) {
                     window.initAudioBooster();
@@ -3760,10 +3503,7 @@
 
         btnNext?.addEventListener('click', () => {
             if (currentIndex === -3) {
-                if (audio) {
-                    audio.pause();
-                    audio.removeAttribute('src');
-                }
+                if(audio) { audio.pause(); audio.removeAttribute('src'); }
                 currentIndex = -1;
                 playingGroupId = null;
                 isPlaying = false;
@@ -3779,7 +3519,7 @@
 
         btnPrev?.addEventListener('click', () => {
             if (currentIndex === -3) {
-                if (audio) audio.currentTime = 0;
+                if(audio) audio.currentTime = 0;
                 return;
             }
             const currentGroup = window.getPlayingGroup();
@@ -3791,15 +3531,15 @@
 
         btnLoop?.addEventListener('click', () => {
             isLooping = !isLooping;
-            if (audio) audio.loop = isLooping;
+            if(audio) audio.loop = isLooping;
             if (isLooping) {
                 btnLoop.classList.replace('text-gray-500', 'text-pink-400');
                 btnLoop.classList.replace('hover:bg-[#2a2a2a]', 'bg-pink-500/20');
-                if (loopIcon) loopIcon.setAttribute('data-lucide', 'repeat-1');
+                if(loopIcon) loopIcon.setAttribute('data-lucide', 'repeat-1');
             } else {
                 btnLoop.classList.replace('text-pink-400', 'text-gray-500');
                 btnLoop.classList.replace('bg-pink-500/20', 'hover:bg-[#2a2a2a]');
-                if (loopIcon) loopIcon.setAttribute('data-lucide', 'repeat');
+                if(loopIcon) loopIcon.setAttribute('data-lucide', 'repeat');
             }
             lucide.createIcons();
         });
@@ -3807,7 +3547,7 @@
         if (audio) {
             audio.addEventListener('play', () => {
                 isPlaying = true;
-
+                
                 if (currentIndex !== -2 && currentIndex !== -3 && currentIndex !== -4 && currentIndex !== -5 && currentIndex !== -6) {
                     const currentGroup = window.getPlayingGroup();
                     if (currentGroup && currentGroup.tracks[currentIndex] && !currentGroup.isLocal) {
@@ -3815,27 +3555,25 @@
                         if (user && lastPlayedTrackId !== trackId) {
                             lastPlayedTrackId = trackId;
                             const statsRef = doc(db, 'artifacts', appId, 'public', 'data', 'shared_playlist', 'stats');
-
+                            
                             const updateData = {
                                 plays: increment(1),
                                 [`trackPlays.${trackId}`]: increment(1)
                             };
-
+                            
                             updateDoc(statsRef, updateData).catch(async (e) => {
-                                if (e.code === 'not-found') {
-                                    await setDoc(statsRef, {
-                                        plays: 1,
+                                if(e.code === 'not-found') {
+                                    await setDoc(statsRef, { 
+                                        plays: 1, 
                                         visits: globalVisits,
-                                        trackPlays: {
-                                            [trackId]: 1
-                                        }
+                                        trackPlays: { [trackId]: 1 }
                                     });
                                 }
                             });
                         }
                     }
                 }
-
+                
                 window.updatePlayerUI();
             });
 
@@ -3845,20 +3583,17 @@
             });
 
             audio.addEventListener('ended', () => {
-                if (currentIndex === -2 || currentIndex === -4 || currentIndex === -5 || currentIndex === -6) return;
-
+                if (currentIndex === -2 || currentIndex === -4 || currentIndex === -5 || currentIndex === -6) return; 
+                
                 if (currentIndex === -3) {
-                    if (audio) {
-                        audio.pause();
-                        audio.removeAttribute('src');
-                    }
+                    if(audio) { audio.pause(); audio.removeAttribute('src'); }
                     currentIndex = -1;
                     playingGroupId = null;
                     isPlaying = false;
                     window.updatePlayerUI();
                     return;
                 }
-
+                
                 const currentGroup = window.getPlayingGroup();
                 if (currentGroup && currentGroup.tracks[currentIndex]) {
                     localStorage.setItem('trackProgress_' + currentGroup.tracks[currentIndex].id, 0);
@@ -3875,14 +3610,14 @@
 
             audio.addEventListener('loadedmetadata', () => {
                 if (currentIndex === -2 || currentIndex === -4 || currentIndex === -5 || currentIndex === -6) {
-                    if (durationTxt) durationTxt.innerText = '🔴';
+                    if(durationTxt) durationTxt.innerText = '🔴';
                     return;
                 }
-
-                if (durationTxt) durationTxt.innerText = window.formatTime(audio.duration);
-
-                if (currentIndex === -3) return;
-
+                
+                if(durationTxt) durationTxt.innerText = window.formatTime(audio.duration);
+                
+                if (currentIndex === -3) return; 
+                
                 const currentGroup = window.getPlayingGroup();
                 if (pendingRestoreTime && currentGroup && currentGroup.tracks[currentIndex]) {
                     let savedTime = parseFloat(localStorage.getItem('trackProgress_' + currentGroup.tracks[currentIndex].id)) || 0;
@@ -3898,21 +3633,21 @@
             audio.addEventListener('timeupdate', () => {
                 const current = audio.currentTime;
                 const duration = audio.duration || 0;
-
+                
                 if (currentIndex === -2 || currentIndex === -4 || currentIndex === -5 || currentIndex === -6) {
                     if (!isDraggingProgress) {
-                        if (currentTimeTxt) currentTimeTxt.innerText = 'بث مباشر';
-                        if (progressBar) progressBar.style.width = '100%';
+                        if(currentTimeTxt) currentTimeTxt.innerText = 'بث مباشر';
+                        if(progressBar) progressBar.style.width = '100%';
                     }
                     return;
                 }
-
+                
                 if (!isDraggingProgress) {
-                    if (currentTimeTxt) currentTimeTxt.innerText = window.formatTime(current);
-                    if (progressBar) progressBar.style.width = duration ? `${(current / duration) * 100}%` : '0%';
+                    if(currentTimeTxt) currentTimeTxt.innerText = window.formatTime(current);
+                    if(progressBar) progressBar.style.width = duration ? `${(current / duration) * 100}%` : '0%';
                 }
-
-                if (currentIndex === -3) return;
+                
+                if (currentIndex === -3) return; 
 
                 const currentGroup = window.getPlayingGroup();
                 if (currentGroup && currentGroup.tracks[currentIndex] && duration > 0) {
@@ -3926,26 +3661,24 @@
             const rect = progressContainer.getBoundingClientRect();
             const x = e.clientX - rect.left;
             const percentage = Math.max(0, Math.min(1, x / rect.width));
-
+            
             audio.currentTime = percentage * audio.duration;
-            if (progressBar) progressBar.style.width = `${percentage * 100}%`;
-            if (currentTimeTxt) currentTimeTxt.innerText = window.formatTime(audio.currentTime);
+            if(progressBar) progressBar.style.width = `${percentage * 100}%`;
+            if(currentTimeTxt) currentTimeTxt.innerText = window.formatTime(audio.currentTime);
         };
 
         if (progressContainer) {
             progressContainer.addEventListener('mousedown', (e) => {
-                if (currentIndex === -2 || currentIndex === -4 || currentIndex === -5 || currentIndex === -6) return;
+                if(currentIndex === -2 || currentIndex === -4 || currentIndex === -5 || currentIndex === -6) return;
                 isDraggingProgress = true;
                 window.updateProgressFromEvent(e);
             });
 
             progressContainer.addEventListener('touchstart', (e) => {
-                if (currentIndex === -2 || currentIndex === -4 || currentIndex === -5 || currentIndex === -6) return;
+                if(currentIndex === -2 || currentIndex === -4 || currentIndex === -5 || currentIndex === -6) return;
                 isDraggingProgress = true;
                 window.updateProgressFromEvent(e.touches[0]);
-            }, {
-                passive: false
-            });
+            }, { passive: false });
         }
 
         window.addEventListener('mousemove', (e) => {
@@ -3966,9 +3699,9 @@
 
         window.updateVolumeUI = function() {
             if (gainNode) gainNode.gain.value = volume;
-            if (audio) audio.volume = Math.min(volume, 1);
-
-            if (volumeText) {
+            if(audio) audio.volume = Math.min(volume, 1);
+            
+            if(volumeText) {
                 volumeText.innerText = `${Math.round(volume * 100)}%`;
                 if (volume > 1) {
                     volumeText.setAttribute('class', 'text-xs font-mono font-bold w-12 text-center py-1 rounded-md text-pink-400 bg-pink-500/10');
@@ -3977,16 +3710,14 @@
                 }
             }
 
-            if (btnMute) {
+            if(btnMute) {
                 let volIcon = 'volume-2';
                 if (volume === 0) volIcon = 'volume-x';
                 else if (volume <= 1) volIcon = 'volume-1';
-
+                
                 const iconColor = volume > 1 ? 'text-pink-400' : 'text-gray-400 group-hover:text-cyan-400';
                 btnMute.innerHTML = `<i data-lucide="${volIcon}" class="w-5 h-5 ${iconColor} transition-colors group"></i>`;
-                lucide.createIcons({
-                    root: btnMute
-                });
+                lucide.createIcons({ root: btnMute });
             }
         };
 
@@ -4000,7 +3731,7 @@
         if (btnMute) {
             btnMute.addEventListener('click', () => {
                 volume = volume === 0 ? 1 : 0;
-                if (volumeSlider) volumeSlider.value = volume;
+                if(volumeSlider) volumeSlider.value = volume;
                 window.updateVolumeUI();
             });
         }
@@ -4008,7 +3739,7 @@
         if (downloadBtnEl) {
             downloadBtnEl.addEventListener('click', async (e) => {
                 e.preventDefault();
-
+                
                 let track;
                 if (currentIndex === -3 && introTrack) {
                     track = introTrack;
@@ -4017,9 +3748,9 @@
                     if (!currentGroup) return;
                     track = currentGroup.tracks[currentIndex];
                 }
-
+                
                 if (!track) return;
-
+                
                 try {
                     const response = await fetch(track.audioUrl);
                     const blob = await response.blob();
@@ -4044,7 +3775,7 @@
         }
 
         window.applyAdminMode();
+
     </script>
 </body>
-
 </html>
