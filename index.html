@@ -13,8 +13,6 @@
     <meta property="og:image" content="https://i.ibb.co/sp6xBm7K/Picsart-26-03-30-18-16-08-102.png">
     <meta property="og:type" content="website">
     <meta name="twitter:card" content="summary_large_image">
-    
-    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
 
     <!-- إعدادات PWA لتثبيت التطبيق بايقونة أصلية -->
     <meta name="theme-color" content="#ec4899">
@@ -918,8 +916,7 @@
             }
         };
 
-                window.liveRetryCount = 0;
-        window.safeChangeTrack = function(newSrc) {
+                window.safeChangeTrack = function(newSrc) {
             if(audio) {
                 audio.pause();
                 audio.removeAttribute('src'); 
@@ -962,8 +959,7 @@
             localStorage.setItem('lastTrackIndex', -2);
             localStorage.removeItem('lastPlayingGroupId');
 
-            // استخدام الرابط الأساسي مع كاسر الكاش
-            const quranUrl = 'https://stream.radiojar.com/8s5u5tpdtwzuv?_=' + Date.now();
+            const quranUrl = 'https://n03.radiojar.com/8s5u5tpdtwzuv';
             window.safeChangeTrack(quranUrl); 
             pendingRestoreTime = false;
             window.initAudioBooster();
@@ -1352,29 +1348,6 @@
                              window.autoRefreshTrack(introTrack, null, -3);
                              return;
                          }
-                    } else if (currentIndex === -2 || currentIndex === -4 || currentIndex === -5 || currentIndex === -6) {
-                        // نظام التعافي الذاتي مع حدود للمحاولات لمنع الانهيار
-                        if (window.liveRetryCount < 3) {
-                            window.liveRetryCount++;
-                            console.warn(`انقطع البث، المحاولة ${window.liveRetryCount} لإعادة الاتصال...`);
-                            const titleEl = document.getElementById('track-title');
-                            if (titleEl) titleEl.innerText = '🔄 جاري إعادة الاتصال...';
-                            
-                            setTimeout(() => {
-                                if (currentIndex === -2) window.playQuranRadio();
-                                else if (currentIndex === -4) window.playDramaMixRadio();
-                                else if (currentIndex === -5) window.playNewsRadio();
-                                else if (currentIndex === -6) window.playMonteCarloRadio();
-                            }, 2500);
-                        } else {
-                            window.showToast('السيرفر لا يستجيب حالياً، يرجى المحاولة لاحقاً', 'error');
-                            const titleEl = document.getElementById('track-title');
-                            if (titleEl) titleEl.innerText = '❌ البث متوقف مؤقتاً';
-                            isPlaying = false;
-                            window.updatePlayerUI();
-                            window.liveRetryCount = 0;
-                        }
-                        return;
                     } else {
                         const currentGroup = window.getPlayingGroup();
                         if (currentGroup && currentIndex >= 0) {
