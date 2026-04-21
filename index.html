@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -51,9 +52,26 @@
     <!-- تضمين مكتبة أيقونات Lucide -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <!-- مكتبة HLS.js لتشغيل ملفات m3u8 -->
-    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-    
-    <style>
+<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+
+<!-- حماية الصفحة من الفحص والنسخ -->
+<script>
+    document.addEventListener('contextmenu', event => event.preventDefault());
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'F12' || 
+           (e.ctrlKey && e.shiftKey && e.key === 'I') || 
+           (e.ctrlKey && e.shiftKey && e.key === 'J') || 
+           (e.ctrlKey && e.shiftKey && e.key === 'C') || 
+           (e.ctrlKey && e.key === 'U') ||
+           (e.metaKey && e.altKey && e.key === 'I') ||
+           (e.metaKey && e.altKey && e.key === 'J') ||
+           (e.metaKey && e.key === 'U')) {
+            e.preventDefault();
+        }
+    });
+</script>
+
+<style>
         /* التعديل على السكرول ليصبح عريضاً وواضحاً ومميزاً */
         .custom-scrollbar::-webkit-scrollbar { 
             width: 12px; 
@@ -289,7 +307,7 @@
             </div>
 
             <!-- أزرار الإذاعات المباشرة -->
-            <div class="flex items-center gap-1.5 sm:gap-2 w-full sm:w-auto flex-wrap sm:flex-nowrap justify-center vintage-shelf pb-2 sm:pb-0">
+<div class="flex items-center gap-2 w-full sm:w-auto flex-wrap justify-center vintage-shelf p-2 sm:p-3">
 <button id="btn-quran-menu" onclick="toggleQuranMenu(event)" class="flex items-center gap-1.5 px-2.5 py-1.5 sm:px-3 sm:py-2 vintage-btn rounded-md shrink-0 whitespace-nowrap">
 <i data-lucide="book-open" class="w-4 h-4"></i>
 <span class="text-[11px] sm:text-xs font-bold">القرآن</span>
@@ -306,6 +324,10 @@
 <button onclick="playMonteCarloRadio()" class="flex items-center gap-1.5 px-2.5 py-1.5 sm:px-3 sm:py-2 vintage-btn rounded-md shrink-0 whitespace-nowrap">
 <i data-lucide="globe" class="w-4 h-4"></i>
 <span class="text-[11px] sm:text-xs font-bold">مونت كارلو</span>
+</button>
+<button onclick="openInternalFrame('https://khmohieldin.github.io/radio1', 'إذاعات مصرية')" class="flex items-center gap-1.5 px-2.5 py-1.5 sm:px-3 sm:py-2 vintage-btn rounded-md shrink-0 whitespace-nowrap">
+<i data-lucide="radio" class="w-4 h-4"></i>
+<span class="text-[11px] sm:text-xs font-bold">إذاعات مصرية</span>
 </button>
 </div>
         </header>
@@ -852,9 +874,25 @@
         document.addEventListener('touchstart', closeMenuOutside, { passive: true });
 
         window.openInternalFrame = function(url, title) {
-            if(!modalContent) return;
-            modalContent.innerHTML = `
-                <div class="flex items-center justify-between mb-4 border-b border-[#333] pb-3">
+// إيقاف أي بث مباشر أو مقطع صوتي شغال حالياً لمنع التداخل
+if (audio) {
+audio.pause();
+audio.removeAttribute('src');
+}
+if (window.hlsPlayer) {
+window.hlsPlayer.stopLoad();
+window.hlsPlayer.detachMedia();
+}
+isPlaying = false;
+window.updatePlayerUI();
+
+        // حفظ الرابط والعنوان في الجلسة لاستعادتها عند تحديث الصفحة
+        sessionStorage.setItem('active_iframe_url', url);
+        sessionStorage.setItem('active_iframe_title', title);
+
+        if(!modalContent) return;
+        modalContent.innerHTML = `
+            <div class="flex items-center justify-between mb-4 border-b border-[#333] pb-3">
                     <h3 class="text-lg font-bold text-white flex items-center gap-2">
                         <i data-lucide="headphones" class="w-5 h-5 text-amber-400"></i>
                         ${title}
@@ -1803,6 +1841,12 @@ mostPlayedTrackId = id;
 
         window.closeModal = () => {
             if(modalOverlay) modalOverlay.classList.add('hidden');
+            // إيقاف الصوت داخل النافذة وتفريغها بعد انتهاء الانيميشن
+            setTimeout(() => {
+                if(modalContent) modalContent.innerHTML = '';
+                sessionStorage.removeItem('active_iframe_url');
+                sessionStorage.removeItem('active_iframe_title');
+            }, 300);
         };
 
         window.openPromptModal = function(title, placeholder, onConfirm, initialValue = '') {
@@ -3755,6 +3799,17 @@ navigator.mediaSession.playbackState = isPlaying ? "playing" : "paused";
                 }
             });
         }
+
+        // استعادة نافذة الإذاعات تلقائياً إذا حدث تحديث للصفحة وهي مفتوحة
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedIframeUrl = sessionStorage.getItem('active_iframe_url');
+            const savedIframeTitle = sessionStorage.getItem('active_iframe_title');
+            if (savedIframeUrl && savedIframeTitle) {
+                setTimeout(() => {
+                    window.openInternalFrame(savedIframeUrl, savedIframeTitle);
+                }, 500);
+            }
+        });
 
         window.applyAdminMode();
 
