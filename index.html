@@ -1141,8 +1141,10 @@ window.updatePlayerUI();
                 } catch(e) {}
 
                 const scFetchers = [
+                    async () => { const r = await fetch(`https://api.ryzendesu.vip/api/downloader/soundcloud?url=${encodeURIComponent(url)}`); const d = await r.json(); return d?.url || d?.data?.url; },
                     async () => { const r = await fetch(`https://api.vreden.my.id/api/soundcloud?url=${encodeURIComponent(url)}`); const d = await r.json(); return d?.result?.download || d?.result?.url; },
-                    async () => { const r = await fetch(`https://api.siputzx.my.id/api/d/soundcloud?url=${encodeURIComponent(url)}`); const d = await r.json(); return d?.data?.url; }
+                    async () => { const r = await fetch(`https://api.siputzx.my.id/api/d/soundcloud?url=${encodeURIComponent(url)}`); const d = await r.json(); return d?.data?.url; },
+                    async () => { const r = await fetch(`https://api.agatz.my.id/api/soundcloud?url=${encodeURIComponent(url)}`); const d = await r.json(); return d?.data?.download || d?.data?.url; }
                 ];
 
                 audioUrl = await new Promise((resolve) => {
@@ -1350,8 +1352,10 @@ window.updatePlayerUI();
                         track.audioUrl = newAudioUrl;
                         track.isRefreshing = false;
                         track.refreshAttempts = 0;
+                        track.sessionRefreshed = true;
                         
-                        if (group && !group.isLocal && isAdmin && user) window.saveToDB(); 
+                        // تم إلغاء الحفظ في قاعدة البيانات للروابط المؤقتة لمنع مشاركة رابط منتهي مع الزوار
+                        // if (group && !group.isLocal && isAdmin && user) window.saveToDB(); 
                         
                         if ((group && playingGroupId === group.id && currentIndex === index) || (currentIndex === -3 && track === introTrack)) {
                             window.showToast('تم التجهيز بنجاح! جاري التشغيل ✅', 'success');
@@ -3198,11 +3202,13 @@ navigator.mediaSession.playbackState = isPlaying ? "playing" : "paused";
             
             const track = targetGroup.tracks[currentIndex];
 
-            // تنشيط المقاطع القديمة المحفوظة في قاعدة البيانات لتسحب الرابط المباشر
-            if (track.audioUrl === 'soundcloud_widget') {
+            // منع تشغيل الروابط المنتهية الصلاحية بجلب رابط جديد فوراً قبل التشغيل
+            const isEphemeral = track.url && (track.url.includes('soundcloud.com') || track.url.includes('youtube.com') || track.url.includes('youtu.be') || track.url.includes('tiktok.com'));
+            
+            if (track.audioUrl === 'soundcloud_widget' || (isEphemeral && !track.sessionRefreshed)) {
                 if (!track.isRefreshing) {
                     track.isRefreshing = true;
-                    window.showToast('جاري تحضير مقطع الساوند كلاود للعمل على المشغل الرئيسي...', 'info');
+                    window.showToast('جاري جلب البث المباشر الطازج للمقطع...', 'info');
                     window.autoRefreshTrack(track, targetGroup, currentIndex);
                 }
                 return;
