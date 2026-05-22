@@ -27,7 +27,7 @@
         <script>
         if ('serviceWorker' in navigator && (window.location.protocol === 'https:' || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw.js?v=4').then(reg => {
+                navigator.serviceWorker.register('./sw.js?v=3').then(reg => {
                     console.log('PWA Ready');
                     if (reg.waiting) {
                         reg.waiting.postMessage({ type: 'SKIP_WAITING' });
@@ -1141,9 +1141,9 @@ window.updatePlayerUI();
                 } catch(e) {}
 
                 const scFetchers = [
-                    async () => { const r = await fetch(`https://corsproxy.io/?${encodeURIComponent('https://api.ryzendesu.vip/api/downloader/soundcloud?url=' + encodeURIComponent(url))}`); const d = await r.json(); return d?.url || d?.data?.url; },
-                    async () => { const r = await fetch(`https://corsproxy.io/?${encodeURIComponent('https://api.vreden.my.id/api/soundcloud?url=' + encodeURIComponent(url))}`); const d = await r.json(); return d?.result?.download || d?.result?.url; },
-                    async () => { const r = await fetch(`https://corsproxy.io/?${encodeURIComponent('https://api.siputzx.my.id/api/d/soundcloud?url=' + encodeURIComponent(url))}`); const d = await r.json(); return d?.data?.url; },
+                    async () => { const r = await fetch(`https://api.ryzendesu.vip/api/downloader/soundcloud?url=${encodeURIComponent(url)}`); const d = await r.json(); return d?.url || d?.data?.url; },
+                    async () => { const r = await fetch(`https://api.vreden.my.id/api/soundcloud?url=${encodeURIComponent(url)}`); const d = await r.json(); return d?.result?.download || d?.result?.url; },
+                    async () => { const r = await fetch(`https://api.siputzx.my.id/api/d/soundcloud?url=${encodeURIComponent(url)}`); const d = await r.json(); return d?.data?.url; },
                     async () => { const r = await fetch(`https://api.agatz.my.id/api/soundcloud?url=${encodeURIComponent(url)}`); const d = await r.json(); return d?.data?.download || d?.data?.url; }
                 ];
 
@@ -1631,7 +1631,7 @@ audio.currentTime = details.seekTime;
 
             const inputHash = await hashPassword(password);
 
-            if (inputHash === adminPasswordHash || password === '123456') { 
+            if (inputHash === adminPasswordHash) { 
                 isAdmin = true;
                 localStorage.setItem('radioAdmin', 'true'); 
                 window.showToast('تم تسجيل الدخول بنجاح', 'success');
