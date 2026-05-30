@@ -6,6 +6,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>راديو خالد</title>
     
+    <!-- DNS preconnect & prefetch for ultra-fast loading (خفيف وسريع) -->
+    <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+    <link rel="preconnect" href="https://unpkg.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.tailwindcss.com" crossorigin>
+    <link rel="preconnect" href="https://api.ryzendesu.vip" crossorigin>
+    <link rel="preconnect" href="https://api.vreden.my.id" crossorigin>
+    <link rel="preconnect" href="https://api.siputzx.my.id" crossorigin>
+    <link rel="preconnect" href="https://api.agatz.my.id" crossorigin>
+    <link rel="preconnect" href="https://archive.org" crossorigin>
+    <link rel="preconnect" href="https://i.ibb.co" crossorigin>
+    
+    <link rel="dns-prefetch" href="https://www.gstatic.com">
+    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+    <link rel="dns-prefetch" href="https://unpkg.com">
+    <link rel="dns-prefetch" href="https://cdn.tailwindcss.com">
+    <link rel="dns-prefetch" href="https://api.ryzendesu.vip">
+    <link rel="dns-prefetch" href="https://api.vreden.my.id">
+    <link rel="dns-prefetch" href="https://api.siputzx.my.id">
+    <link rel="dns-prefetch" href="https://api.agatz.my.id">
+    <link rel="dns-prefetch" href="https://archive.org">
+    <link rel="dns-prefetch" href="https://i.ibb.co">
+    
     <!-- SEO & Social Media Meta Tags (Open Graph) -->
     <meta name="description" content="راديو خالد - رحلة الى الزمن الجميل. استمع لأجمل المسلسلات والمقاطع الإذاعية.">
     <meta property="og:title" content="راديو خالد">
@@ -726,6 +749,7 @@
         let draggedIndex = -1; 
         let lastPlayedTrackId = null; 
         let audioLoadTimeout; 
+        let liveStreamRetryCount = 0;
 
         let isAdmin = localStorage.getItem('radioAdmin') === 'true'; 
         let searchQuery = '';
@@ -1377,42 +1401,62 @@ window.updatePlayerUI();
 
         if(audio) {
             audio.addEventListener('error', () => {
-                if (audio.error && (audio.error.code === 4 || audio.error.code === 3)) { 
-                    if (currentIndex === -3 && introTrack) {
-                         if (!introTrack.isRefreshing) {
-                             introTrack.isRefreshing = true;
-                             window.autoRefreshTrack(introTrack, null, -3);
-                             return;
-                         }
-                    } else {
-                        const currentGroup = window.getPlayingGroup();
-                        if (currentGroup && currentIndex >= 0) {
-                            const track = currentGroup.tracks[currentIndex];
-                            if (track && track.url && (track.url.includes('youtube.com') || track.url.includes('youtu.be') || track.url.includes('tiktok.com') || track.url.includes('apple.com') || track.url.includes('soundcloud.com'))) {
-                                if (!track.isRefreshing) {
-                                    track.isRefreshing = true;
-                                    console.warn("الرابط منتهي أو محمي، جاري التجديد التلقائي...");
-                                    window.autoRefreshTrack(track, currentGroup, currentIndex);
-                                    return; 
+                if (audio.error) {
+                    const isLiveStream = (currentIndex === -2 || currentIndex === -4 || currentIndex === -5 || currentIndex === -6);
+                    
+                    // إذا كان بثاً مباشراً وحدث خطأ شبكة (كود 2) أو غيره، نحاول إعادة الاتصال تلقائياً
+                    if (isLiveStream && (audio.error.code === 2 || audio.error.code === 4) && liveStreamRetryCount < 5) {
+                        liveStreamRetryCount++;
+                        window.showToast('انقطع البث المباشر، جاري إعادة الاتصال تلقائياً... 🔄 (محاولة ' + liveStreamRetryCount + '/5)', 'info');
+                        const titleEl = document.getElementById('track-title');
+                        if (titleEl) titleEl.innerText = '🔄 جاري إعادة الاتصال للبث...';
+                        
+                        setTimeout(() => {
+                            if (currentIndex === -2) window.playQuranRadio();
+                            else if (currentIndex === -4) window.playDramaMixRadio();
+                            else if (currentIndex === -5) window.playNewsRadio();
+                            else if (currentIndex === -6) window.playMonteCarloRadio();
+                        }, 3000);
+                        return;
+                    }
+
+                    if (audio.error.code === 4 || audio.error.code === 3 || audio.error.code === 2) { 
+                        if (currentIndex === -3 && introTrack) {
+                             if (!introTrack.isRefreshing) {
+                                 introTrack.isRefreshing = true;
+                                 window.autoRefreshTrack(introTrack, null, -3);
+                                 return;
+                             }
+                        } else {
+                            const currentGroup = window.getPlayingGroup();
+                            if (currentGroup && currentIndex >= 0) {
+                                const track = currentGroup.tracks[currentIndex];
+                                if (track && track.url && (track.url.includes('youtube.com') || track.url.includes('youtu.be') || track.url.includes('tiktok.com') || track.url.includes('apple.com') || track.url.includes('soundcloud.com'))) {
+                                    if (!track.isRefreshing) {
+                                        track.isRefreshing = true;
+                                        console.warn("الرابط منتهي أو محمي، جاري التجديد التلقائي...");
+                                        window.autoRefreshTrack(track, currentGroup, currentIndex);
+                                        return; 
+                                    }
                                 }
                             }
                         }
-                    }
 
-                    window.showToast('عذراً، الرابط معطل أو غير متاح مؤقتاً', 'error');
-                    const titleEl = document.getElementById('track-title');
-                    if (titleEl) titleEl.innerText = '❌ خطأ في التشغيل';
-                    
-                    if (currentIndex === -3) {
-                        if(audio) { audio.pause(); audio.removeAttribute('src'); }
-                        currentIndex = -1;
-                        playingGroupId = null;
-                        isPlaying = false;
-                        window.updatePlayerUI();
-                    } else {
-                        if(audio) audio.pause();
-                        isPlaying = false;
-                        window.updatePlayerUI();
+                        window.showToast('عذراً، الرابط معطل أو غير متاح مؤقتاً', 'error');
+                        const titleEl = document.getElementById('track-title');
+                        if (titleEl) titleEl.innerText = '❌ خطأ في التشغيل';
+                        
+                        if (currentIndex === -3) {
+                            if(audio) { audio.pause(); audio.removeAttribute('src'); }
+                            currentIndex = -1;
+                            playingGroupId = null;
+                            isPlaying = false;
+                            window.updatePlayerUI();
+                        } else {
+                            if(audio) audio.pause();
+                            isPlaying = false;
+                            window.updatePlayerUI();
+                        }
                     }
                 }
             });
@@ -1426,6 +1470,7 @@ window.updatePlayerUI();
 
             audio.addEventListener('playing', () => {
                 clearTimeout(audioLoadTimeout); 
+                liveStreamRetryCount = 0; // تصفير محاولات إعادة الاتصال عند التشغيل بنجاح
                 window.updatePlayerUI();
             });
         }
@@ -1551,6 +1596,16 @@ if (btnPrev && !btnPrev.disabled) btnPrev.click();
 navigator.mediaSession.setActionHandler('nexttrack', () => {
 if (btnNext && !btnNext.disabled) btnNext.click();
 });
+try {
+navigator.mediaSession.setActionHandler('seekbackward', (details) => {
+    const offset = details.seekOffset || 10;
+    if (audio) audio.currentTime = Math.max(audio.currentTime - offset, 0);
+});
+navigator.mediaSession.setActionHandler('seekforward', (details) => {
+    const offset = details.seekOffset || 10;
+    if (audio) audio.currentTime = Math.min(audio.currentTime + offset, audio.duration || 0);
+});
+} catch(e) {}
 try {
 navigator.mediaSession.setActionHandler('seekto', (details) => {
 if (audio && details.fastSeek && ('fastSeek' in audio)) {
@@ -2269,7 +2324,16 @@ const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/
     let lastDrawTime = performance.now();
 function drawVisualizer(timestamp = performance.now()) {
 if (!canvasCtx || !visualizerCanvas) return;
-animationId = requestAnimationFrame(drawVisualizer);
+
+            if (!isPlaying && audio && audio.paused) {
+                canvasCtx.clearRect(0, 0, visualizerCanvas.width, visualizerCanvas.height);
+                canvasCtx.fillStyle = 'rgba(6, 182, 212, 0.3)';
+                canvasCtx.fillRect(0, visualizerCanvas.height - 2, visualizerCanvas.width, 2);
+                animationId = null;
+                return;
+            }
+
+            animationId = requestAnimationFrame(drawVisualizer);
 
         if (timestamp - lastDrawTime < 33) return;
         lastDrawTime = timestamp;
@@ -2291,12 +2355,6 @@ animationId = requestAnimationFrame(drawVisualizer);
         }
 
         canvasCtx.clearRect(0, 0, visualizerCanvas.width, visualizerCanvas.height);
-
-            if (!isPlaying && audio && audio.paused) {
-                canvasCtx.fillStyle = 'rgba(6, 182, 212, 0.3)';
-                canvasCtx.fillRect(0, visualizerCanvas.height - 2, visualizerCanvas.width, 2);
-                return;
-            }
 
             const halfCount = 32; 
             const barWidth = visualizerCanvas.width / (halfCount * 2);
@@ -3190,6 +3248,32 @@ navigator.mediaSession.playbackState = isPlaying ? "playing" : "paused";
             if(trackDetailsContainer) lucide.createIcons({ root: trackDetailsContainer });
         };
 
+        window.preloadNextTrackIfNeeded = function() {
+            const currentGroup = window.getPlayingGroup();
+            if (!currentGroup) return;
+            const nextIndex = currentIndex + 1;
+            if (nextIndex < currentGroup.tracks.length) {
+                const nextTrack = currentGroup.tracks[nextIndex];
+                const isEphemeral = nextTrack.url && (nextTrack.url.includes('soundcloud.com') || nextTrack.url.includes('youtube.com') || nextTrack.url.includes('youtu.be') || nextTrack.url.includes('tiktok.com'));
+                
+                if (isEphemeral && !nextTrack.sessionRefreshed && !nextTrack.isRefreshing) {
+                    nextTrack.isRefreshing = true;
+                    console.log("Preloading next track in background:", nextTrack.title);
+                    window.fetchLinkInfo(nextTrack.url).then(refreshedTracks => {
+                        if (refreshedTracks && refreshedTracks.length > 0) {
+                            nextTrack.audioUrl = refreshedTracks[0].audioUrl;
+                            nextTrack.sessionRefreshed = true;
+                            console.log("Successfully preloaded next track in background:", nextTrack.title);
+                        }
+                        nextTrack.isRefreshing = false;
+                    }).catch(err => {
+                        console.warn("Failed to preload next track in background:", err);
+                        nextTrack.isRefreshing = false;
+                    });
+                }
+            }
+        };
+
         window.playTrack = (index) => {
             const targetGroup = window.getViewingGroup();
             if (!targetGroup || !targetGroup.tracks[index]) return;
@@ -3674,6 +3758,11 @@ navigator.mediaSession.playbackState = isPlaying ? "playing" : "paused";
             const currentGroup = window.getPlayingGroup();
             if (currentGroup && currentGroup.tracks[currentIndex] && duration > 0) {
                 localStorage.setItem('trackProgress_' + currentGroup.tracks[currentIndex].id, current);
+            }
+            
+            // التحضير المسبق للمقطع التالي في الخلفية (Preloading) لمنع حظره عند قفل الشاشة
+            if (duration > 0 && (duration - current < 30) && currentIndex >= 0) {
+                if (window.preloadNextTrackIfNeeded) window.preloadNextTrackIfNeeded();
             }
             
             try {

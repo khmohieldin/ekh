@@ -33,3 +33,10 @@ self.addEventListener('fetch', (event) => {
     })
   );
 });
+
+// الاستجابة لرسالة تخطي الانتظار لتفعيل التحديث فوراً
+self.addEventListener('message', (event) => {
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
+});
